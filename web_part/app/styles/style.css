@@ -1,0 +1,86 @@
+﻿html
+{
+min-height: 100%;
+position: relative;
+}
+body
+{
+  background-сolor: #fff;
+  margin: 0px!important;
+  color: #030304;
+  height: 100%;
+  padding-bottom: 150px!important;
+  padding-top: 0px!important;
+}
+.navbar-nav li a
+{
+    line-height: 45px;
+    font-size: 21px;
+    color: rgb(255, 255, 253)!important;
+}
+#reg
+{
+ margin-top: 10px;
+}
+.btn-success
+{
+ background: linear-gradient(to bottom,#7e879c 0,#363748 100%)!important;
+ border-color: #363748!important;
+}
+.btn-success:hover
+{
+background-color: #6a435a!important;
+}
+p
+{
+margin: 0 0 0 0!important;
+}
+#wrap {
+  min-height: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.footer {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 150px;
+  clear:both;
+  padding-top:20px;
+  padding-bottom: 0px;
+}
+hr
+{
+height: 1px;
+background-color: #b5b5b5;
+}
+#hr_between
+{
+margin-top: 25px;
+margin-bottom: 30px;
+height: 2px;
+background-color: #959595;
+}
+h2
+{
+ font-size: 23px;
+}
+ul
+{
+ padding-right: 40px!important;
+}
+.brand_img
+{
+ cursor: pointer;
+ margin: 10px;
+ padding: 6px;
+ height: 150px;
+ width: 150px;
+ border: 5px solid #d5d5d5;
+ border-radius: 10px;
+}
+select
+{
+height: 26px;
+width: 174px;
+}
