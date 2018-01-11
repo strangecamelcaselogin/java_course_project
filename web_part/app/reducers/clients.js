@@ -3,14 +3,17 @@
  */
 import * as actions from '../actions';
 
-
-export default function main(state = {
-
+export default function clients(state = {
+    clients: [],
+    brandsClients: [],
+    endRentsClients: [],
+    boxClient: [],
 }, action) {
     switch (action.type) {
-        case actions.TEMPLATE:
+        case actions.GET_CLIENTS_RECEIVE:
             return {
                 ...state,
+                clients: action.payload
             };
 
         default:
