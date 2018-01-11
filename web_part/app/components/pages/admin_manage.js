@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 
-export default class MainPage extends Component{
+export default class AdminManage extends Component{
     constructor(props){
         super(props);
         this.state = {}
@@ -16,7 +16,7 @@ export default class MainPage extends Component{
         console.log('render', this.state);
         return(
             <div>
-                Main
+                Admin Manage
             </div>
         )
     }

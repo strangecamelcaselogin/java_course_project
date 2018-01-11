@@ -1,11 +1,12 @@
 /**
- * Created by Jane on 11.01.2018.
+ * Created by Jane on 06.09.2017.
  */
 import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
+import Header from './header';
 
-export default class MainPage extends Component{
+export default class MainLayout extends Component{
     constructor(props){
         super(props);
         this.state = {}
@@ -16,7 +17,10 @@ export default class MainPage extends Component{
         console.log('render', this.state);
         return(
             <div>
-                Main
+                <Header/>
+                <div id='container'>
+                    {this.props.children}
+                </div>
             </div>
         )
     }

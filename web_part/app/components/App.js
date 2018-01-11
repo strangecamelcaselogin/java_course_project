@@ -7,7 +7,11 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 
+import MainLayout from 'components/pages/mainLayout';
 import MainPage from 'components/pages/main';
+import AdminInfo from 'components/pages/admin_info';
+import AdminManage from 'components/pages/admin_manage';
+
 import rootReducer from '../reducers';
 
 let store = createStore(
@@ -19,8 +23,13 @@ let store = createStore(
 export default () => (
     <Provider store={store}>
         <Router history={browserHistory}>
-            <Redirect from="/" to="/index" />
-            <Route path="/index" component={MainPage} />
+
+            <Route component={MainLayout} >
+                <Redirect from="/" to="/index" />
+                <Route path="/index" component={MainPage} />
+                <Route path="/admin_info" component={AdminInfo} />
+                <Route path="/admin_manage" component={AdminManage} />
+            </Route>
         </Router>
     </Provider>
 );
