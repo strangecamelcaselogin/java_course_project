@@ -1,6 +1,6 @@
 package ru.rsatu.boxes.rest.exception;
 
-public class ResourceNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends BaseApiException {
 
     private Long resourceId;
 

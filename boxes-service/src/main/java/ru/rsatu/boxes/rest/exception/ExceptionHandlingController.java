@@ -12,8 +12,9 @@ public class ExceptionHandlingController {
     public ResponseEntity<ExceptionResponse> resourceNotFound(ResourceNotFoundException ex) {
         ExceptionResponse response = new ExceptionResponse();
         response.setResourceId(ex.getResourceId());
-        response.setErrorCode("Not Found");
-        response.setErrorMessage(ex.getMessage());
+        response.setError("Not Found");
+        response.setStatus(404);
+        response.setMessage(ex.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }

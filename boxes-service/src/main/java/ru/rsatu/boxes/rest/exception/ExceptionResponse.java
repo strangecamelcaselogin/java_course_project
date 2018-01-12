@@ -1,27 +1,28 @@
 package ru.rsatu.boxes.rest.exception;
 
 public class ExceptionResponse {
-    private String errorCode;
-    private String errorMessage;
+    private String error;
+    private Integer status;
+    private String message;
     private Long resourceId;
 
     public ExceptionResponse() {
     }
 
-    public String getErrorCode() {
-        return errorCode;
+    public String getError() {
+        return error;
     }
 
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
+    public void setError(String error) {
+        this.error = error;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getMessage() {
+        return message;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Long getResourceId() {
@@ -30,5 +31,13 @@ public class ExceptionResponse {
 
     public void setResourceId(Long resourceId) {
         this.resourceId = resourceId;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }
