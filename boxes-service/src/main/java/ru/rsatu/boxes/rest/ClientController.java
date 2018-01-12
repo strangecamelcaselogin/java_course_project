@@ -1,10 +1,12 @@
-package ru.rsatu.boxes;
+package ru.rsatu.boxes.rest;
 
 //import org.hibernate.Session;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.rsatu.boxes.domain.Client;
+import ru.rsatu.boxes.dao.ClientRepository;
 
 //import javax.persistence.EntityManager;
 //import javax.persistence.EntityTransaction;
@@ -39,15 +41,14 @@ public class ClientController extends ApiController {
 //        }
 
         try {
-            Client client = new Client();
-            client.email = email;
-            client.password = password;
+            Client client = new Client(email, password);
 
             clientRepository.save(client);
 
             return new ResponseEntity<>(client, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             // System.out.println(e.toString());
+            // TODO response body
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -57,4 +58,5 @@ public class ClientController extends ApiController {
         return clientRepository.findById(clientId);
     }
 
+    // TODO DELETE
 }

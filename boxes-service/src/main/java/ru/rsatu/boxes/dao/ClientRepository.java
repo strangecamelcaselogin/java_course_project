@@ -1,7 +1,8 @@
-package ru.rsatu.boxes;
+package ru.rsatu.boxes.dao;
 
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.CrudRepository;
+import ru.rsatu.boxes.domain.Client;
 
 import java.util.List;
 
