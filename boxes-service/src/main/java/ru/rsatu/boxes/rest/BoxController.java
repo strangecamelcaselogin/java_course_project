@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.rsatu.boxes.dao.BoxRepository;
 import ru.rsatu.boxes.dao.CarBrandRepository;
 import ru.rsatu.boxes.domain.Box;
+import ru.rsatu.boxes.domain.CarBrand;
+import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;
 
 @RestController
 @RequestMapping("/boxes")
-public class BoxController extends ApiController {
+public class BoxController {
     private final BoxRepository boxRepository;
     private final CarBrandRepository carBrandRepository;
 
@@ -27,7 +29,12 @@ public class BoxController extends ApiController {
 
     @RequestMapping(method = RequestMethod.POST)
     public Box postBox(@RequestParam Long carBrandId, @RequestParam Long price) {
-        Box box = new Box(carBrandRepository.findOne(carBrandId), price, false);
+        CarBrand b = carBrandRepository.findOne(carBrandId);
+        if (b == null) {
+            throw new ResourceNotFoundException(carBrandId, "Car Brand Not Found");
+        }
+
+        Box box = new Box(b, price, false);
 
         boxRepository.save(box);
 

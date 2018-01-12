@@ -1,19 +1,17 @@
 package ru.rsatu.boxes.rest;
 
-//import org.hibernate.Session;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.domain.Client;
 import ru.rsatu.boxes.dao.ClientRepository;
+import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;
 
-//import javax.persistence.EntityManager;
-//import javax.persistence.EntityTransaction;
 
 @RestController
 @RequestMapping("/clients")
-public class ClientController extends ApiController {
+public class ClientController {
 
     private final ClientRepository clientRepository;
 
@@ -28,18 +26,6 @@ public class ClientController extends ApiController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Client> postClient(@RequestParam String email, @RequestParam String password) {
-//        EntityManager em = entityManagerFactory.createEntityManager();
-//        EntityTransaction tx = null;
-//        Session session = null;
-//
-//        try {
-//            session = em.unwrap(Session.class);
-//            tx = em.getTransaction();
-//            tx.begin();
-//        } catch (Throwable e) {
-//
-//        }
-
         try {
             Client client = new Client(email, password);
 
@@ -47,15 +33,20 @@ public class ClientController extends ApiController {
 
             return new ResponseEntity<>(client, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
-            // System.out.println(e.toString());
-            // TODO response body
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);  // TODO response body
         }
     }
 
     @RequestMapping(value = "/{clientId}", method = RequestMethod.GET)
-    public Iterable<Client> getClient(@PathVariable Long clientId) {
-        return clientRepository.findById(clientId);
+    public Client getClient(@PathVariable Long clientId) {
+        Client client = clientRepository.findOne(clientId);
+
+        // TODO все это в RepositoryImpl https://stackoverflow.com/questions/11880924/how-to-add-custom-method-to-spring-data-jpa
+        if (client == null) {
+            throw new ResourceNotFoundException(clientId, "Client Not Found");
+        }
+
+        return client;
     }
 
     // TODO DELETE
