@@ -1,9 +1,6 @@
 package ru.rsatu.boxes.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
+import javax.persistence.*;
 
 /**
  * Модель клиента
@@ -11,7 +8,7 @@ import javax.persistence.GeneratedValue;
 @Entity
 public class Client {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
     @Column(unique = true, nullable = false)

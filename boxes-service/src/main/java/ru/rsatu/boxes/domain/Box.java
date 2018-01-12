@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 public class Box {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
     @ManyToOne
