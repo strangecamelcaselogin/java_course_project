@@ -1,7 +1,9 @@
 /**
  * Created by Jane on 11.01.2018.
  */
-import api from 'api';
+import api from '../api';
+export * from './boxes';
+export * from './brands';
 
 export const TEMPLATE = 'TEMPLATE';
 export const enterTemplate = (path) => {
@@ -30,7 +32,7 @@ export function getClientsReceiveSuccess(clients) {
     return {
         type: GET_CLIENTS_RECEIVE,
         payload: {
-            client
+            clients
         }
     }
 }
@@ -44,12 +46,15 @@ export function getClientsReceiveFailure(error) {
 }
 
 export const GET_CLIENTS = 'GET_CLIENTS';
-export const getClients = () => (dispatch, getState) => {
+export const getClientsInfo = () => (dispatch, getState) => {
     dispatch(getClientsRequest());
+    dispatch(getClientsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+
     return api.get('/clients').then(data => {
         //data.src = require('images/service.png');
-        dispatch(getClientsReceiveSuccess(data));
+        dispatch(getClientsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
     }).catch(function(error) {
         dispatch(getClientsReceiveFailure())
     });
 };
+

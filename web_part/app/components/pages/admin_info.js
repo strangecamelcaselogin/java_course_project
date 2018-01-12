@@ -6,21 +6,24 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
+import {getClientsInfo, getNotFreeBoxesInfo, getBrandsInfo} from '../../actions' ;
+
 
 @connect(mapStateToProps)
 export default class AdminInfo extends Component{
     constructor(props){
         super(props);
         this.state = {
-            clients: [],
-            brandsClients: [],
-            endRentsClients: [],
-            boxClient: [],
-            carBrands: ['Lada', 'Renault', 'Toyota'],
-            notFreeBox: [1,5,6],
+            //
+            selectBrands: null,
+            selectBox: null,
+            carBrandsById: [],
+            notFreeBoxesById: [],
+            dateEndRent: '11.12.13',
+            //для модального окна
             isVisible: false,
             infoForModalScreen: [],
-            dateEndRent: '11.12.13'
+
         };
 
         this.getClients = this.getClients.bind(this);
@@ -33,13 +36,16 @@ export default class AdminInfo extends Component{
         this.onChangeSelectBox = this.onChangeSelectBox.bind(this);
     }
 
+    componentWillMount(){
+        this.props.dispatch(getNotFreeBoxesInfo());
+        this.props.dispatch(getBrandsInfo());
+    }
+
     componentWillReceiveProps(){
         this.setState(function(prevState, props) {
             return {
-                clients: props.clients,
-                brandsClients: props.brandsClients,
-                endRentsClients: props.endRentsClients,
-                boxClient: props.boxClient,
+                carBrandsById: props.carBrandsById,
+                notFreeBoxesById: props.notFreeBoxesById,
             };
         });
     }
@@ -52,11 +58,15 @@ export default class AdminInfo extends Component{
     }
 
     getClients(){
-        let info = {...this.state.clients};
-        this.setState({
-            isVisible: true,
-            infoForModalScreen: info,
+        let p = this.props.dispatch(getClientsInfo());
+        p.then(() =>{
+            let info = {...this.state.clients};
+            this.setState({
+                isVisible: true,
+                infoForModalScreen: this.props.clients,
+            })
         })
+
     }
 
     getBrandsClients(){
@@ -85,7 +95,10 @@ export default class AdminInfo extends Component{
     }
 
     onChangeSelectBrands(e){
-        console.log(e.target.value)
+        console.log(e.target.value);
+        this.setState({
+            selectBrands: e.target.value
+        })
     }
 
     onChangeDateEndRent(e){
@@ -95,7 +108,10 @@ export default class AdminInfo extends Component{
     }
 
     onChangeSelectBox(e){
-        console.log(e.target.value)
+        console.log(e.target.value);
+        this.setState({
+            selectBox: e.target.value
+        })
     }
 
     //{}
@@ -112,7 +128,7 @@ export default class AdminInfo extends Component{
                     <h3>Справка о клиентах с определенной маркой автомобиля</h3>
                     <select onChange={(e) => {this.onChangeSelectBrands(e)}}>
                         {
-                            this.state.carBrands.map((brand, index) => {
+                            this.state.carBrandsById.map((brand, index) => {
                                 return (
                                     <option key={index} value={brand}>
                                         {brand}
@@ -134,7 +150,7 @@ export default class AdminInfo extends Component{
                     <h3>Справка о клиенте, занимающем бокс</h3>
                     <select onChange={(e) => {this.onChangeSelectBox(e)}}>
                         {
-                            this.state.notFreeBox.map((numberBox, index) => {
+                            this.state.notFreeBoxesById.map((numberBox, index) => {
                                 return (
                                     <option key={index} value={numberBox}>
                                         {numberBox}
@@ -157,11 +173,14 @@ export default class AdminInfo extends Component{
 }
 
 function mapStateToProps(state, ownProps) {
+    console.log(state);
     return {
         clients: state.clients.clients,
         brandsClients: state.clients.brandsClients,
         endRentsClients: state.clients.endRentsClients,
         boxClient: state.clients.boxClient,
+        carBrandsById: state.brands.brandsById,
+        notFreeBoxesById: state.boxes.notFreeBoxesById,
     }
 }
 
@@ -171,6 +190,7 @@ class ModalScreenInfo extends Component {
     }
 
     render() {
+        console.log(this.props.info);
         return (
             <div>
                 <button onClick={() => {this.props.offModal()}}>Close</button>

@@ -13,8 +13,10 @@ export default function clients(state = {
         case actions.GET_CLIENTS_RECEIVE:
             return {
                 ...state,
-                clients: action.payload
+                clients: action.payload.clients
             };
+
+
 
         default:
             return state
