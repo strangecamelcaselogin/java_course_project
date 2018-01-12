@@ -16,8 +16,11 @@ export default class AdminInfo extends Component{
             brandsClients: [],
             endRentsClients: [],
             boxClient: [],
+            carBrands: ['Lada', 'Renault', 'Toyota'],
+            notFreeBox: [1,5,6],
             isVisible: false,
             infoForModalScreen: [],
+            dateEndRent: '11.12.13'
         };
 
         this.getClients = this.getClients.bind(this);
@@ -25,6 +28,9 @@ export default class AdminInfo extends Component{
         this.getEndRentsClients = this.getEndRentsClients.bind(this);
         this.getBoxClient = this.getBoxClient.bind(this);
         this.offModal = this.offModal.bind(this);
+        this.onChangeSelectBrands = this.onChangeSelectBrands.bind(this);
+        this.onChangeDateEndRent = this.onChangeDateEndRent.bind(this);
+        this.onChangeSelectBox = this.onChangeSelectBox.bind(this);
     }
 
     componentWillReceiveProps(){
@@ -78,6 +84,20 @@ export default class AdminInfo extends Component{
         })
     }
 
+    onChangeSelectBrands(e){
+        console.log(e.target.value)
+    }
+
+    onChangeDateEndRent(e){
+        this.setState({
+            dateEndRent: e.target.value
+        })
+    }
+
+    onChangeSelectBox(e){
+        console.log(e.target.value)
+    }
+
     //{}
     render(){
         console.log('render', this.state);
@@ -90,16 +110,39 @@ export default class AdminInfo extends Component{
                 <br/>
                 <div>
                     <h3>Справка о клиентах с определенной маркой автомобиля</h3>
+                    <select onChange={(e) => {this.onChangeSelectBrands(e)}}>
+                        {
+                            this.state.carBrands.map((brand, index) => {
+                                return (
+                                    <option key={index} value={brand}>
+                                        {brand}
+                                    </option>
+                                )
+                            })
+                        }
+                    </select>
                     <button onClick={this.getBrandsClients}>Получить список клиентов с определенной маркой автомобиля</button>
                 </div>
                 <br/>
                 <div>
                     <h3>Справка о клиентах, у который срок аренды истекает к указанной дате</h3>
+                    <input onChange={(e)=>{this.onChangeDateEndRent(e)}} value={this.state.dateEndRent} />
                     <button onClick={this.getEndRentsClients}>Получить список клиентов, у который срок аренды истекает к указанной дате</button>
                 </div>
                 <br/>
                 <div>
                     <h3>Справка о клиенте, занимающем бокс</h3>
+                    <select onChange={(e) => {this.onChangeSelectBox(e)}}>
+                        {
+                            this.state.notFreeBox.map((numberBox, index) => {
+                                return (
+                                    <option key={index} value={numberBox}>
+                                        {numberBox}
+                                    </option>
+                                )
+                            })
+                        }
+                    </select>
                     <button onClick={this.getBoxClient}>Узнать о клиенте, занимающем бокс</button>
                 </div>
 
