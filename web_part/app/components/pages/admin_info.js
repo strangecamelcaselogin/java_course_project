@@ -41,15 +41,6 @@ export default class AdminInfo extends Component{
         this.props.dispatch(getBrandsInfo());
     }
 
-    componentWillReceiveProps(){
-        this.setState(function(prevState, props) {
-            return {
-                carBrandsById: props.carBrandsById,
-                notFreeBoxesById: props.notFreeBoxesById,
-            };
-        });
-    }
-
     offModal(){
         this.setState({
             isVisible: false,
@@ -60,7 +51,6 @@ export default class AdminInfo extends Component{
     getClients(){
         let p = this.props.dispatch(getClientsInfo());
         p.then(() =>{
-            let info = {...this.state.clients};
             this.setState({
                 isVisible: true,
                 infoForModalScreen: this.props.clients,
@@ -70,27 +60,24 @@ export default class AdminInfo extends Component{
     }
 
     getBrandsClients(){
-        let info = {...this.state.brandsClients};
         this.setState({
             isVisible: true,
-            infoForModalScreen: info,
+            infoForModalScreen: this.props.brandsClients,
         })
     }
 
     getEndRentsClients(){
-        let info = {...this.state.endRentsClients};
         this.setState({
             isVisible: true,
-            infoForModalScreen: info,
+            infoForModalScreen: this.props.endRentsClients,
         })
 
     }
 
     getBoxClient(){
-        let info = {...this.state.boxClient};
         this.setState({
             isVisible: true,
-            infoForModalScreen: info,
+            infoForModalScreen: this.props.boxClient,
         })
     }
 
@@ -128,7 +115,7 @@ export default class AdminInfo extends Component{
                     <h3>Справка о клиентах с определенной маркой автомобиля</h3>
                     <select onChange={(e) => {this.onChangeSelectBrands(e)}}>
                         {
-                            this.state.carBrandsById.map((brand, index) => {
+                            this.props.carBrandsById.map((brand, index) => {
                                 return (
                                     <option key={index} value={brand}>
                                         {brand}
@@ -150,7 +137,7 @@ export default class AdminInfo extends Component{
                     <h3>Справка о клиенте, занимающем бокс</h3>
                     <select onChange={(e) => {this.onChangeSelectBox(e)}}>
                         {
-                            this.state.notFreeBoxesById.map((numberBox, index) => {
+                            this.props.notFreeBoxesById.map((numberBox, index) => {
                                 return (
                                     <option key={index} value={numberBox}>
                                         {numberBox}

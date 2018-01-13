@@ -16,11 +16,20 @@ export const enterTemplate = (path) => {
     }
 };
 
-
-export const GET_CLIENTS_REQUEST = 'GET_CLIENTS_REQUEST';
-export const getClientsRequest = client => {
+export const CLIENTS_RECEIVE_FAIL = 'CLIENTS_RECEIVE_FAIL';
+export function clientsReceiveFailure(error) {
     return {
-        type: GET_CLIENTS_REQUEST,
+        type: CLIENTS_RECEIVE_FAIL,
+        error: true,
+        payload: error
+    }
+}
+
+
+export const CLIENTS_REQUEST = 'CLIENTS_REQUEST';
+export const clientsRequest = client => {
+    return {
+        type: CLIENTS_REQUEST,
         payload: {
             client
         }
@@ -36,25 +45,218 @@ export function getClientsReceiveSuccess(clients) {
         }
     }
 }
-export const GET_CLIENTS_RECEIVE_FAIL = 'GET_CLIENTS_RECEIVE_FAIL';
-export function getClientsReceiveFailure(error) {
-    return {
-        type: GET_CLIENTS_RECEIVE_FAIL,
-        error: true,
-        payload: error
-    }
-}
 
 export const GET_CLIENTS = 'GET_CLIENTS';
 export const getClientsInfo = () => (dispatch, getState) => {
-    dispatch(getClientsRequest());
+    dispatch(clientsRequest());
     dispatch(getClientsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
 
     return api.get('/clients').then(data => {
         //data.src = require('images/service.png');
         dispatch(getClientsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
     }).catch(function(error) {
-        dispatch(getClientsReceiveFailure())
+        dispatch(clientsReceiveFailure())
     });
 };
+
+
+//get clients with brand
+export const GET_CLIENTS_WITH_BRAND_RECEIVE = 'GET_CLIENTS_WITH_BRAND_RECEIVE';
+export function getClientsWithBrandReceiveSuccess(clients) {
+    return {
+        type: GET_CLIENTS_WITH_BRAND_RECEIVE,
+        payload: {
+            clients
+        }
+    }
+}
+
+export const GET_CLIENTS_WITH_BRAND = 'GET_CLIENTS_WITH_BRAND';
+export const getClientsWithBrand = () => (dispatch, getState) => {
+    dispatch(clientsRequest());
+    dispatch(getClientsWithBrandReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+
+    return api.get('/clients').then(data => {
+        //data.src = require('images/service.png');
+        dispatch(getClientsWithBrandReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+    }).catch(function(error) {
+        dispatch(clientsReceiveFailure())
+    });
+};
+
+
+//get clients with end rent date
+
+export const GET_CLIENTS_WITH_END_RENT_RECEIVE = 'GET_CLIENTS_WITH_END_RENT_RECEIVE';
+export function getClientsWithEndRentReceiveSuccess(clients) {
+    return {
+        type: GET_CLIENTS_WITH_END_RENT_RECEIVE,
+        payload: {
+            clients
+        }
+    }
+}
+
+export const GET_CLIENTS_WITH_END_RENT = 'GET_CLIENTS_WITH_END_RENT';
+export const getClientsWithEndRent = () => (dispatch, getState) => {
+    dispatch(clientsRequest());
+    dispatch(getClientsWithBrandReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+
+    return api.get('/clients').then(data => {
+        //data.src = require('images/service.png');
+        dispatch(getClientsWithBrandReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+    }).catch(function(error) {
+        dispatch(clientsReceiveFailure())
+    });
+};
+
+
+
+// CLIENT //
+
+export const GET_CLIENT_RECEIVE = 'GET_CLIENT_RECEIVE';
+export function getClientReceiveSuccess(client) {
+    return {
+        type: GET_CLIENT_RECEIVE,
+        payload: {
+            client
+        }
+    }
+}
+
+export const GET_CLIENT = 'GET_CLIENT';
+export const getClient = () => (dispatch, getState) => {
+    dispatch(clientsRequest());
+    dispatch(getClientReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+
+    return api.get('/clients').then(data => {
+        //data.src = require('images/service.png');
+        dispatch(getClientReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+    }).catch(function(error) {
+        dispatch(clientsReceiveFailure())
+    });
+};
+
+//get client with box
+export const GET_CLIENT_WITH_BOX_RECEIVE = 'GET_CLIENT_WITH_BOX_RECEIVE';
+export function getClientWithBoxReceiveSuccess(client) {
+    return {
+        type: GET_CLIENT_WITH_BOX_RECEIVE,
+        payload: {
+            client
+        }
+    }
+}
+
+export const GET_CLIENT_WITH_BOX = 'GET_CLIENT_WITH_BOX';
+export const getClientWithBox = () => (dispatch, getState) => {
+    dispatch(clientsRequest());
+    dispatch(getClientWithBoxReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+
+    return api.get('/clients').then(data => {
+        //data.src = require('images/service.png');
+        dispatch(getClientWithBoxReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+    }).catch(function(error) {
+        dispatch(clientsReceiveFailure())
+    });
+};
+
+//get client car list
+export const GET_CLIENT_CARS_RECEIVE = 'GET_CLIENT_CARS_RECEIVE';
+export function getClientCarsReceiveSuccess(cars) {
+    return {
+        type: GET_CLIENT_CARS_RECEIVE,
+        payload: {
+            cars
+        }
+    }
+}
+
+export const GET_CLIENT_CARS = 'GET_CLIENT_CARS';
+export const getClientCars = () => (dispatch, getState) => {
+    dispatch(clientsRequest());
+    dispatch(getClientCarsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+
+    return api.get('/clients').then(data => {
+        //data.src = require('images/service.png');
+        dispatch(getClientCarsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+    }).catch(function(error) {
+        dispatch(clientsReceiveFailure())
+    });
+};
+
+//get client tickets
+export const GET_CLIENT_TICKETS_RECEIVE = 'GET_CLIENT_TICKETS_RECEIVE';
+export function getClientTicketsReceiveSuccess(tickets) {
+    return {
+        type: GET_CLIENT_TICKETS_RECEIVE,
+        payload: {
+            tickets
+        }
+    }
+}
+
+export const GET_CLIENT_TICKETS = 'GET_CLIENT_TICKETS';
+export const getClientTickets = () => (dispatch, getState) => {
+    dispatch(clientsRequest());
+    dispatch(getClientTicketsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+
+    return api.get('/clients').then(data => {
+        //data.src = require('images/service.png');
+        dispatch(getClientTicketsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+    }).catch(function(error) {
+        dispatch(clientsReceiveFailure())
+    });
+};
+
+
+//add client car
+export const ADD_CLIENT_CAR_RECEIVE = 'ADD_CLIENT_CAR_RECEIVE';
+export function addClientCarReceiveSuccess(car) {
+    return {
+        type: ADD_CLIENT_CAR_RECEIVE,
+        payload: {
+            car
+        }
+    }
+}
+
+export const ADD_CLIENT_CARS = 'ADD_CLIENT_CARS';
+export const addClientCar = () => (dispatch, getState) => {
+    dispatch(clientsRequest());
+    dispatch(addClientCarReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+
+    return api.get('/clients').then(data => {
+        //data.src = require('images/service.png');
+        dispatch(addClientCarReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+    }).catch(function(error) {
+        dispatch(clientsReceiveFailure())
+    });
+};
+
+
+//delete client car
+export const DELETE_CLIENT_CAR_RECEIVE = 'DELETE_CLIENT_CAR_RECEIVE';
+export function deleteClientCarReceiveSuccess(car) {
+    return {
+        type: ADD_CLIENT_CAR_RECEIVE,
+        payload: {
+            car
+        }
+    }
+}
+
+export const DELETE_CLIENT_CARS = 'DELETE_CLIENT_CARS';
+export const deleteClientCar = () => (dispatch, getState) => {
+    dispatch(clientsRequest());
+    dispatch(deleteClientCarReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+
+    return api.get('/clients').then(data => {
+        //data.src = require('images/service.png');
+        dispatch(deleteClientCarReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+    }).catch(function(error) {
+        dispatch(clientsReceiveFailure())
+    });
+};
+
 
