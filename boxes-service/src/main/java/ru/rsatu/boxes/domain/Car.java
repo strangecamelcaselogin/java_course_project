@@ -3,7 +3,7 @@ package ru.rsatu.boxes.domain;
 import javax.persistence.*;
 
 @Entity
-public class Car {
+public class Car extends AbstractEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;

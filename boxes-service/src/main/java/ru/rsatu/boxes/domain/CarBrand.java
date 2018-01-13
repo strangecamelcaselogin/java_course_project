@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 
 @Entity
-public class CarBrand {
+public class CarBrand extends AbstractEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
