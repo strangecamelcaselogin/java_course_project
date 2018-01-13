@@ -18,6 +18,9 @@ public class CarBrandController {
         return carBrandRepository.findAll();
     }
 
+    /**
+     TODO только админ должен иметь доступ
+     */
     @RequestMapping(method = RequestMethod.POST)
     public CarBrand postCarBrand(@RequestParam String name) {
         CarBrand carBrand = new CarBrand(name);
@@ -27,5 +30,8 @@ public class CarBrandController {
         return carBrand;
     }
 
+    /**
+     TODO только админ должен иметь доступ
+     */
     // TODO DELETE
 }

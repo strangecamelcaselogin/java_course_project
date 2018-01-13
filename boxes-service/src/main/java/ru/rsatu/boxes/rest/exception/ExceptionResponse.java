@@ -1,5 +1,9 @@
 package ru.rsatu.boxes.rest.exception;
 
+
+/**
+ * Класс, который мы сериализуем и отправим в ответ запрос, который кинул исключение
+ */
 public class ExceptionResponse {
     private String error;
     private Integer status;

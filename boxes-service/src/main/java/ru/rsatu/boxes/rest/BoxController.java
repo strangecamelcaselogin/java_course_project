@@ -27,6 +27,9 @@ public class BoxController {
         return boxRepository.findAll();
     }
 
+    /**
+     TODO только админ должен иметь доступ
+     */
     @RequestMapping(method = RequestMethod.POST)
     public Box postBox(@RequestParam Long carBrandId, @RequestParam Long price) {
         CarBrand b = carBrandRepository.findOne(carBrandId);
@@ -41,6 +44,9 @@ public class BoxController {
         return box;
     }
 
+    /**
+     TODO только админ должен иметь доступ
+     */
     // TODO DELETE
 
 }

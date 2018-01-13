@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/**
+ * Перехватываем исключения из контроллеров и посылаем в ответ ExceptionResponse
+ */
 @ControllerAdvice
 public class ExceptionHandlingController {
 

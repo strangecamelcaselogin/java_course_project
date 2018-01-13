@@ -27,6 +27,7 @@ public class CarController {
 
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<Car> getCars() {
+        // TODO возвращать машины только того пользователя, который спрашивает
         return carRepository.findAll();
     }
 
