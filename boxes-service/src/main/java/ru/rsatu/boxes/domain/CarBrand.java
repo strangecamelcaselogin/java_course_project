@@ -18,15 +18,15 @@ public class CarBrand extends AbstractEntity{
 
     protected CarBrand(){}
 
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
     }
 }
