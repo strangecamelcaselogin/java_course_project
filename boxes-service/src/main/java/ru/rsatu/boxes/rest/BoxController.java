@@ -1,13 +1,15 @@
 package ru.rsatu.boxes.rest;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.BoxRepository;
 import ru.rsatu.boxes.dao.CarBrandRepository;
 import ru.rsatu.boxes.domain.Box;
 import ru.rsatu.boxes.domain.CarBrand;
+import ru.rsatu.boxes.dto.BoxDTO;
+import ru.rsatu.boxes.helpers.DomainToDTOMapper;
 import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;
 
 @RestController
@@ -16,6 +18,8 @@ public class BoxController {
     private final BoxRepository boxRepository;
     private final CarBrandRepository carBrandRepository;
 
+    private DomainToDTOMapper<BoxDTO> boxDTOMapper = new DomainToDTOMapper<>(BoxDTO.class);
+
 
     public BoxController(BoxRepository boxRepository, CarBrandRepository carBrandRepository) {
         this.boxRepository = boxRepository;
@@ -23,15 +27,21 @@ public class BoxController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public Iterable<Box> getBoxes() {
-        return boxRepository.findAll();
+    public Iterable<BoxDTO> getBoxes() {
+        return boxDTOMapper.mapMany(boxRepository.findAll());
+    }
+
+    @RequestMapping(value="/{boxId}", method = RequestMethod.GET)
+    public BoxDTO getBox(@PathVariable Long boxId) {
+        //TODO проверить существование бокса
+        return boxDTOMapper.mapOne(boxRepository.findOne(boxId));
     }
 
     /**
      TODO только админ должен иметь доступ
      */
     @RequestMapping(method = RequestMethod.POST)
-    public Box postBox(@RequestParam Long carBrandId, @RequestParam Long price) {
+    public BoxDTO postBox(@RequestParam Long carBrandId, @RequestParam Long price) {
         CarBrand b = carBrandRepository.findOne(carBrandId);
         if (b == null) {
             throw new ResourceNotFoundException(carBrandId, "Car Brand Not Found");
@@ -41,12 +51,19 @@ public class BoxController {
 
         boxRepository.save(box);
 
-        return box;
+        return boxDTOMapper.mapOne(box);
     }
 
     /**
      TODO только админ должен иметь доступ
      */
-    // TODO DELETE
-
+    @RequestMapping(value="/{boxId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Boolean> deleteBox(@PathVariable Long boxId) {
+        try {
+            boxRepository.delete(boxId);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch(EmptyResultDataAccessException e){
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
 }
