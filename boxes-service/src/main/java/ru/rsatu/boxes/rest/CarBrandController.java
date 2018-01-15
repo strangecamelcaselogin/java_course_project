@@ -14,7 +14,7 @@ import ru.rsatu.boxes.helpers.DomainToDTOMapper;
 @RequestMapping("/car_brands")
 public class CarBrandController {
     private final CarBrandRepository carBrandRepository;
-    private DomainToDTOMapper<CarBrandDTO> mapper = new DomainToDTOMapper<>(CarBrandDTO.class);
+    private DomainToDTOMapper<CarBrandDTO> carBrandDTOmapper = new DomainToDTOMapper<>(CarBrandDTO.class);
 
     public CarBrandController(CarBrandRepository carBrandRepository) {
         this.carBrandRepository = carBrandRepository;
@@ -22,7 +22,7 @@ public class CarBrandController {
 
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<CarBrandDTO> getCarBrands() {
-        return mapper.mapMany(carBrandRepository.findAll());
+        return carBrandDTOmapper.mapMany(carBrandRepository.findAll());
     }
 
     /**
@@ -38,7 +38,7 @@ public class CarBrandController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);  // TODO response body
         }
 
-        return new ResponseEntity<>(mapper.mapOne(carBrand), HttpStatus.OK);
+        return new ResponseEntity<>(carBrandDTOmapper.mapOne(carBrand), HttpStatus.OK);
     }
 
     /**
@@ -48,9 +48,11 @@ public class CarBrandController {
     public ResponseEntity<Boolean> deleteCarBrand(@RequestParam Long id) {
         try {
             carBrandRepository.delete(id);
-            return new ResponseEntity<>(true, HttpStatus.OK);
+
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
+
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }
