@@ -68,11 +68,10 @@ export function addBrandReceiveFailure(error) {
 }
 
 export const ADD_BRAND = 'ADD_BRAND';
-export const addBrand = () => (dispatch, getState) => {
+export const addBrand = (car_brand) => (dispatch, getState) => {
     dispatch(addBrandRequest());
-    dispatch(addBrandReceiveSuccess('Kia'));
     //parameters: name (query)
-    return api.post('/car_brands?name=Kia').then(data => {
+    return api.post(`/car_brands?name=${car_brand}`).then(data => {
         //data.src = require('images/service.png');
         dispatch(addBrandReceiveSuccess(data));
     }).catch(function(error) {

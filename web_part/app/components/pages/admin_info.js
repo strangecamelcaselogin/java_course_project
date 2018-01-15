@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import {getClientsInfo, getNotFreeBoxesInfo, getBrandsInfo, getBoxesInfo} from '../../actions' ;
+import {getClientsInfo, getNotFreeBoxesInfo, getBrandsInfo, getBoxesInfo, addBrand} from '../../actions' ;
 
 
 @connect(mapStateToProps)
@@ -60,6 +60,7 @@ export default class AdminInfo extends Component{
     }
 
     getBrandsClients(){
+        this.props.dispatch(addBrand("888"));
         this.setState({
             isVisible: true,
             infoForModalScreen: this.props.brandsClients,
@@ -148,12 +149,6 @@ export default class AdminInfo extends Component{
                     </select>
                     <button onClick={this.getBoxClient}>Узнать о клиенте, занимающем бокс</button>
                 </div>
-
-                {this.state.isVisible &&
-                <ModalScreenInfo
-                    info={this.state.infoForModalScreen}
-                    offModal={this.offModal}
-                />}
             </div>
         )
     }

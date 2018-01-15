@@ -2,6 +2,7 @@
  * Created by Jane on 12.01.2018.
  */
 import * as actions from '../actions';
+import _ from 'lodash';
 
 export default function brands(state = {
     brandsById: [],
@@ -16,7 +17,7 @@ export default function brands(state = {
             };
 
         case actions.ADD_BRAND_RECEIVE: {
-            let oldBrands = state.brandsById;
+            let oldBrands = _.cloneDeep(state.brandsById);
             oldBrands.push(action.payload);
             return {
                 ...state,
@@ -32,7 +33,7 @@ export default function brands(state = {
         }
 
         case actions.DELETE_BRAND_RECEIVE: {
-            let oldBrands = state.brandsById;
+            let oldBrands =  _.cloneDeep(state.brandsById);
             let deleteIndex = oldBrands.indexOf(action.payload);
             oldBrands.splice(deleteIndex, 1);
             return {

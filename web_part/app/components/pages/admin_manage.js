@@ -3,14 +3,16 @@
  */
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
+import { connect } from 'react-redux';
 import {getClientsInfo, getBrandsInfo, addBrand, deleteBrand} from '../../actions' ;
+
 
 @connect(mapStateToProps)
 export default class AdminManage extends Component{
     constructor(props){
         super(props);
+
         this.state = {
             carBrandsById: [],
             selectCarBrand: null,
@@ -34,17 +36,8 @@ export default class AdminManage extends Component{
         this.deleteCarBrand = this.deleteCarBrand.bind(this);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         this.props.dispatch(getBrandsInfo())
-    }
-
-    componentWillReceiveProps(){
-        this.setState(function(prevState, props) {
-            return {
-                carBrandsById: props.carBrandsById,
-                notFreeBoxesById: props.notFreeBoxesById,
-            };
-        });
     }
 
     onChangeSelectCarBrands(value){
@@ -96,7 +89,7 @@ export default class AdminManage extends Component{
     }
 
     addCarBrand() {
-        this.props.dispatch(addBrand())
+        this.props.dispatch(addBrand(this.state.addCarBrand));
     }
 
     deleteCarBrand(){
@@ -104,7 +97,7 @@ export default class AdminManage extends Component{
     }
     //{}
     render(){
-        console.log('render', this.props);
+        console.log('render', this.props, this.state);
         return(
             <div>
                 <h1>
