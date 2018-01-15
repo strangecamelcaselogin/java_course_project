@@ -1,0 +1,12 @@
+.header {
+    font-size: large;
+    display: flex;
+    flex-direction: row;
+    background-color: #22486d;
+}
+
+.header a {
+    color: #eeeeee;
+    padding-right: 2em;
+    text-decoration: none;
+}

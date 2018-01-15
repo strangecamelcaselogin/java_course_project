@@ -100,12 +100,12 @@ export default class AdminManage extends Component{
         console.log('render', this.props, this.state);
         return(
             <div>
-                <h1>
+                <h2>
                     Боксы
-                </h1>
+                </h2>
                 <div>
                     <div>
-                        <h2>Прием в эксплуатацию нового бокса</h2>
+                        <h3>Прием в эксплуатацию нового бокса</h3>
                         <label>Название марки</label>
                         <select onChange={(e) => {this.onChangeSelectCarBrands(e.target.value)}}>
                             {
@@ -123,31 +123,31 @@ export default class AdminManage extends Component{
                         <button onClick={this.addNewBox}>Принять новый бокс</button>
                     </div>
                     <div>
-                        <h2>Закрытие бокса</h2>
+                        <h3>Закрытие бокса</h3>
                         <label>Номер бокса</label>
                         <input value={this.state.closeNumberBox} onChange={(e) => {this.onChangeCloseNumberBox(e.target.value)}}/>
                         <button onClick={this.closeBox}>Закрыть бокс</button>
                     </div>
                     <div>
-                        <h2>Увеличить стоимость аренды</h2>
+                        <h3>Увеличить стоимость аренды</h3>
                         <label>Во сколько раз (для всех боксов разом)</label>
                         <input value={this.state.incCost} onChange={(e) => {this.onChangeIncCost(e.target.value)}}/>
                         <button onClick={this.incCostBoxs}>Увеличить стоимость боксов</button>
                     </div>
                 </div>
 
-                <h1>
+                <h2>
                     Марки
-                </h1>
+                </h2>
                 <div>
                     <div>
-                        <h2>Добавить марку в перечень</h2>
+                        <h3>Добавить марку в перечень</h3>
                         <label>Название марки</label>
                         <input value={this.state.addCarBrand} onChange={(e) => {this.onChangeAddCarBrand(e.target.value)}}/>
                         <button onClick={this.addCarBrand}>Добавить марку</button>
                     </div>
                     <div>
-                        <h2>Удалить марку</h2>
+                        <h3>Удалить марку</h3>
                         <label>Название марки</label>
                         <select onChange={(e) => {this.onChangeDeleteCarBrand(e.target.value)}}>
                             {
