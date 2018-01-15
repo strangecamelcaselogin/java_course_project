@@ -107,6 +107,7 @@ export default class AdminInfo extends Component{
         console.log('render', this.state);
         return(
             <div>
+                <h2>Справки</h2>
                 <div>
                     <h3>Справка о клиентах</h3>
                     <button onClick={this.getClients}>Получить список клиентов</button>

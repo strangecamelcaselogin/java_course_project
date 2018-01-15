@@ -14,23 +14,26 @@ export default class MainPage extends Component{
         super(props);
         this.state = {}
     }
+
     componentWillMount() {
         this.props.dispatch(getBrandsInfo())
     }
-    //{}
+
     render(){
-        console.log('render', this.state);
         return(
             <div>
-                {
-                    this.props.carBrandsById.map((brand) => {
-                        return(
-                            <div>
-                                {brand.name}
-                            </div>
-                        )
-                    })
-                }
+                <p>
+                    <div>Наш гараж есть прибежище следующих сортов колесного транспорта</div>
+                    {
+                        this.props.carBrandsById.map((brand) => {
+                            return(
+                                <h3>
+                                    {brand.name}
+                                </h3>
+                            )
+                        })
+                    }
+                </p>
             </div>
         )
     }
