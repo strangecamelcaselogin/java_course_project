@@ -5,7 +5,8 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import {getClientsInfo, getBrandsInfo, addBrand, deleteBrand} from '../../actions' ;
+import {getClientsInfo, getBrandsInfo, addBrand, deleteBrand, getBoxesInfo,
+            addBox, deleteBox, incPriceBox} from '../../actions' ;
 
 
 @connect(mapStateToProps)
@@ -16,28 +17,37 @@ export default class AdminManage extends Component{
         this.state = {
             carBrandsById: [],
             selectCarBrand: null,
-            costBox: null,
+            priceBox: null,
             closeNumberBox: null,
-            incCost: null,
+            incPriceNumberBox: null,
+            incPrice: null,
             addCarBrand: null,
             deleteCarBrand: null,
         };
 
         this.onChangeSelectCarBrands = this.onChangeSelectCarBrands.bind(this);
-        this.onChangeCostBox = this.onChangeCostBox.bind(this);
-        this.onChangeCloseNumberBox = this.onChangeCloseNumberBox.bind(this);
-        this.onChangeIncCost = this.onChangeIncCost.bind(this);
+        this.onSelectIncPriceNumberBox = this.onSelectIncPriceNumberBox.bind(this);
+        this.onChangePriceBox = this.onChangePriceBox.bind(this);
+        this.onSelectCloseNumberBox = this.onSelectCloseNumberBox.bind(this);
+        this.onChangeIncPrice = this.onChangeIncPrice.bind(this);
         this.onChangeAddCarBrand = this.onChangeAddCarBrand.bind(this);
 
         this.addNewBox = this.addNewBox.bind(this);
         this.closeBox = this.closeBox.bind(this);
-        this.incCostBoxs = this.incCostBoxs.bind(this);
+        this.incPriceBox = this.incPriceBox.bind(this);
         this.addCarBrand = this.addCarBrand.bind(this);
         this.deleteCarBrand = this.deleteCarBrand.bind(this);
     }
 
     componentDidMount(){
-        this.props.dispatch(getBrandsInfo())
+        this.props.dispatch(getBrandsInfo());
+        this.props.dispatch(getBoxesInfo());
+    }
+
+    onSelectIncPriceNumberBox(value) {
+        this.setState({
+            incPriceNumberBox: value
+        })
     }
 
     onChangeSelectCarBrands(value){
@@ -46,21 +56,21 @@ export default class AdminManage extends Component{
        })
     }
 
-    onChangeCostBox(value){
+    onChangePriceBox(value){
         this.setState({
-            costBox: value
+            priceBox: value
         })
     }
 
-    onChangeCloseNumberBox(value){
+    onSelectCloseNumberBox(value){
         this.setState({
             closeNumberBox: value
         })
     }
 
-    onChangeIncCost(value){
+    onChangeIncPrice(value){
         this.setState({
-            incCost: value
+            incPrice: value
         })
     }
 
@@ -77,15 +87,15 @@ export default class AdminManage extends Component{
     }
 
     addNewBox(){
-
+        this.props.dispatch(addBox(this.state.selectCarBrand, this.state.priceBox))
     }
 
     closeBox() {
-
+        this.props.dispatch(deleteBox(this.state.closeNumberBox))
     }
 
-    incCostBoxs() {
-
+    incPriceBox() {
+        this.props.dispatch(incPriceBox(this.state.incPriceNumberBox, this.state.incPrice))
     }
 
     addCarBrand() {
@@ -93,7 +103,7 @@ export default class AdminManage extends Component{
     }
 
     deleteCarBrand(){
-        this.props.dispatch(deleteBrand())
+        this.props.dispatch(deleteBrand(this.state.deleteCarBrand))
     }
     //{}
     render(){
@@ -119,20 +129,41 @@ export default class AdminManage extends Component{
                             }
                         </select>
                         <label>Цена</label>
-                        <input value={this.state.costBox} onChange={(e) => {this.onChangeCostBox(e.target.value)}}/>
+                        <input value={this.state.priceBox} onChange={(e) => {this.onChangePriceBox(e.target.value)}}/>
                         <button onClick={this.addNewBox}>Принять новый бокс</button>
                     </div>
                     <div>
                         <h3>Закрытие бокса</h3>
                         <label>Номер бокса</label>
-                        <input value={this.state.closeNumberBox} onChange={(e) => {this.onChangeCloseNumberBox(e.target.value)}}/>
+                        <select onChange={(e) => {this.onSelectCloseNumberBox(e.target.value)}}>
+                            {
+                                this.props.boxesById.map((box, index)=>{
+                                    return (
+                                        <option value={box.id} key={index}>
+                                            {box.id}
+                                        </option>
+                                    )
+                                })
+                            }
+                        </select>
                         <button onClick={this.closeBox}>Закрыть бокс</button>
                     </div>
                     <div>
                         <h3>Увеличить стоимость аренды</h3>
-                        <label>Во сколько раз (для всех боксов разом)</label>
-                        <input value={this.state.incCost} onChange={(e) => {this.onChangeIncCost(e.target.value)}}/>
-                        <button onClick={this.incCostBoxs}>Увеличить стоимость боксов</button>
+                        <select onChange={(e) => {this.onSelectIncPriceNumberBox(e.target.value)}}>
+                            {
+                                this.props.boxesById.map((box, index)=>{
+                                    return (
+                                        <option value={box.id} key={index}>
+                                            {box.id}
+                                        </option>
+                                    )
+                                })
+                            }
+                        </select>
+                        <label>Во сколько раз</label>
+                        <input value={this.state.incPrice} onChange={(e) => {this.onChangeIncPrice(e.target.value)}}/>
+                        <button onClick={this.incPriceBox}>Увеличить стоимость боксов</button>
                     </div>
                 </div>
 
@@ -173,5 +204,6 @@ function mapStateToProps(state, ownProps) {
     return {
         carBrandsById: state.brands.brandsById,
         notFreeBoxesById: state.boxes.notFreeBoxesById,
+        boxesById: state.boxes.boxesById
     }
 }

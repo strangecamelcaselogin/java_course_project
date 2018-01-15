@@ -69,7 +69,6 @@ export function getNotFreeBoxesReceiveFailure(error) {
 export const GET_NOT_FREE_BOXES = 'GET_NOT_FREE_BOXES';
 export const getNotFreeBoxesInfo = () => (dispatch, getState) => {
     dispatch(getNotFreeBoxesRequest());
-    dispatch(getNotFreeBoxesReceiveSuccess([1,5,6]));
 
     return api.get('/clients').then(data => {
         //data.src = require('images/service.png');
@@ -106,13 +105,10 @@ export function addBoxReceiveFailure(error) {
 }
 
 export const ADD_BOX = 'ADD_BOX';
-export const addBox = () => (dispatch, getState) => {
+export const addBox = (carBrandId, price) => (dispatch, getState) => {
     dispatch(addBoxRequest());
-    dispatch(addBoxReceiveSuccess(10));
-
-    return api.get('/clients').then(data => {
-        //data.src = require('images/service.png');
-        dispatch(addBoxReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+    return api.post(`/boxes?carBrandId=${carBrandId}&price=${price}`).then(data => {
+        dispatch(addBoxReceiveSuccess(data));
     }).catch(function(error) {
         dispatch(addBoxReceiveFailure())
     });
@@ -143,14 +139,50 @@ export function deleteBoxReceiveFailure(error) {
 }
 
 export const DELETE_BOX = 'DELETE_BOX';
-export const deleteBox = () => (dispatch, getState) => {
+export const deleteBox = (boxId) => (dispatch, getState) => {
     dispatch(deleteBoxRequest());
-    dispatch(deleteBoxReceiveSuccess(5));
 
-    return api.get('/clients').then(data => {
+    return api.delete(`/boxes/${boxId}`).then(data => {
         //data.src = require('images/service.png');
-        dispatch(deleteBoxReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+        dispatch(deleteBoxReceiveSuccess(boxId));
     }).catch(function(error) {
         dispatch(deleteBoxReceiveFailure())
+    });
+};
+
+//inc price box
+//delete boxes
+export const INC_PRICE_BOX_REQUEST = 'INC_PRICE_BOX_REQUEST';
+export const incPriceBoxRequest = () => {
+    return {
+        type: INC_PRICE_BOX_REQUEST,
+    }
+};
+
+export const INC_PRICE_BOX_RECEIVE = 'INC_PRICE_BOX_RECEIVE';
+export function incPriceBoxReceiveSuccess(box_id) {
+    return {
+        type: INC_PRICE_BOX_RECEIVE,
+        payload: box_id
+    }
+}
+export const INC_PRICE_BOX_RECEIVE_FAIL = 'INC_PRICE_BOX_RECEIVE_FAIL';
+export function incPriceBoxReceiveFailure(error) {
+    return {
+        type: INC_PRICE_BOX_RECEIVE_FAIL,
+        error: true,
+        payload: error
+    }
+}
+
+export const INC_PRICE_BOX = 'INC_PRICE_BOX';
+export const incPriceBox = (boxId, inc_price) => (dispatch, getState) => {
+    dispatch(incPriceBoxRequest());
+
+    return api.patch(`/boxes/${boxId}?price=${inc_price}`).then(data => {
+        //data.src = require('images/service.png');
+        dispatch(incPriceBoxReceiveSuccess(boxId, inc_price));
+    }).catch(function(error) {
+        dispatch(incPriceBoxReceiveFailure())
     });
 };

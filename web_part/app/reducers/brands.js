@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 export default function brands(state = {
     brandsById: [],
+
     error: '',
 }, action) {
     switch (action.type) {
@@ -34,15 +35,20 @@ export default function brands(state = {
 
         case actions.DELETE_BRAND_RECEIVE: {
             let oldBrands =  _.cloneDeep(state.brandsById);
-            let deleteIndex = oldBrands.indexOf(action.payload);
-            oldBrands.splice(deleteIndex, 1);
+            let index = null;
+            for (let i = 0; i < oldBrands.length; i++){
+                let brand = oldBrands[i];
+                if (brand.id === action.payload){
+                    index = i;
+                    break;
+                }
+            }
+            oldBrands.splice(index, 1);
             return {
                 ...state,
                 brandsById: oldBrands
             };
         }
-
-
 
         default:
             return state

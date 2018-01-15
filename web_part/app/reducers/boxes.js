@@ -2,6 +2,7 @@
  * Created by Jane on 12.01.2018.
  */
 import * as actions from '../actions';
+import _ from 'lodash';
 
 export default function boxes(state = {
     boxesById: [],
@@ -21,8 +22,8 @@ export default function boxes(state = {
             };
 
         case actions.ADD_BOX_RECEIVE: {
-            let oldBox = state.boxesById;
-            oldBox.push(action.payload);
+            let oldBox = _.cloneDeep(state.boxesById);
+            oldBox.push(action.payload.boxes);
             return {
                 ...state,
                 boxesById: oldBox
@@ -30,12 +31,19 @@ export default function boxes(state = {
         }
 
         case actions.DELETE_BOX_RECEIVE: {
-            let oldBox = state.boxesById;
-            let deleteIndex = oldBox.indexOf(action.payload);
-            oldBox.splice(deleteIndex, 1);
+            let oldBoxes = _.cloneDeep(state.boxesById);
+            let index = null;
+            for (let i = 0; i < oldBoxes.length; i++){
+                let box = oldBoxes[i];
+                if (box.id === action.payload){
+                    index = i;
+                    break;
+                }
+            }
+            oldBoxes.splice(index, 1);
             return {
                 ...state,
-                boxesById: oldBox
+                boxesById: oldBoxes
             };
         }
 

@@ -89,10 +89,10 @@ export const deleteBrandRequest = () => {
 };
 
 export const DELETE_BRAND_RECEIVE = 'DELETE_BRAND_RECEIVE';
-export function deleteBrandReceiveSuccess(brand) {
+export function deleteBrandReceiveSuccess(brandId) {
     return {
         type: DELETE_BRAND_RECEIVE,
-        payload: brand
+        payload: brandId
     }
 }
 export const DELETE_BRAND_RECEIVE_FAIL = 'DELETE_BRAND_RECEIVE_FAIL';
@@ -105,13 +105,12 @@ export function deleteBrandReceiveFailure(error) {
 }
 
 export const DELETE_BRAND = 'DELETE_BRAND';
-export const deleteBrand = () => (dispatch, getState) => {
+export const deleteBrand = (carBrandId) => (dispatch, getState) => {
     dispatch(deleteBrandRequest());
-    dispatch(deleteBrandReceiveSuccess('Toyota'));
 
-    return api.delete('/clients').then(data => {
+    return api.delete(`/car_brands?id=${carBrandId}`).then(data => {
         //data.src = require('images/service.png');
-        dispatch(deleteBrandReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+        dispatch(deleteBrandReceiveSuccess(carBrandId));
     }).catch(function(error) {
         dispatch(deleteBrandReceiveFailure())
     });
