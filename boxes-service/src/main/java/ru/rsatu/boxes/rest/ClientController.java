@@ -50,6 +50,4 @@ public class ClientController {
     public ClientDTO getClient(@PathVariable Long clientId) throws ResourceNotFoundException {
         return clientDTOMapper.mapOne(clientRepository.findById(clientId));
     }
-
-    // TODO DELETE
 }

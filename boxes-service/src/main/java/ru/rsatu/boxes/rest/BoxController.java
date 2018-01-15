@@ -61,9 +61,9 @@ public class BoxController {
     public ResponseEntity<Boolean> deleteBox(@PathVariable Long boxId) {
         try {
             boxRepository.delete(boxId);
-            return new ResponseEntity<>(true, HttpStatus.OK);
         } catch(EmptyResultDataAccessException e){
             return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }
