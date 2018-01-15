@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import {getClientsInfo, getNotFreeBoxesInfo, getBrandsInfo} from '../../actions' ;
+import {getClientsInfo, getNotFreeBoxesInfo, getBrandsInfo, getBoxesInfo} from '../../actions' ;
 
 
 @connect(mapStateToProps)
@@ -37,7 +37,7 @@ export default class AdminInfo extends Component{
     }
 
     componentWillMount(){
-        this.props.dispatch(getNotFreeBoxesInfo());
+        this.props.dispatch(getBoxesInfo());
         this.props.dispatch(getBrandsInfo());
     }
 
@@ -117,8 +117,8 @@ export default class AdminInfo extends Component{
                         {
                             this.props.carBrandsById.map((brand, index) => {
                                 return (
-                                    <option key={index} value={brand}>
-                                        {brand}
+                                    <option key={brand.name} value={brand.name}>
+                                        {brand.name}
                                     </option>
                                 )
                             })
@@ -137,10 +137,10 @@ export default class AdminInfo extends Component{
                     <h3>Справка о клиенте, занимающем бокс</h3>
                     <select onChange={(e) => {this.onChangeSelectBox(e)}}>
                         {
-                            this.props.notFreeBoxesById.map((numberBox, index) => {
+                            this.props.notFreeBoxesById.map((box, index) => {
                                 return (
-                                    <option key={index} value={numberBox}>
-                                        {numberBox}
+                                    <option key={index} value={box.id}>
+                                        {box.id}
                                     </option>
                                 )
                             })
@@ -161,13 +161,20 @@ export default class AdminInfo extends Component{
 
 function mapStateToProps(state, ownProps) {
     console.log(state);
+    let notFreeBoxesById = [];
+    for (let box of state.boxes.boxesById) {
+        if (box.close) {
+            notFreeBoxesById.push(box)
+        }
+    }
+
     return {
         clients: state.clients.clients,
         brandsClients: state.clients.brandsClients,
         endRentsClients: state.clients.endRentsClients,
         boxClient: state.clients.boxClient,
         carBrandsById: state.brands.brandsById,
-        notFreeBoxesById: state.boxes.notFreeBoxesById,
+        notFreeBoxesById: notFreeBoxesById,
     }
 }
 

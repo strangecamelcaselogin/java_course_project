@@ -118,8 +118,8 @@ export default class AdminManage extends Component{
                             {
                                 this.props.carBrandsById.map((brand, index)=>{
                                     return (
-                                        <option value={brand} key={index}>
-                                            {brand}
+                                        <option value={brand.id} key={index}>
+                                            {brand.name}
                                         </option>
                                     )
                                 })
@@ -160,8 +160,8 @@ export default class AdminManage extends Component{
                             {
                                 this.props.carBrandsById.map((brand, index)=>{
                                     return (
-                                        <option value={brand} key={index}>
-                                            {brand}
+                                        <option value={brand.id} key={index}>
+                                            {brand.name}
                                         </option>
                                     )
                                 })

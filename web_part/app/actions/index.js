@@ -49,11 +49,10 @@ export function getClientsReceiveSuccess(clients) {
 export const GET_CLIENTS = 'GET_CLIENTS';
 export const getClientsInfo = () => (dispatch, getState) => {
     dispatch(clientsRequest());
-    dispatch(getClientsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
 
     return api.get('/clients').then(data => {
         //data.src = require('images/service.png');
-        dispatch(getClientsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+        dispatch(getClientsReceiveSuccess(data));
     }).catch(function(error) {
         dispatch(clientsReceiveFailure())
     });

@@ -33,11 +33,10 @@ export function getBrandsReceiveFailure(error) {
 export const GET_BRANDS = 'GET_BRANDS';
 export const getBrandsInfo = () => (dispatch, getState) => {
     dispatch(getBrandsRequest());
-    dispatch(getBrandsReceiveSuccess(['Lada', 'Renault', 'Toyota']));
 
-    return api.get('/clients').then(data => {
-        //data.src = require('images/service.png');
-        dispatch(getBrandsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+    return api.get('/car_brands').then(data => {
+        console.log('getBrandsInfo', data);
+        dispatch(getBrandsReceiveSuccess(data));
     }).catch(function(error) {
         dispatch(getBrandsReceiveFailure())
     });
@@ -72,13 +71,13 @@ export const ADD_BRAND = 'ADD_BRAND';
 export const addBrand = () => (dispatch, getState) => {
     dispatch(addBrandRequest());
     dispatch(addBrandReceiveSuccess('Kia'));
-
-    return 0; /*api.post('/clients').then(data => {
+    //parameters: name (query)
+    return api.post('/car_brands?name=Kia').then(data => {
         //data.src = require('images/service.png');
-        dispatch(addBrandReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+        dispatch(addBrandReceiveSuccess(data));
     }).catch(function(error) {
         dispatch(addBrandReceiveFailure())
-    });*/
+    });
 };
 
 

@@ -127,7 +127,7 @@ function apiRequest(method, url, options = {}) {
             //
             //throw Error(e);
         }
-    }).then(json => json.data)
+    }).then(json => json)
         .catch(error => {
             //console.log(`Ошибка при запросе ${url}: ${error}`);
             throw error;

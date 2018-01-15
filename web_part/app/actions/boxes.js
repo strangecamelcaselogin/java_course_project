@@ -32,11 +32,8 @@ export function getBoxesReceiveFailure(error) {
 export const GET_BOXES = 'GET_BOXES';
 export const getBoxesInfo = () => (dispatch, getState) => {
     dispatch(getBoxesRequest());
-    dispatch(getBoxesReceiveSuccess([1,3,4,5,6,7,8]));
-
-    return api.get('/clients').then(data => {
-        //data.src = require('images/service.png');
-        dispatch(getBoxesReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+    return api.get('/boxes').then(data => {
+        dispatch(getBoxesReceiveSuccess(data));
     }).catch(function(error) {
         dispatch(getBoxesReceiveFailure())
     });

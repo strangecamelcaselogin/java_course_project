@@ -9,6 +9,7 @@ export default function brands(state = {
 }, action) {
     switch (action.type) {
         case actions.GET_BRANDS_RECEIVE:
+
             return {
                 ...state,
                 brandsById: action.payload.brands
