@@ -37,8 +37,10 @@ export default function brands(state = {
             let index = null;
             for (let i = 0; i < oldBrands.length; i++){
                 let brand = oldBrands[i];
-                if (brand.id === action.payload){
+
+                if (brand.id === +action.payload){
                     index = i;
+                    console.log('oldBrands', index, brand.id, action.payload );
                     break;
                 }
             }

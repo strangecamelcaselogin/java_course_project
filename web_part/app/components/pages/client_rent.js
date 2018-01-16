@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
+import { getBrandsInfo, addClientCar, deleteClientCar, getClientCarsInfo } from '../../actions' ;
 
 
 @connect(mapStateToProps)
@@ -14,7 +15,6 @@ export default class ClientRent extends Component{
         this.state = {
             dateEndRent: null,
             dateStartRent: null,
-            carsList: ['333', '333', '444'],
             selectCar: null
         };
         this.onChangeDateEndRent = this.onChangeDateEndRent.bind(this);
@@ -22,6 +22,28 @@ export default class ClientRent extends Component{
         this.onChangeSelectCar = this.onChangeSelectCar.bind(this);
         this.provideBox = this.provideBox.bind(this);
 
+    }
+
+    componentDidMount(){
+        let p = this.props.dispatch(getClientCarsInfo());
+        p.then(() => {
+            console.log('componentDidMount', this.props);
+            let obj = {};
+            if (this.props.carsList.length !== 0) {
+                obj['selectCar'] = this.props.carsList[0].id;
+            }
+            this.setState(obj);
+        })
+    }
+
+    componentWillReceiveProps(){
+        this.setState(function(prevState, props) {
+            let obj = {};
+            if (props.carsList.length !== 0) {
+                obj['selectCar'] = props.carsList[0].id;
+            }
+            return obj;
+        });
     }
 
     onChangeDateStartRent(value){

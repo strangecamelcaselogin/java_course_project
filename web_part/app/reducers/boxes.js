@@ -35,7 +35,7 @@ export default function boxes(state = {
             let index = null;
             for (let i = 0; i < oldBoxes.length; i++){
                 let box = oldBoxes[i];
-                if (box.id === action.payload){
+                if (box.id === +action.payload){
                     index = i;
                     break;
                 }
