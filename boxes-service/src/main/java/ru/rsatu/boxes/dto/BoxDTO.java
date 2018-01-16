@@ -4,7 +4,6 @@ public class BoxDTO extends AbstractDTO{
     private Long id;
     private Long carBrandId;
     private Long price;
-    private Boolean closed;
 
     public BoxDTO() {}
 
@@ -12,7 +11,6 @@ public class BoxDTO extends AbstractDTO{
         this.id = id;
         this.carBrandId = carBrandId;
         this.price = price;
-        this.closed = closed;
     }
 
     public Long getId() {
@@ -31,13 +29,6 @@ public class BoxDTO extends AbstractDTO{
         this.price = price;
     }
 
-    public Boolean getClosed() {
-        return closed;
-    }
-
-    public void setClosed(Boolean closed) {
-        this.closed = closed;
-    }
 
     public Long getCarBrandId() {
         return carBrandId;

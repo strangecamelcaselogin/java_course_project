@@ -15,19 +15,19 @@ public class Box extends AbstractEntity{
     @Column(nullable = false)
     private Long price;
 
-    @Column(nullable = false)
-    private Boolean closed = false;
-
-    public Box(CarBrand carBrand, Long price, Boolean closed) {
+    public Box(CarBrand carBrand, Long price) {
         this.carBrand = carBrand;
         this.price = price;
-        this.closed = closed;
     }
 
     protected Box() {}
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public CarBrand getCarBrand() {
@@ -44,13 +44,5 @@ public class Box extends AbstractEntity{
 
     public void setPrice(Long price) {
         this.price = price;
-    }
-
-    public Boolean getClosed() {
-        return closed;
-    }
-
-    public void setClosed(Boolean closed) {
-        this.closed = closed;
     }
 }

@@ -47,7 +47,7 @@ public class BoxController {
             throw new ResourceNotFoundException(carBrandId, "Car Brand Not Found");
         }
 
-        Box box = new Box(b, price, false);
+        Box box = new Box(b, price);
 
         boxRepository.save(box);
 
