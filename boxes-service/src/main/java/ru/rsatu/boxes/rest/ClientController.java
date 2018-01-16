@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import java.security.Principal;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.ClientRepository;
 import ru.rsatu.boxes.domain.Client;
@@ -12,12 +16,24 @@ import ru.rsatu.boxes.helpers.DomainToDTOMapper;
 import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;
 
 
+/*
+Примеры как получить email текущего пользователя
+ String username = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
+Или в контроллере указать параметр 'Principal auth'
+а потом
+ String username = auth.getPrincipal().toString();*/
+
+
 @RestController
 @RequestMapping("/clients")
 public class ClientController {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private DomainToDTOMapper<ClientDTO> clientDTOMapper = new DomainToDTOMapper<>(ClientDTO.class);
 
@@ -29,13 +45,21 @@ public class ClientController {
         return clientDTOMapper.mapMany(clientRepository.findAll());
     }
 
+    @RequestMapping(value = "/{clientId}", method = RequestMethod.GET)
+    public ClientDTO getClient(@PathVariable Long clientId) throws ResourceNotFoundException {
+        return clientDTOMapper.mapOne(clientRepository.findById(clientId));
+    }
+
     /**
      * todo Не нужно, создание пользователя должно происходить через /register
      */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ClientDTO> postClient(@RequestParam String email, @RequestParam String name, @RequestParam String password) {
         try {
-            Client client = new Client(email, password, name);
+            Client client = new Client(
+                    email,
+                    bCryptPasswordEncoder.encode(password), // захешируем пароль пользователя
+                    name);
 
             clientRepository.save(client);
 
@@ -44,10 +68,5 @@ public class ClientController {
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);  // TODO response body
         }
-    }
-
-    @RequestMapping(value = "/{clientId}", method = RequestMethod.GET)
-    public ClientDTO getClient(@PathVariable Long clientId) throws ResourceNotFoundException {
-        return clientDTOMapper.mapOne(clientRepository.findById(clientId));
     }
 }
