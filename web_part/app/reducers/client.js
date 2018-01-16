@@ -38,7 +38,7 @@ export default function client(state = {
 
         case actions.DELETE_CLIENT_CAR_RECEIVE: {
             let carList = _.cloneDeep(state.clientCarList);
-            
+
             let index = null;
             for (let i = 0; i < carList.length; i++){
                 let car = carList[i];

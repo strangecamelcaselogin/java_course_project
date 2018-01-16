@@ -15,14 +15,14 @@ export default class AdminManage extends Component{
         super(props);
 
         this.state = {
-            carBrandsById: [],
-            selectCarBrand: null,
-            priceBox: null,
-            closeNumberBox: null,
-            incPriceNumberBox: null,
-            incPrice: null,
-            addCarBrand: null,
-            deleteCarBrand: null,
+            carBrandsById: [], //список марок
+            selectCarBrand: null, //выбранная марка нового бокса
+            priceBox: null, //цена бокса
+            closeNumberBox: null, //бокс, который нужно закрыть
+            incPriceNumberBox: null, //бокс которому надо поднять цену
+            incPrice: null, //во сколько поднять цену
+            addCarBrand: null, //добавляемая марку машины
+            deleteCarBrand: null, //удаляемая марку
         };
 
         this.onChangeSelectCarBrands = this.onChangeSelectCarBrands.bind(this);
@@ -40,8 +40,39 @@ export default class AdminManage extends Component{
     }
 
     componentDidMount(){
-        this.props.dispatch(getBrandsInfo());
-        this.props.dispatch(getBoxesInfo());
+        let p = this.props.dispatch(getBoxesInfo());
+        p.then(() => {
+            let p2 = this.props.dispatch(getBrandsInfo());
+            /*p2.then(() => {
+                console.log('componentDidMount', this.props);
+                let obj = {};
+                if (this.props.carBrandsById.length !== 0) {
+                    obj['selectCarBrand'] = this.props.carBrandsById[0].id;
+                    obj['deleteCarBrand'] = this.props.carBrandsById[0].id;
+                }
+                if (this.props.boxesById.length !== 0) {
+                    obj['closeNumberBox'] = this.props.boxesById[0].id;
+                    obj['incPriceNumberBox'] = this.props.boxesById[0].id;
+                }
+                this.setState(obj);
+            })*/
+        })
+    }
+
+    componentWillReceiveProps(){
+        this.setState(function(prevState, props) {
+            console.log('componentDidMount', this.props);
+            let obj = {};
+            if (props.carBrandsById.length !== 0) {
+                obj['selectCarBrand'] = props.carBrandsById[0].id;
+                obj['deleteCarBrand'] = props.carBrandsById[0].id;
+            }
+            if (props.boxesById.length !== 0) {
+                obj['closeNumberBox'] = props.boxesById[0].id;
+                obj['incPriceNumberBox'] = props.boxesById[0].id;
+            }
+            return obj;
+        });
     }
 
     onSelectIncPriceNumberBox(value) {
@@ -117,7 +148,7 @@ export default class AdminManage extends Component{
                     <div>
                         <h3>Прием в эксплуатацию нового бокса</h3>
                         <label>Название марки</label>
-                        <select onChange={(e) => {this.onChangeSelectCarBrands(e.target.value)}}>
+                        <select onChange={(e) => {this.onChangeSelectCarBrands(e.target.value)}} value={this.state.selectCarBrand}>
                             {
                                 this.props.carBrandsById.map((brand, index)=>{
                                     return (
@@ -135,7 +166,9 @@ export default class AdminManage extends Component{
                     <div>
                         <h3>Закрытие бокса</h3>
                         <label>Номер бокса</label>
-                        <select onChange={(e) => {this.onSelectCloseNumberBox(e.target.value)}}>
+                        <select
+                            onChange={(e) => {this.onSelectCloseNumberBox(e.target.value)}}
+                            value={this.state.closeNumberBox}>
                             {
                                 this.props.boxesById.map((box, index)=>{
                                     return (
@@ -150,7 +183,8 @@ export default class AdminManage extends Component{
                     </div>
                     <div>
                         <h3>Увеличить стоимость аренды</h3>
-                        <select onChange={(e) => {this.onSelectIncPriceNumberBox(e.target.value)}}>
+                        <select onChange={(e) => {this.onSelectIncPriceNumberBox(e.target.value)}}
+                                value={this.state.incPriceNumberBox}>
                             {
                                 this.props.boxesById.map((box, index)=>{
                                     return (
@@ -180,7 +214,8 @@ export default class AdminManage extends Component{
                     <div>
                         <h3>Удалить марку</h3>
                         <label>Название марки</label>
-                        <select onChange={(e) => {this.onChangeDeleteCarBrand(e.target.value)}}>
+                        <select onChange={(e) => {this.onChangeDeleteCarBrand(e.target.value)}}
+                            value={this.state.deleteCarBrand}>
                             {
                                 this.props.carBrandsById.map((brand, index)=>{
                                     return (

@@ -36,9 +36,35 @@ export default class AdminInfo extends Component{
         this.onChangeSelectBox = this.onChangeSelectBox.bind(this);
     }
 
-    componentWillMount(){
-        this.props.dispatch(getBoxesInfo());
-        this.props.dispatch(getBrandsInfo());
+    componentDidMount(){
+        let p = this.props.dispatch(getBoxesInfo());
+        p.then(() => {
+            let p2 = this.props.dispatch(getBrandsInfo());
+            p2.then(() => {
+                console.log('componentDidMount', this.props);
+                let obj = {};
+                if (this.props.carBrandsById.length !== 0) {
+                    obj['selectBrands'] = this.props.carBrandsById[0].id;
+                }
+                if (this.props.notFreeBoxesById.length !== 0) {
+                    obj['selectBox'] = this.props.notFreeBoxesById[0].id;
+                }
+                this.setState(obj);
+            })
+        })
+    }
+
+    componentWillReceiveProps(){
+        this.setState(function(prevState, props) {
+            let obj = {};
+            if (props.carBrandsById.length !== 0) {
+                obj['selectBrands'] = props.carBrandsById[0].id;
+            }
+            if (props.notFreeBoxesById.length !== 0) {
+                obj['selectBox'] = props.notFreeBoxesById[0].id;
+            }
+            return obj;
+        });
     }
 
     offModal(){
@@ -115,7 +141,8 @@ export default class AdminInfo extends Component{
                 <br/>
                 <div>
                     <h3>Справка о клиентах с определенной маркой автомобиля</h3>
-                    <select onChange={(e) => {this.onChangeSelectBrands(e)}}>
+                    <select onChange={(e) => {this.onChangeSelectBrands(e)}}
+                            value={this.state.selectBrands}>
                         {
                             this.props.carBrandsById.map((brand, index) => {
                                 return (
@@ -137,7 +164,8 @@ export default class AdminInfo extends Component{
                 <br/>
                 <div>
                     <h3>Справка о клиенте, занимающем бокс</h3>
-                    <select onChange={(e) => {this.onChangeSelectBox(e)}}>
+                    <select onChange={(e) => {this.onChangeSelectBox(e)}}
+                            value={this.state.selectBox}>
                         {
                             this.props.notFreeBoxesById.map((box, index) => {
                                 return (

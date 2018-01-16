@@ -35,12 +35,25 @@ export default class ClientLK extends Component{
                 if (this.props.carBrands.length !== 0) {
                     obj['selectCarBrand'] = this.props.carBrands[0].id;
                 }
-                if (this.props.carBrands.length !== 0) {
+                if (this.props.clientCars.length !== 0) {
                     obj['selectCarNumber'] = this.props.clientCars[0].id;
                 }
                 this.setState(obj);
             })
         })
+    }
+
+    componentWillReceiveProps(){
+        this.setState(function(prevState, props) {
+            let obj = {};
+            if (props.carBrands.length !== 0) {
+                obj['selectCarBrand'] = props.carBrands[0].id;
+            }
+            if (props.clientCars.length !== 0) {
+                obj['selectCarNumber'] = props.clientCars[0].id;
+            }
+            return obj;
+        });
     }
 
 
