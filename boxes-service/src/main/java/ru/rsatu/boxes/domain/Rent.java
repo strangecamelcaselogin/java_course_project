@@ -1,20 +1,26 @@
 package ru.rsatu.boxes.domain;
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 
+@Entity
 public class Rent extends AbstractEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
     @JoinColumn(name = "box_id")
     private Box box;
 
+    @OneToOne
     @JoinColumn(name = "car_id")
     private Car car;
 
     private String startDate;
     private String endDate;
 
+    @Column(nullable = false)
     private Boolean busy;
 
     public Rent(Box box, Car car, String start_date, String end_date) {
@@ -22,6 +28,7 @@ public class Rent extends AbstractEntity{
         this.car = car;
         this.startDate = start_date;
         this.endDate = end_date;
+        this.busy = true;
     }
 
     public Rent() {}

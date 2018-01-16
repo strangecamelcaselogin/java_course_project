@@ -13,7 +13,10 @@ public class RentDTO extends AbstractDTO{
         this.carId = car_id;
         this.startDate = start_date;
         this.endDate = end_date;
+        this.busy = true;
     }
+
+    public RentDTO() {}
 
     public Long getId() {
         return id;
