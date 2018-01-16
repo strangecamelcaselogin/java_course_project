@@ -4,6 +4,7 @@
 import api from '../api';
 export * from './boxes';
 export * from './brands';
+export * from './cars'
 
 export const TEMPLATE = 'TEMPLATE';
 export const enterTemplate = (path) => {
@@ -160,30 +161,6 @@ export const getClientWithBox = () => (dispatch, getState) => {
     });
 };
 
-//get client car list
-export const GET_CLIENT_CARS_RECEIVE = 'GET_CLIENT_CARS_RECEIVE';
-export function getClientCarsReceiveSuccess(cars) {
-    return {
-        type: GET_CLIENT_CARS_RECEIVE,
-        payload: {
-            cars
-        }
-    }
-}
-
-export const GET_CLIENT_CARS = 'GET_CLIENT_CARS';
-export const getClientCars = () => (dispatch, getState) => {
-    dispatch(clientsRequest());
-    dispatch(getClientCarsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
-
-    return api.get('/clients').then(data => {
-        //data.src = require('images/service.png');
-        dispatch(getClientCarsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
-    }).catch(function(error) {
-        dispatch(clientsReceiveFailure())
-    });
-};
-
 //get client tickets
 export const GET_CLIENT_TICKETS_RECEIVE = 'GET_CLIENT_TICKETS_RECEIVE';
 export function getClientTicketsReceiveSuccess(tickets) {
@@ -203,56 +180,6 @@ export const getClientTickets = () => (dispatch, getState) => {
     return api.get('/clients').then(data => {
         //data.src = require('images/service.png');
         dispatch(getClientTicketsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
-    }).catch(function(error) {
-        dispatch(clientsReceiveFailure())
-    });
-};
-
-
-//add client car
-export const ADD_CLIENT_CAR_RECEIVE = 'ADD_CLIENT_CAR_RECEIVE';
-export function addClientCarReceiveSuccess(car) {
-    return {
-        type: ADD_CLIENT_CAR_RECEIVE,
-        payload: {
-            car
-        }
-    }
-}
-
-export const ADD_CLIENT_CARS = 'ADD_CLIENT_CARS';
-export const addClientCar = () => (dispatch, getState) => {
-    dispatch(clientsRequest());
-    dispatch(addClientCarReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
-
-    return api.get('/clients').then(data => {
-        //data.src = require('images/service.png');
-        dispatch(addClientCarReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
-    }).catch(function(error) {
-        dispatch(clientsReceiveFailure())
-    });
-};
-
-
-//delete client car
-export const DELETE_CLIENT_CAR_RECEIVE = 'DELETE_CLIENT_CAR_RECEIVE';
-export function deleteClientCarReceiveSuccess(car) {
-    return {
-        type: ADD_CLIENT_CAR_RECEIVE,
-        payload: {
-            car
-        }
-    }
-}
-
-export const DELETE_CLIENT_CARS = 'DELETE_CLIENT_CARS';
-export const deleteClientCar = () => (dispatch, getState) => {
-    dispatch(clientsRequest());
-    dispatch(deleteClientCarReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
-
-    return api.get('/clients').then(data => {
-        //data.src = require('images/service.png');
-        dispatch(deleteClientCarReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
     }).catch(function(error) {
         dispatch(clientsReceiveFailure())
     });

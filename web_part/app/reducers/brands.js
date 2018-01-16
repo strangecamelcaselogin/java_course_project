@@ -6,7 +6,6 @@ import _ from 'lodash';
 
 export default function brands(state = {
     brandsById: [],
-
     error: '',
 }, action) {
     switch (action.type) {

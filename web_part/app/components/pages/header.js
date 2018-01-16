@@ -21,7 +21,7 @@ export default class Header extends Component {
                     {isAdmin && <Link to='/admin_info'>Справки</Link>}
                     {isAdmin && <Link to='/admin_manage'>Управление</Link>}
                     {!isAdmin && <Link to='/rent'>Арендовать</Link>}
-                    {!isAdmin && <Link to='/lk'>Личный кабинет</Link>}
+                    {isAdmin && <Link to='/lk'>Личный кабинет</Link>}
                     <Link to='/logout'>Выход</Link>
                 </div>
             </div>
