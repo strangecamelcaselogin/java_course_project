@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ru.rsatu.boxes.helpers.UserRole;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -74,10 +75,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        // TODO проверку на admin скрыть
+        String roleName = new UserRole(username).getRole();
+
         String responseBody = new ObjectMapper().
                 writeValueAsString(
-                        new LoginResponse(TOKEN_PREFIX + token, username.equals("admin") ? "admin" : "user")
+                        new LoginResponse(TOKEN_PREFIX + token, roleName)
                 );
 
         response.getWriter().write(responseBody);
