@@ -39,6 +39,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             Client client = new ObjectMapper()
                     .readValue(req.getInputStream(), Client.class);
 
+            //TODO (?) в principal сделать объект
             UsernamePasswordAuthenticationToken at = new UsernamePasswordAuthenticationToken(
                     client.getEmail(),
                     client.getPassword(),
@@ -55,8 +56,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * Аутентификация произошла, тогда создадим токен
      */
     @Override
-    protected void successfulAuthentication(HttpServletRequest req,
-                                            HttpServletResponse res,
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
 
@@ -68,6 +69,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
                 .compact();
-        res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        // TODO проверку на admin скрыть
+        String responseBody = new ObjectMapper().
+                writeValueAsString(
+                        new LoginResponse(TOKEN_PREFIX + token, username.equals("admin") ? "admin" : "user")
+                );
+
+        response.getWriter().write(responseBody);
     }
 }
