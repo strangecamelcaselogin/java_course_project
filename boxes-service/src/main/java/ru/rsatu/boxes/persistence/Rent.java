@@ -1,5 +1,4 @@
-package ru.rsatu.boxes.domain;
-import org.hibernate.annotations.ColumnDefault;
+package ru.rsatu.boxes.persistence;
 
 import javax.persistence.*;
 

@@ -1,4 +1,4 @@
-package ru.rsatu.boxes.domain;
+package ru.rsatu.boxes.persistence;
 
 public abstract class AbstractEntity {
 }

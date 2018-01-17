@@ -1,7 +1,7 @@
 package ru.rsatu.boxes.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.rsatu.boxes.domain.Client;
+import ru.rsatu.boxes.persistence.Client;
 import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;
 
 import javax.persistence.EntityManager;

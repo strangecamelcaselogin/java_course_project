@@ -1,6 +1,6 @@
 package ru.rsatu.boxes.rest.security;
 
-import ru.rsatu.boxes.domain.Client;
+import ru.rsatu.boxes.persistence.Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

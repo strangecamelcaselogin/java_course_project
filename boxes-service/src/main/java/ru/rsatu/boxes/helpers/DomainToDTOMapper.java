@@ -1,7 +1,7 @@
 package ru.rsatu.boxes.helpers;
 
 import org.modelmapper.ModelMapper;
-import ru.rsatu.boxes.domain.AbstractEntity;
+import ru.rsatu.boxes.persistence.AbstractEntity;
 
 import java.util.ArrayList;
 
