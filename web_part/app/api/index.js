@@ -86,6 +86,10 @@ function apiRequest(method, url, options = {}) {
         headers['Content-Type'] = contentType;
     }
 
+    if(localStorage['token']){
+        headers['Authorization'] = localStorage['token']
+    }
+
     const fetchOptions = {
         method: method,
         credentials: 'same-origin',
@@ -103,6 +107,7 @@ function apiRequest(method, url, options = {}) {
 
     return fetch(url, fetchOptions).then(resp => {
         if (resp.ok) {
+            console.log(resp['headers'].get('authorization'));
             return resp.json();
         }
         if (resp.status === 401) {
@@ -166,5 +171,6 @@ function stringifyData(data, contentType) {
 
 
 function redirectToLogin() {
-    window.location = `${LOGIN_PATH}?back=${window.location.href}`;
+    //window.location = `${LOGIN_PATH}?back=${window.location.href}`;
+    window.location = `/login`;
 }

@@ -70,7 +70,7 @@ public class RentController {
     @RequestMapping(value="/{rentId}", method = RequestMethod.DELETE)
     public ResponseEntity<Boolean> cancelRent(@PathVariable Long rentId) {
         try {
-            rentRepository.delete(rentId); 
+            rentRepository.delete(rentId);
         } catch(EmptyResultDataAccessException e){
             return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
