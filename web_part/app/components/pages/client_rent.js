@@ -86,7 +86,7 @@ export default class ClientRent extends Component{
                     {
                         this.props.carsList.map((car) => {
                             return(
-                                <option value={car} key={car}>{car}</option>
+                                <option value={car.id} key={car.id}>{car.number}</option>
                             )
                         })
                     }
