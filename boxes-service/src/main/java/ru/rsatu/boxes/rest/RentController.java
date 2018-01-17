@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.BoxRepository;
 import ru.rsatu.boxes.dao.CarRepository;
 import ru.rsatu.boxes.dao.RentRepository;
-import ru.rsatu.boxes.domain.*;
+import ru.rsatu.boxes.persistence.*;
 import ru.rsatu.boxes.dto.RentDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
 import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;

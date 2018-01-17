@@ -1,6 +1,6 @@
 package ru.rsatu.boxes.dao;
 
-import ru.rsatu.boxes.domain.Client;
+import ru.rsatu.boxes.persistence.Client;
 
 
 /**

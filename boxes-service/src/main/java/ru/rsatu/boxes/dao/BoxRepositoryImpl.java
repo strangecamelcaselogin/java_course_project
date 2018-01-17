@@ -1,8 +1,8 @@
 package ru.rsatu.boxes.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.rsatu.boxes.domain.Box;
-import ru.rsatu.boxes.domain.CarBrand;
+import ru.rsatu.boxes.persistence.Box;
+import ru.rsatu.boxes.persistence.CarBrand;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

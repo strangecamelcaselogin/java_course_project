@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.CarBrandRepository;
-import ru.rsatu.boxes.domain.CarBrand;
+import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.dto.CarBrandDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
 

@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.rsatu.boxes.dao.ClientRepository;
-import ru.rsatu.boxes.domain.Client;
+import ru.rsatu.boxes.persistence.Client;
 
 import static java.util.Collections.emptyList;
 

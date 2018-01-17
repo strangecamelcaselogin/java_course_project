@@ -9,10 +9,10 @@ import ru.rsatu.boxes.dao.BoxRepository;
 import ru.rsatu.boxes.dao.CarBrandRepository;
 import ru.rsatu.boxes.dao.CarRepository;
 import ru.rsatu.boxes.dao.ClientRepository;
-import ru.rsatu.boxes.domain.Box;
-import ru.rsatu.boxes.domain.Car;
-import ru.rsatu.boxes.domain.CarBrand;
-import ru.rsatu.boxes.domain.Client;
+import ru.rsatu.boxes.persistence.Box;
+import ru.rsatu.boxes.persistence.Car;
+import ru.rsatu.boxes.persistence.CarBrand;
+import ru.rsatu.boxes.persistence.Client;
 
 import java.util.Arrays;
 
@@ -66,7 +66,7 @@ public class DataLoader implements ApplicationRunner {
         Box box3 = new Box(KRAZBrand, 300L);
         boxRepository.save(Arrays.asList(box1, box2, box3));
 
-        // Добавим машинd
+        // Добавим машин
         Car car1 = new Car(firstClient, mersedesBrand, "777");  // в этой по четным ездит
         Car car2 = new Car(firstClient, mersedesBrand, "666");  // в этой по нечетным
         Car car3 = new Car(secondClient, VAZBrand, "134");
