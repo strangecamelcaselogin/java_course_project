@@ -56,8 +56,7 @@ export default class Registration extends Component{
         if(this.state.check_password === this.state.password){
             api.post(`/clients?email=${email}&name=${name}&password=${password}`)
                 .then((resp) => {
-                    console.log(resp)
-                    //window.location = '/login';
+                    window.location = '/login';
                 }).catch(error => {
                     this.setState({
                         error

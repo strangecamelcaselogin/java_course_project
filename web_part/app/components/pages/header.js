@@ -17,17 +17,16 @@ export default class Header extends Component {
     }
 
     exitAcc(){
-
         localStorage.removeItem('token');
-        window.location = '/login'
+        localStorage.removeItem('role');
     }
 
     render () {
         let isAdmin = true;
         let userIn = true;
-        if (localStorage['token']) {
+        if (localStorage.token) {
             userIn = true;
-            isAdmin = true;//(localStorage['admin'])
+            isAdmin = localStorage.role === "admin";
         } else {
             userIn = false
         }
@@ -41,9 +40,7 @@ export default class Header extends Component {
                     {!isAdmin && userIn && <Link to='/lk'>Личный кабинет</Link>}
                     {
                         userIn ?
-                            <div onClick={this.exitAcc}>
-                                Выйти
-                            </div>
+                            <Link onClick={this.exitAcc} to='/login'>Выйти</Link>
                             :
                             <Link to='/login'>Войти</Link>
                     }

@@ -23,8 +23,7 @@ let store = createStore(
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
     applyMiddleware(thunkMiddleware)
 );
-let f = localStorage['token'];
-console.log(f)
+
 export default () => (
     <Provider store={store}>
         <Router history={browserHistory}>

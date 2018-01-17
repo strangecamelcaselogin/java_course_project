@@ -85,9 +85,10 @@ function apiRequest(method, url, options = {}) {
     if (contentType) {
         headers['Content-Type'] = contentType;
     }
-
-    if(localStorage['token']){
-        headers['Authorization'] = localStorage['token']
+    
+    let token = localStorage.token;
+    if (token) {
+        headers.Authorization = token;
     }
 
     const fetchOptions = {
@@ -107,18 +108,20 @@ function apiRequest(method, url, options = {}) {
 
     return fetch(url, fetchOptions).then(resp => {
         if (resp.ok) {
-            console.log(resp['headers'].get('authorization'));
             return resp.json();
         }
-        if (resp.status === 401) {
-            redirectToLogin();
+
+        switch (resp.status) {
+            case 401:
+            case 403:
+            case 406:
+                redirectToLogin();
+                break;
         }
-        if(resp.status === 406) {
-            redirectToLogin();
-        }
+
         if(!resp.ok){
             return resp.text().then(e => {
-                let codeError = '';
+                // let codeError = '';
                 let text = null;
                 try {
                     text = (JSON.parse(e)).error;
@@ -129,8 +132,6 @@ function apiRequest(method, url, options = {}) {
             }).catch((error) => {
                 throw Error(error);
             });
-            //
-            //throw Error(e);
         }
     }).then(json => json)
         .catch(error => {

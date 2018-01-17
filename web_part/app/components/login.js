@@ -34,8 +34,6 @@ export default class Login extends Component{
     }
 
     login(){
-        localStorage['token'] = 'hhhh';
-        // window.location = '/';
         api.post('/login', {
             contentType: 'json',
             data: {
@@ -43,11 +41,9 @@ export default class Login extends Component{
                 password: this.state.password,
             }
         }).then(resp => {
-            //TODO localStorage['token'] записать
-            console.log(resp);
-            debugger;
-            // localStorage['token'] = resp;
-            // window.location = '/';
+            localStorage.token = resp.token;
+            localStorage.role = resp.role;
+            window.location = '/';
         }).catch(error => {
             this.setState({error})
         });
