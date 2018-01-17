@@ -36,6 +36,11 @@ public class DataLoader implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
 
+        Client admin = new Client(
+                "admin@service",
+                bCryptPasswordEncoder.encode("adminpassword"),
+                "Admin");
+
         // Добавим клиентов
         Client firstClient = new Client(
                 "user1",
@@ -47,7 +52,7 @@ public class DataLoader implements ApplicationRunner {
                 bCryptPasswordEncoder.encode("password2"),
                 "UserName2");
 
-        clientRepository.save(Arrays.asList(firstClient, secondClient));
+        clientRepository.save(Arrays.asList(admin, firstClient, secondClient));
 
         // Добавим марок
         CarBrand mersedesBrand = new CarBrand("Mersedes");
