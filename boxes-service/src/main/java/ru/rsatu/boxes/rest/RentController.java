@@ -1,5 +1,8 @@
 package ru.rsatu.boxes.rest;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.BoxRepository;
 import ru.rsatu.boxes.dao.CarRepository;
@@ -36,11 +39,13 @@ public class RentController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public RentDTO postRent(@RequestParam Long carId, @RequestParam Long boxId,
-                            @RequestParam String start, @RequestParam String end) {
+    public RentDTO postRent(@RequestParam Long carId, @RequestParam String start, @RequestParam String end) {
 
-        Box box = boxRepository.findOne(boxId);
         Car car = carRepository.findOne(carId);
+        CarBrand carBrand = car.getCarBrand();
+
+        Box box = boxRepository.findFreeBox(carBrand);
+        Long boxId = box.getId();
 
         if (box == null) {
             throw new ResourceNotFoundException(boxId, "Box Not Found");
@@ -60,5 +65,15 @@ public class RentController {
         rentRepository.save(rent);
 
         return rentDTOMapper.mapOne(rent);
+    }
+
+    @RequestMapping(value="/{rentId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Boolean> cancelRent(@PathVariable Long rentId) {
+        try {
+            rentRepository.delete(rentId); 
+        } catch(EmptyResultDataAccessException e){
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }

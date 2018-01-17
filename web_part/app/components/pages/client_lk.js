@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import { getBrandsInfo, addClientCar, deleteClientCar, getClientCarsInfo } from '../../actions' ;
+import { getBrandsInfo, addClientCar, deleteClientCar, getClientCarsInfo, deleteClientRent } from '../../actions' ;
 
 @connect(mapStateToProps)
 export default class ClientLK extends Component{
@@ -83,8 +83,8 @@ export default class ClientLK extends Component{
         this.props.dispatch(deleteClientCar(this.state.selectCarNumber))
     }
 
-    cancelTicket(){
-
+    cancelTicket(id){
+        this.props.dispatch(deleteClientRent(id))
     }
 
     //{}
@@ -171,8 +171,8 @@ export default class ClientLK extends Component{
                                 this.props.listTicket.map((ticket)=>{
                                     return (
                                         <div>
-                                            {ticket}
-                                            <button onClick={this.cancelTicket}>Отменить</button>
+                                            {ticket.id}
+                                            <button onClick={(ticket)=>{this.cancelTicket(ticket.id)}}>Отменить</button>
                                         </div>
                                     )
                                 })

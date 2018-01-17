@@ -187,7 +187,7 @@ function mapStateToProps(state, ownProps) {
     console.log(state);
     let notFreeBoxesById = [];
     for (let box of state.boxes.boxesById) {
-        if (box.close) {
+        if (box) {
             notFreeBoxesById.push(box)
         }
     }

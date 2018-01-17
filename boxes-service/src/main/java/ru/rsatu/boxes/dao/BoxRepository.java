@@ -5,5 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import ru.rsatu.boxes.domain.Box;
 
 @Repository
-public interface BoxRepository extends CrudRepository<Box, Long> {
+public interface BoxRepository extends CrudRepository<Box, Long>, BoxRepositoryCustom {
+
 }

@@ -5,6 +5,7 @@ import api from '../api';
 export * from './boxes';
 export * from './brands';
 export * from './cars'
+export * from './rent'
 
 export const TEMPLATE = 'TEMPLATE';
 export const enterTemplate = (path) => {

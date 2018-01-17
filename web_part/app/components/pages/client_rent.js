@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import { getBrandsInfo, addClientCar, deleteClientCar, getClientCarsInfo } from '../../actions' ;
+import { getBrandsInfo, addClientRent, deleteClientRent, getClientCarsInfo } from '../../actions' ;
 
 
 @connect(mapStateToProps)
@@ -65,7 +65,9 @@ export default class ClientRent extends Component{
     }
 
     provideBox(){
-        alert('Предоставили')
+        this.props.dispatch(addClientRent(this.state.selectCar,
+                                            this.state.dateStartRent,
+                                            this.state.dateEndRent))
     }
 
     //{}
