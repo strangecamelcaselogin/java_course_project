@@ -10,7 +10,7 @@ import ru.rsatu.boxes.persistence.Box;
 import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.dto.BoxDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
-import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;
+import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
 @RestController
 @RequestMapping("/boxes")
@@ -44,7 +44,7 @@ public class BoxController {
     public BoxDTO postBox(@RequestParam Long carBrandId, @RequestParam Long price) {
         CarBrand b = carBrandRepository.findOne(carBrandId);
         if (b == null) {
-            throw new ResourceNotFoundException(carBrandId, "Car Brand Not Found");
+            throw new ResourceNotFound(carBrandId, "Car Brand Not Found");
         }
 
         Box box = new Box(b, price);

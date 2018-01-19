@@ -10,7 +10,7 @@ import ru.rsatu.boxes.dao.RentRepository;
 import ru.rsatu.boxes.persistence.*;
 import ru.rsatu.boxes.dto.RentDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
-import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;
+import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
 @RestController
 @RequestMapping("/rents")
@@ -48,10 +48,11 @@ public class RentController {
         Long boxId = box.getId();
 
         if (box == null) {
-            throw new ResourceNotFoundException(boxId, "Box Not Found");
+            //TODO (?) другое исключение
+            throw new ResourceNotFound(boxId, "Box Not Found");
         }
         if (car == null) {
-            throw new ResourceNotFoundException(carId, "Car Not Found");
+            throw new ResourceNotFound(carId, "Car Not Found");
         }
 
         // TODO валидировать даты
