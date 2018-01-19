@@ -22,7 +22,7 @@ public class UserRole {
         return userRole;
     }
 
-    private boolean isAdmin(String email) {
+    public boolean isAdmin() {
         return role.equals(adminRole);
     }
 }

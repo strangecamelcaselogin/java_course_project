@@ -21,4 +21,24 @@ public class ExceptionHandlingController {
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(Conflict.class)
+    public ResponseEntity<ExceptionResponse> conflict(Conflict ex) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setError("Conflict");
+        response.setStatus(409);
+        response.setMessage(ex.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(AccessViolationException.class)
+    public ResponseEntity<ExceptionResponse> forbidden(AccessViolationException ex) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setError("Forbidden");
+        response.setStatus(403);
+        response.setMessage(ex.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
 }

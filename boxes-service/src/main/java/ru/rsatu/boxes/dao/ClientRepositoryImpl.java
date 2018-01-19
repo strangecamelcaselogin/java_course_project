@@ -1,6 +1,7 @@
 package ru.rsatu.boxes.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.rsatu.boxes.persistence.Client;
 import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;
 
@@ -12,6 +13,7 @@ import javax.persistence.PersistenceContext;
  * Тут наша реализация некоторых методов для репозитория.
  * Использовать их будем все равно через ClientRepository
  */
+@Component
 public class ClientRepositoryImpl implements ClientRepositoryCustom {
     @Autowired
     private ClientRepository clientRepository;
