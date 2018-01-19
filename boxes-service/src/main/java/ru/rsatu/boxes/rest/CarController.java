@@ -14,9 +14,9 @@ import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.persistence.Client;
 import ru.rsatu.boxes.dto.CarDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
-import ru.rsatu.boxes.rest.exception.AccessViolationException;
+import ru.rsatu.boxes.rest.exception.AccessViolation;
 import ru.rsatu.boxes.rest.exception.Conflict;
-import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;
+import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
 import java.security.Principal;
 
@@ -66,14 +66,14 @@ public class CarController {
         Car car = carRepository.findOne(carId);
 
         if (car == null) {
-            throw new ResourceNotFoundException(carId, "Car Not Found");
+            throw new ResourceNotFound(carId, "Car Not Found");
         }
 
         if (userRole.isAdmin() || car.getClient().getId().equals(client.getId())) {
             return carDTOMapper.mapOne(carRepository.findOne(carId));  // TODO исключения
         }
         else {
-            throw new AccessViolationException("You not allowed to view this entity");
+            throw new AccessViolation();
         }
     }
 
@@ -94,10 +94,10 @@ public class CarController {
         CarBrand carBrand = carBrandRepository.findOne(carBrandId);
 
         if (client == null) {
-            throw new ResourceNotFoundException(null, "Client Not Found");
+            throw new ResourceNotFound(null, "Client Not Found");
         }
         if (carBrand == null) {
-            throw new ResourceNotFoundException(carBrandId, "Car Brand Not Found");
+            throw new ResourceNotFound(carBrandId, "Car Brand Not Found");
         }
 
         Car car = new Car(client, carBrand, number);
@@ -120,11 +120,11 @@ public class CarController {
         Car car = carRepository.findOne(carId);
 
         if (car == null) {
-            throw new ResourceNotFoundException(carId, "Car Not Found");
+            throw new ResourceNotFound(carId, "Car Not Found");
         }
 
         if (!car.getClient().getId().equals(owner.getId())) {
-            throw new AccessViolationException("Client can not delete this Car");
+            throw new AccessViolation("Client can not delete this Car");
         }
 
         try {

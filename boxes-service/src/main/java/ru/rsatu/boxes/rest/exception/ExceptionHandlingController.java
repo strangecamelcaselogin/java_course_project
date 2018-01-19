@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ExceptionHandlingController {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> resourceNotFound(ResourceNotFoundException ex) {
+    @ExceptionHandler(ResourceNotFound.class)
+    public ResponseEntity<ExceptionResponse> resourceNotFound(ResourceNotFound ex) {
         ExceptionResponse response = new ExceptionResponse();
         response.setResourceId(ex.getResourceId());
         response.setError("Not Found");
@@ -32,13 +32,23 @@ public class ExceptionHandlingController {
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(AccessViolationException.class)
-    public ResponseEntity<ExceptionResponse> forbidden(AccessViolationException ex) {
+    @ExceptionHandler(AccessViolation.class)
+    public ResponseEntity<ExceptionResponse> forbidden(AccessViolation ex) {
         ExceptionResponse response = new ExceptionResponse();
         response.setError("Forbidden");
         response.setStatus(403);
         response.setMessage(ex.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(BadRequest.class)
+    public ResponseEntity<ExceptionResponse> badRequest(BadRequest ex) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setError("Bad Request");
+        response.setStatus(400);
+        response.setMessage(ex.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
