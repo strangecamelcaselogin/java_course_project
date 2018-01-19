@@ -1,5 +1,6 @@
 package ru.rsatu.boxes.rest;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,12 +8,17 @@ import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.CarBrandRepository;
 import ru.rsatu.boxes.dao.CarRepository;
 import ru.rsatu.boxes.dao.ClientRepository;
+import ru.rsatu.boxes.helpers.UserRole;
 import ru.rsatu.boxes.persistence.Car;
 import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.persistence.Client;
 import ru.rsatu.boxes.dto.CarDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
+import ru.rsatu.boxes.rest.exception.AccessViolationException;
+import ru.rsatu.boxes.rest.exception.Conflict;
 import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/cars")
@@ -29,49 +35,98 @@ public class CarController {
         this.clientRepository = clientRepository;
     }
 
-    // TODO все машины получить может только админ
-    // TODO иначе возвращать машины только того пользователя, который спрашивает
+    /**
+     * Все машины получить может только админ
+     * Иначе возвращать машины только того пользователя, который спрашивает
+     *
+     */
     @RequestMapping(method = RequestMethod.GET)
-    public Iterable<CarDTO> getCars() {
-        return carDTOMapper.mapMany(carRepository.findAll());
+    public Iterable<CarDTO> getCars(Principal auth) {
+        String email = auth.getName();
+        UserRole userRole = new UserRole(email);
+
+        if (userRole.isAdmin()) {
+            return carDTOMapper.mapMany(carRepository.findAll());
+        }
+        else {
+            Client client = clientRepository.findByEmail(email);
+            return carDTOMapper.mapMany(carRepository.findAllByClient(client));
+        }
     }
 
-    // TODO доступ имеет только владелец автомобиля
+    /**
+     * Доступ имеет только владелец автомобиля и админ
+     */
     @RequestMapping(value = "/{carId}", method = RequestMethod.GET)
-    public CarDTO getCar(@PathVariable Long carId) {
-        return carDTOMapper.mapOne(carRepository.findOne(carId));  // TODO исключения
+    public CarDTO getCar(Principal auth, @PathVariable Long carId) {
+        String email = auth.getName();
+        UserRole userRole = new UserRole(email);
+        Client client = clientRepository.findByEmail(email);
+
+        Car car = carRepository.findOne(carId);
+
+        if (car == null) {
+            throw new ResourceNotFoundException(carId, "Car Not Found");
+        }
+
+        if (userRole.isAdmin() || car.getClient().getId().equals(client.getId())) {
+            return carDTOMapper.mapOne(carRepository.findOne(carId));  // TODO исключения
+        }
+        else {
+            throw new AccessViolationException("You not allowed to view this entity");
+        }
     }
 
+    /**
+     * Добавление автомобиля
+     * TODO валидировать номер
+     * @param auth
+     * @param number
+     * @param carBrandId
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST)
-    public CarDTO postCars(@RequestParam String number, @RequestParam Long carBrandId) {
+    public CarDTO postCars(Principal auth, @RequestParam String number, @RequestParam Long carBrandId) {
 
-        Long clientId = 1L;
+        String username = auth.getName();
 
-        Client client = clientRepository.findOne(clientId);
+        Client client = clientRepository.findByEmail(username);
         CarBrand carBrand = carBrandRepository.findOne(carBrandId);
 
         if (client == null) {
-            throw new ResourceNotFoundException(clientId, "Client Not Found");
+            throw new ResourceNotFoundException(null, "Client Not Found");
         }
         if (carBrand == null) {
             throw new ResourceNotFoundException(carBrandId, "Car Brand Not Found");
         }
 
-        // TODO валидировать номер
-        Car car = new Car(
-                clientRepository.findOne( 1L),
-                carBrandRepository.findOne(carBrandId),
-                number
-        );
+        Car car = new Car(client, carBrand, number);
 
-        carRepository.save(car);  // todo DataIntegrityViolationException из-за не уникальных номеров
+        try {
+            carRepository.save(car);
+        } catch (DataIntegrityViolationException e) {
+            throw new Conflict("Car number already taken");
+        }
 
         return carDTOMapper.mapOne(car);
     }
 
-    // TODO может только владелец
+    /**
+     * Удалить автомобиль может только владелец
+     */
     @RequestMapping(value = "/{carId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> deleteCar(@PathVariable Long carId) {
+    public ResponseEntity<Boolean> deleteCar(Principal auth, @PathVariable Long carId) {
+        Client owner = clientRepository.findByEmail(auth.getName());
+        Car car = carRepository.findOne(carId);
+
+        if (car == null) {
+            throw new ResourceNotFoundException(carId, "Car Not Found");
+        }
+
+        if (!car.getClient().getId().equals(owner.getId())) {
+            throw new AccessViolationException("Client can not delete this Car");
+        }
+
         try {
             carRepository.delete(carId);
         } catch(EmptyResultDataAccessException e){
