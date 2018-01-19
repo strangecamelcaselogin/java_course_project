@@ -18,12 +18,16 @@ public class Client extends AbstractEntity {
     private String name;
 
     @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
     private String password;
 
-    public Client(String email, String password, String name) {
+    public Client(String email, String password, String name, String address) {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.address = address;
     }
 
     protected Client() {}
@@ -50,5 +54,13 @@ public class Client extends AbstractEntity {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

@@ -23,7 +23,8 @@ export default class AdminInfo extends Component{
             //для модального окна
             isVisible: false,
             infoForModalScreen: [],
-
+            typeInfo: '',
+            extraInfo: ''
         };
 
         this.getClients = this.getClients.bind(this);
@@ -80,6 +81,7 @@ export default class AdminInfo extends Component{
             this.setState({
                 isVisible: true,
                 infoForModalScreen: this.props.clients,
+                typeInfo: 'clients',
             })
         })
 
@@ -90,6 +92,8 @@ export default class AdminInfo extends Component{
         this.setState({
             isVisible: true,
             infoForModalScreen: this.props.brandsClients,
+            typeInfo: 'clients_with_brand',
+            extraInfo: this.state.selectBrands
         })
     }
 
@@ -97,6 +101,8 @@ export default class AdminInfo extends Component{
         this.setState({
             isVisible: true,
             infoForModalScreen: this.props.endRentsClients,
+            typeInfo: 'client_for_end_date',
+            extraInfo: this.state.dateEndRent
         })
 
     }
@@ -105,6 +111,8 @@ export default class AdminInfo extends Component{
         this.setState({
             isVisible: true,
             infoForModalScreen: this.props.boxClient,
+            typeInfo: 'client_in_box',
+            extraInfo: this.state.selectBox
         })
     }
 
@@ -178,6 +186,15 @@ export default class AdminInfo extends Component{
                     </select>
                     <button onClick={this.getBoxClient}>Узнать о клиенте, занимающем бокс</button>
                 </div>
+
+                {
+                    this.state.isVisible &&
+                    <ModalScreenInfo
+                        info={this.state.infoForModalScreen}
+                        type={this.state.typeInfo}
+                        extraInfo={this.state.extraInfo}
+                    />
+                }
             </div>
         )
     }
@@ -202,6 +219,7 @@ function mapStateToProps(state, ownProps) {
     }
 }
 
+
 class ModalScreenInfo extends Component {
     constructor(props){
         super(props)
@@ -209,11 +227,38 @@ class ModalScreenInfo extends Component {
 
     render() {
         console.log(this.props.info);
-        return (
-            <div>
-                <button onClick={() => {this.props.offModal()}}>Close</button>
-                <div>ModalScreen</div>
-            </div>
-        )
+        if (this.props.type = 'clients') {
+            return (
+                <div>
+                    <button onClick={() => {this.props.offModal()}}>Close</button>
+                    <div>Список клиентов</div>
+                </div>
+            )
+        }
+        if (this.props.type = 'client_for_end_date') {
+            return (
+                <div>
+                    <button onClick={() => {this.props.offModal()}}>Close</button>
+                    <div>Клиенты, аренда которых заканчивается к {this.props.extraInfo}</div>
+                </div>
+            )
+        }
+        if (this.props.type = 'client_in_box') {
+            return (
+                <div>
+                    <button onClick={() => {this.props.offModal()}}>Close</button>
+                    <div>Клиент занимающий бокс {this.props.extraInfo}</div>
+                </div>
+            )
+        }
+
+        if (this.props.type = 'clients_with_brand') {
+            return (
+                <div>
+                    <button onClick={() => {this.props.offModal()}}>Close</button>
+                    <div>Клиенты с машинами марки {this.props.extraInfo}</div>
+                </div>
+            )
+        }
     }
 }

@@ -51,12 +51,13 @@ public class ClientController {
      * todo Не нужно, создание пользователя должно происходить через /register
      */
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<ClientDTO> postClient(@RequestParam String email, @RequestParam String name, @RequestParam String password) {
+    public ResponseEntity<ClientDTO> postClient(@RequestParam String email, @RequestParam String name,
+                                                @RequestParam String address, @RequestParam String password) {
         try {
             Client client = new Client(
                     email,
                     bCryptPasswordEncoder.encode(password), // захешируем пароль пользователя
-                    name);
+                    name, address);
 
             clientRepository.save(client);
 

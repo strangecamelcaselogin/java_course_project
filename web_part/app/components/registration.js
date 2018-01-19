@@ -15,11 +15,13 @@ export default class Registration extends Component{
             password: '',
             check_password: '',
             name: '',
+            address: '',
             error: '',
         };
 
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangeName = this.onChangeName.bind(this);
+        this.onChangeAddress = this.onChangeAddress.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onChangeCheckPassword = this.onChangeCheckPassword.bind(this);
         this.registrate = this.registrate.bind(this);
@@ -43,6 +45,12 @@ export default class Registration extends Component{
         })
     }
 
+    onChangeAddress(value){
+        this.setState({
+            address: value
+        })
+    }
+
     onChangeCheckPassword(value){
         this.setState({
             check_password: value
@@ -53,8 +61,10 @@ export default class Registration extends Component{
         const email = this.state.e_mail;
         const name = this.state.name;
         const password = this.state.password;
+        const address = this.state.address;
+        
         if(this.state.check_password === this.state.password){
-            api.post(`/clients?email=${email}&name=${name}&password=${password}`)
+            api.post(`/clients?email=${email}&name=${name}&password=${password}&address=${address}`)
                 .then((resp) => {
                     window.location = '/login';
                 }).catch(error => {
@@ -76,6 +86,7 @@ export default class Registration extends Component{
             <div>
                 <input onChange={(e) => { this.onChangeEmail(e.target.value)}} value={this.state.e_mail} placeholder="E-mail"/>
                 <input onChange={(e) => { this.onChangeName(e.target.value)}} value={this.state.name} placeholder="ФИО"/>
+                <input onChange={(e) => { this.onChangeAddress(e.target.value)}} value={this.state.address} placeholder="Адрес"/>
                 <input onChange={(e) => { this.onChangePassword(e.target.value)}} value={this.state.password} type="password" name="password" placeholder="Пароль"/>
                 <input onChange={(e) => { this.onChangeCheckPassword(e.target.value)}} value={this.state.check_password} type="password" name="password" placeholder="Повторите пароль"/>
                 <button onClick={this.registrate} id="b-login">Зарегистироваться</button>

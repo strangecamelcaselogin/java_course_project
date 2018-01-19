@@ -39,18 +39,18 @@ public class DataLoader implements ApplicationRunner {
         Client admin = new Client(
                 "admin@service",
                 bCryptPasswordEncoder.encode("adminpassword"),
-                "Admin");
+                "Admin", "657/ Tread.56");
 
         // Добавим клиентов
         Client firstClient = new Client(
                 "user1",
                 bCryptPasswordEncoder.encode("password"), // захешируем пароль пользователя
-                "UserName");
+                "UserName", "157/ Tread.56");
 
         Client secondClient = new Client(
                 "user2",
                 bCryptPasswordEncoder.encode("password2"),
-                "UserName2");
+                "UserName2", "17/ Tread.56");
 
         clientRepository.save(Arrays.asList(admin, firstClient, secondClient));
 
