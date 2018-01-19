@@ -12,6 +12,8 @@ import ru.rsatu.boxes.dto.RentDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
 import ru.rsatu.boxes.rest.exception.ResourceNotFoundException;
 
+import java.sql.Timestamp;
+
 @RestController
 @RequestMapping("/rents")
 public class RentController {
@@ -39,13 +41,16 @@ public class RentController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public RentDTO postRent(@RequestParam Long carId, @RequestParam String start, @RequestParam String end) {
+    public RentDTO postRent(@RequestParam Long carId, @RequestParam Long end) {
 
         Car car = carRepository.findOne(carId);
         CarBrand carBrand = car.getCarBrand();
 
         Box box = boxRepository.findFreeBox(carBrand);
         Long boxId = box.getId();
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Long start = timestamp.getTime();
 
         if (box == null) {
             throw new ResourceNotFoundException(boxId, "Box Not Found");
@@ -59,7 +64,8 @@ public class RentController {
                 boxRepository.findOne(boxId),
                 carRepository.findOne(carId),
                 start,
-                end
+                end,
+                true
         );
 
         rentRepository.save(rent);
@@ -67,10 +73,14 @@ public class RentController {
         return rentDTOMapper.mapOne(rent);
     }
 
-    @RequestMapping(value="/{rentId}", method = RequestMethod.DELETE)
+    @RequestMapping(value="/{rentId}", method = RequestMethod.PATCH)
     public ResponseEntity<Boolean> cancelRent(@PathVariable Long rentId) {
         try {
-            rentRepository.delete(rentId);
+
+            Rent rent = rentRepository.findOne(rentId);
+            rent.setActive(false);
+            rentRepository.save(rent);
+
         } catch(EmptyResultDataAccessException e){
             return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }

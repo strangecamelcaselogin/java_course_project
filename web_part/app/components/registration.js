@@ -62,7 +62,7 @@ export default class Registration extends Component{
         const name = this.state.name;
         const password = this.state.password;
         const address = this.state.address;
-        
+
         if(this.state.check_password === this.state.password){
             api.post(`/clients?email=${email}&name=${name}&password=${password}&address=${address}`)
                 .then((resp) => {

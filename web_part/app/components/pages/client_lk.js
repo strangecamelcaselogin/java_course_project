@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import { getBrandsInfo, addClientCar, deleteClientCar, getClientCarsInfo, deleteClientRent } from '../../actions' ;
+import { getBrandsInfo, getClientRentsInfo, addClientCar, deleteClientCar, getClientCarsInfo, cancelClientRent } from '../../actions' ;
 
 @connect(mapStateToProps)
 export default class ClientLK extends Component{
@@ -27,6 +27,7 @@ export default class ClientLK extends Component{
 
     componentDidMount(){
         let p = this.props.dispatch(getClientCarsInfo());
+        let p1 = this.props.dispatch(getClientRentsInfo());
         p.then(() => {
             let p2 = this.props.dispatch(getBrandsInfo());
             p2.then(() => {
@@ -84,7 +85,7 @@ export default class ClientLK extends Component{
     }
 
     cancelTicket(id){
-        this.props.dispatch(deleteClientRent(id))
+        this.props.dispatch(cancelClientRent(id))
     }
 
     //{}
@@ -168,10 +169,29 @@ export default class ClientLK extends Component{
                     <div>
                         <div>
                             {
-                                this.props.listTicket.map((ticket)=>{
+                                this.props.activeTickets.map((ticket)=>{
                                     return (
                                         <div>
-                                            {ticket.id}
+                                            Номер квитанции: {ticket.id}
+                                            Номер бокса: {ticket.boxId}
+                                            <button onClick={(ticket)=>{this.cancelTicket(ticket.id)}}>Отменить</button>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3>Архив квитанций</h3>
+                    <div>
+                        <div>
+                            {
+                                this.props.notActiveTickets.map((ticket)=>{
+                                    return (
+                                        <div>
+                                            Номер квитанции: {ticket.id}
                                             <button onClick={(ticket)=>{this.cancelTicket(ticket.id)}}>Отменить</button>
                                         </div>
                                     )
@@ -186,9 +206,22 @@ export default class ClientLK extends Component{
 }
 
 function mapStateToProps(state, ownProps){
+
+    let activeTickets = [];
+    let notActiveTickets = [];
+
+    for (let r of state.rents.rentsList){
+        if (r.active) {
+            activeTickets.push(r);
+        } else {
+            notActiveTickets.push(r);
+        }
+    }
+
     return {
         clientCars: state.clients.clientCarList,
         carBrands: state.brands.brandsById,
-        listTicket: state.clients.clientListTicket
+        activeTickets,
+        notActiveTickets
     }
 }

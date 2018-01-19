@@ -7,6 +7,7 @@ import clients from './clients';
 import brands from './brands';
 import boxes from './boxes';
 import client from './client';
+import rents from './rents';
 
 
 const rootReducer = combineReducers({
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
     clients,
     boxes,
     brands,
-    client
+    client,
+    rents
 });
 
 export default rootReducer

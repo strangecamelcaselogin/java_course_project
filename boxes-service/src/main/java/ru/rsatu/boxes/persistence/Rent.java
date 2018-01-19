@@ -16,18 +16,18 @@ public class Rent extends AbstractEntity{
     @JoinColumn(name = "car_id")
     private Car car;
 
-    private String startDate;
-    private String endDate;
+    private Long startDate;
+    private Long endDate;
 
     @Column(nullable = false)
-    private Boolean busy;
+    private Boolean active;
 
-    public Rent(Box box, Car car, String start_date, String end_date) {
+    public Rent(Box box, Car car, Long start_date, Long end_date, Boolean active) {
         this.box = box;
         this.car = car;
         this.startDate = start_date;
         this.endDate = end_date;
-        this.busy = true;
+        this.active = active;
     }
 
     public Rent() {}
@@ -56,27 +56,27 @@ public class Rent extends AbstractEntity{
         this.car = car;
     }
 
-    public String getStartDate() {
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public Long getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(Long startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public Long getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(Long endDate) {
         this.endDate = endDate;
-    }
-
-    public Boolean getBusy() {
-        return busy;
-    }
-
-    public void setBusy(Boolean busy) {
-        this.busy = busy;
     }
 }

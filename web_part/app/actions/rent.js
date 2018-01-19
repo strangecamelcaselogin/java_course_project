@@ -54,10 +54,10 @@ export function addClientRentReceiveSuccess(rent) {
 }
 
 export const ADD_CLIENT_RENT = 'ADD_CLIENT_RENT';
-export const addClientRent = (carId, start, end) => (dispatch, getState) => {
+export const addClientRent = (carId, end) => (dispatch, getState) => {
     dispatch(clientRentRequest());
 
-    return api.post(`/rents?carId=${carId}&start=${start}&end=${end}`).then(data => {
+    return api.post(`/rents?carId=${carId}&end=${end}`).then(data => {
         //data.src = require('images/service.png');
         dispatch(addClientRentReceiveSuccess(data));
     }).catch(function(error) {
@@ -67,21 +67,21 @@ export const addClientRent = (carId, start, end) => (dispatch, getState) => {
 
 //delete RENT
 //add RENT
-export const DELETE_CLIENT_RENT_RECEIVE = 'DELETE_CLIENT_RENT_RECEIVE';
-export function deleteClientRentReceiveSuccess(rentId) {
+export const CANCEL_CLIENT_RENT_RECEIVE = 'CANCEL_CLIENT_RENT_RECEIVE';
+export function cancelClientRentReceiveSuccess(rentId) {
     return {
-        type: DELETE_CLIENT_RENT_RECEIVE,
+        type: CANCEL_CLIENT_RENT_RECEIVE,
         payload: rentId
     }
 }
 
-export const DELETE_CLIENT_RENT = 'DELETE_CLIENTS_RENT';
-export const deleteClientRent = (rentId) => (dispatch, getState) => {
+export const CANCEL_CLIENT_RENT = 'CANCEL_CLIENTS_RENT';
+export const cancelClientRent = (rentId) => (dispatch, getState) => {
     dispatch(clientRentRequest());
 
-    return api.delete(`/rents/${rentId}`).then(data => {
+    return api.patch(`/rents/${rentId}`).then(data => {
         //data.src = require('images/service.png');
-        dispatch(deleteClientRentReceiveSuccess(rentId));
+        dispatch(cancelClientRentReceiveSuccess(rentId));
     }).catch(function(error) {
         dispatch(clientRentReceiveFailure())
     });

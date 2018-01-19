@@ -4,7 +4,7 @@
 import * as actions from '../actions';
 import _ from 'lodash';
 
-export default function brands(state = {
+export default function rents(state = {
     rentsList: [],
     error: '',
 }, action) {
@@ -17,15 +17,15 @@ export default function brands(state = {
             };
 
         case actions.ADD_CLIENT_RENT_RECEIVE: {
-            let oldBrands = _.cloneDeep(state.brandsById);
-            oldBrands.push(action.payload);
+            let oldRents = _.cloneDeep(state.rentsList);
+            oldRents.push(action.payload);
             return {
                 ...state,
-                rentsList: oldBrands
+                rentsList: oldRents
             };
         }
 
-        case actions.DELETE_CLIENT_RENT_RECEIVE: {
+        case actions.CANCEL_CLIENT_RENT_RECEIVE: {
             let oldRents =  _.cloneDeep(state.rentsList);
             let index = null;
             for (let i = 0; i < oldRents.length; i++){
@@ -40,7 +40,7 @@ export default function brands(state = {
             oldRents.splice(index, 1);
             return {
                 ...state,
-                rentsList: oldBrands
+                rentsList: oldRents
             };
         }
 

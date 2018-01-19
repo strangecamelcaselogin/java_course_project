@@ -5,15 +5,23 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import { getBrandsInfo, addClientRent, deleteClientRent, getClientCarsInfo } from '../../actions' ;
+import { getBrandsInfo, addClientRent, cancelClientRent, getClientCarsInfo } from '../../actions' ;
+import moment from  'moment';
 
+
+var options = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric'
+};
 
 @connect(mapStateToProps)
 export default class ClientRent extends Component{
     constructor(props){
         super(props);
+        let date = moment().format('L');
         this.state = {
-            dateEndRent: null,
+            dateEndRent: date,
             dateStartRent: null,
             selectCar: null
         };
@@ -66,8 +74,7 @@ export default class ClientRent extends Component{
 
     provideBox(){
         this.props.dispatch(addClientRent(this.state.selectCar,
-                                            this.state.dateStartRent,
-                                            this.state.dateEndRent))
+            Date.parse(this.state.dateEndRent)))
     }
 
     //{}
@@ -76,9 +83,6 @@ export default class ClientRent extends Component{
         return(
             <div>
                 <h3>Предоставить бокс</h3>
-                <label>Старт аренды
-                    <input onChange={(e) => {this.onChangeDateStartRent(e.target.value)}} value={this.state.dateStartRent}/>
-                </label>
                 <label>Конец аренды
                     <input onChange={(e) => {this.onChangeDateEndRent(e.target.value)}} value={this.state.dateEndRent}/>
                 </label>
