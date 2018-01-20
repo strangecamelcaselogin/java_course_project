@@ -115,6 +115,8 @@ function apiRequest(method, url, options = {}) {
             case 401:
             case 403:
             case 406:
+                localStorage.removeItem('token');
+                localStorage.removeItem('role');
                 redirectToLogin();
                 break;
         }

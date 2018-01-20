@@ -6,12 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.BoxRepository;
 import ru.rsatu.boxes.dao.CarRepository;
+import ru.rsatu.boxes.dao.ClientRepository;
 import ru.rsatu.boxes.dao.RentRepository;
 import ru.rsatu.boxes.persistence.*;
 import ru.rsatu.boxes.dto.RentDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
+import ru.rsatu.boxes.rest.exception.AccessViolation;
 import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
+import java.security.Principal;
 import java.sql.Timestamp;
 
 @RestController
@@ -20,13 +23,16 @@ public class RentController {
     private final RentRepository rentRepository;
     private final CarRepository carRepository;
     private final BoxRepository boxRepository;
+    private final ClientRepository clientRepository;
 
     private DomainToDTOMapper<RentDTO> rentDTOMapper = new DomainToDTOMapper<>(RentDTO.class);
 
-    public RentController (RentRepository rentRepository, CarRepository carRepository, BoxRepository boxRepository){
+    public RentController (RentRepository rentRepository, CarRepository carRepository, BoxRepository boxRepository,
+                           ClientRepository clientRepository){
         this.boxRepository = boxRepository;
         this.carRepository = carRepository;
         this.rentRepository = rentRepository;
+        this.clientRepository = clientRepository;
     }
 
     //TODO для каждого клиента свои
@@ -75,10 +81,16 @@ public class RentController {
     }
 
     @RequestMapping(value="/{rentId}", method = RequestMethod.PATCH)
-    public ResponseEntity<Boolean> cancelRent(@PathVariable Long rentId) {
+    public ResponseEntity<Boolean> cancelRent(Principal auth, @PathVariable Long rentId) {
         try {
-
+            Client owner = clientRepository.findByEmail(auth.getName());
             Rent rent = rentRepository.findOne(rentId);
+            Car car = rent.getCar();
+
+            if (!car.getClient().getId().equals(owner.getId())) {
+                throw new AccessViolation("Client can not patch this Rent");
+            }
+
             rent.setActive(false);
             rentRepository.save(rent);
 

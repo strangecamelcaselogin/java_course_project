@@ -9,12 +9,6 @@ import { getBrandsInfo, addClientRent, cancelClientRent, getClientCarsInfo } fro
 import moment from  'moment';
 
 
-var options = {
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric'
-};
-
 @connect(mapStateToProps)
 export default class ClientRent extends Component{
     constructor(props){
