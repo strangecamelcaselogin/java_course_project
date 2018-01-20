@@ -154,7 +154,7 @@ export default class AdminInfo extends Component{
                         {
                             this.props.carBrandsById.map((brand, index) => {
                                 return (
-                                    <option key={brand.name} value={brand.name}>
+                                    <option key={brand.id} value={brand.id}>
                                         {brand.name}
                                     </option>
                                 )
