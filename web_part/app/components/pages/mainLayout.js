@@ -18,7 +18,7 @@ export default class MainLayout extends Component{
         return(
             <div>
                 <Header/>
-                <div id='container' className='page'>
+                <div id='container'>
                     {this.props.children}
                 </div>
             </div>

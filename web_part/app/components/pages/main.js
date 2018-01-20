@@ -6,6 +6,7 @@ import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
 import {getClientsInfo, getBrandsInfo, addBrand, deleteBrand} from '../../actions' ;
+import {Container} from "reactstrap";
 
 
 @connect(mapStateToProps)
@@ -22,8 +23,8 @@ export default class MainPage extends Component{
     render(){
         return(
             <div>
-                <p>
-                    <div>Наш гараж есть прибежище следующих сортов колесного транспорта</div>
+                <Container>
+                    <p>Наш гараж есть прибежище следующих сортов колесного транспорта</p>
                     {
                         this.props.carBrandsById.map((brand) => {
                             return(
@@ -33,7 +34,7 @@ export default class MainPage extends Component{
                             )
                         })
                     }
-                </p>
+                </Container>
             </div>
         )
     }

@@ -1,17 +1,17 @@
 ﻿body {
     font-family: Arial;
-    background: #fff;
-    margin: 0 !important;
-    color: #333333;
+    /*margin: 0 !important;*/
     height: 100%;
 }
 
-.page {
-    display: flex;
-    justify-content: space-evenly;
+/*Ограничим размер контейнера на страницах логина и регистрации*/
+.login-register-container {
+    max-width: 500px !important;
 }
 
-.page div {
-    max-width: 1000px;
-    min-width: 600px;
+#header {
+    padding: 1em 3em 0 3em;
+}
+#header li {
+    padding: 0 1em 0 1em;
 }

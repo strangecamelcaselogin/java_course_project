@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import { getBrandsInfo, addClientRent, cancelClientRent, getClientCarsInfo } from '../../actions' ;
 import moment from  'moment';
 
+import {FormGroup, Input, Label, Button, Container} from "reactstrap";
+
 
 @connect(mapStateToProps)
 export default class ClientRent extends Component{
@@ -71,25 +73,33 @@ export default class ClientRent extends Component{
             Date.parse(this.state.dateEndRent)))
     }
 
-    //{}
     render(){
         console.log('render', this.state);
         return(
             <div>
-                <h3>Предоставить бокс</h3>
-                <label>Конец аренды
-                    <input onChange={(e) => {this.onChangeDateEndRent(e.target.value)}} value={this.state.dateEndRent}/>
-                </label>
-                <select onChange={(e) => {this.onChangeSelectCar(e.target.value)}}>
-                    {
-                        this.props.carsList.map((car) => {
-                            return(
-                                <option value={car.id} key={car.id}>{car.number}</option>
-                            )
-                        })
-                    }
-                </select>
-                <button onClick={this.provideBox}>Предоставить</button>
+                <Container>
+                    <h3>Предоставить бокс</h3>
+
+                    <FormGroup>
+                        <Label>Окончание аренды</Label>
+                        <Input onChange={(e) => {this.onChangeDateEndRent(e.target.value)}} value={this.state.dateEndRent}/>
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Label>Автомобиль</Label>
+                        <Input type="select" onChange={(e) => {this.onChangeSelectCar(e.target.value)}}>
+                        {
+                            this.props.carsList.map((car) => {
+                                return(
+                                    <option value={car.id} key={car.id}>{car.number}</option>
+                                )
+                            })
+                        }
+                        </Input>
+                    </FormGroup>
+
+                    <Button color="primary" onClick={this.provideBox}>Запросить</Button>
+                </Container>
             </div>
         )
     }

@@ -55,18 +55,19 @@ export default class AdminInfo extends Component{
         })
     }
 
-    componentWillReceiveProps(){
-        this.setState(function(prevState, props) {
-            let obj = {};
-            if (props.carBrandsById.length !== 0) {
-                obj['selectBrands'] = props.carBrandsById[0].id;
-            }
-            if (props.notFreeBoxesById.length !== 0) {
-                obj['selectBox'] = props.notFreeBoxesById[0].id;
-            }
-            return obj;
-        });
-    }
+    // TODO
+    // componentWillReceiveProps(){
+    //     this.setState(function(prevState, props) {
+    //         let obj = {};
+    //         if (props.carBrandsById.length !== 0) {
+    //             obj['selectBrands'] = props.carBrandsById[0].id;
+    //         }
+    //         if (props.notFreeBoxesById.length !== 0) {
+    //             obj['selectBox'] = props.notFreeBoxesById[0].id;
+    //         }
+    //         return obj;
+    //     });
+    // }
 
     offModal(){
         this.setState({
@@ -136,7 +137,6 @@ export default class AdminInfo extends Component{
         })
     }
 
-    //{}
     render(){
         console.log('render', this.state);
         return(
@@ -193,6 +193,7 @@ export default class AdminInfo extends Component{
                         info={this.state.infoForModalScreen}
                         type={this.state.typeInfo}
                         extraInfo={this.state.extraInfo}
+                        offModal={this.offModal}
                     />
                 }
             </div>
@@ -222,15 +223,20 @@ class ModalScreenInfo extends Component {
 
     render() {
         console.log(this.props.info);
-        if (this.props.type = 'clients') {
+        if (this.props.type === 'clients') {
             return (
                 <div>
                     <button onClick={() => {this.props.offModal()}}>Close</button>
                     <div>Список клиентов</div>
+                    { this.props.info.map((client, index) => {
+                        return (<div title={client.id}>#{index + 1} - {client.name} ({client.email}) - {client.address}</div>);
+                    })
+
+                    }
                 </div>
             )
         }
-        if (this.props.type = 'client_for_end_date') {
+        if (this.props.type === 'client_for_end_date') {
             return (
                 <div>
                     <button onClick={() => {this.props.offModal()}}>Close</button>
@@ -238,7 +244,7 @@ class ModalScreenInfo extends Component {
                 </div>
             )
         }
-        if (this.props.type = 'client_in_box') {
+        if (this.props.type === 'client_in_box') {
             return (
                 <div>
                     <button onClick={() => {this.props.offModal()}}>Close</button>
@@ -247,7 +253,7 @@ class ModalScreenInfo extends Component {
             )
         }
 
-        if (this.props.type = 'clients_with_brand') {
+        if (this.props.type === 'clients_with_brand') {
             console.log('clients_with_brand', this.props);
             return (
                 <div>

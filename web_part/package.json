@@ -5,8 +5,10 @@
     "start": "webpack-dev-server --config=webpack.config.js"
   },
   "dependencies": {
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "bootstrap": "^4.0.0-beta.3",
+    "react": "^15.6.2",
+    "react-dom": "^15.6.2",
+    "reactstrap": "^5.0.0-alpha.4",
     "webpack-dev-server": "^2.7.1"
   },
   "devDependencies": {

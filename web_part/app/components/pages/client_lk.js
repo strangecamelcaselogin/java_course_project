@@ -6,6 +6,7 @@ import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
 import { getBrandsInfo, getClientRentsInfo, addClientCar, deleteClientCar, getClientCarsInfo, cancelClientRent } from '../../actions' ;
+import {Button, Container, Input, Table, FormGroup, Label} from "reactstrap";
 
 @connect(mapStateToProps)
 export default class ClientLK extends Component{
@@ -89,118 +90,187 @@ export default class ClientLK extends Component{
         this.props.dispatch(cancelClientRent(id))
     }
 
-    //{}
     render(){
         console.log('render', this.state);
         return(
             <div>
-                <h2>Личный кабинет {this.state.client_name}</h2>
-                {
-                    (this.props.clientCars.length !== 0) ?
-                        <div>
-                            <h3>Список машин</h3>
-                            <div>
-                                {
-                                    this.props.clientCars.map((car) => {
-                                        return (
-                                            <div value={car.id} index={car.id}>{car.number}</div>
-                                        )
-                                    })
-                                }
-                            </div>
-                        </div>
-                        :
-                        <div>Нет машин</div>
-                }
-                {
-                    (this.props.carBrands.length !== 0) ?
-                        <div>
-                            <h3>Добавить машину</h3>
-                            <div>
-                                <select onChange={(e) => {
-                                    this.onChangeSelectCarBrand(e.target.value)
-                                }} value={this.state.selectCarBrand}>
-                                    {
-                                        this.props.carBrands.map((brand, index) => {
-                                            if (index === 0) {
+                <Container>
+                    <h2>Личный кабинет {this.state.client_name}</h2>
+
+                    <div>
+                        <h3>Ваши автомобили</h3>
+                        {
+                            (this.props.clientCars.length !== 0) ?
+                                <div>
+                                    <Table>
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Марка автомобиля</th>
+                                                <th>Государственный номер</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {
+                                            this.props.clientCars.map((car, index) => {
                                                 return (
-                                                    <option value={brand.id} key={brand.id}>{brand.name}</option>
+                                                    <tr>
+                                                        <th scope="row">{index + 1}</th>
+                                                        <td>{car.carBrandId}</td>
+                                                        <td>{car.number}</td>
+                                                    </tr>
                                                 )
+                                            })
+                                        }
+                                        </tbody>
+                                    </Table>
+                                </div>
+                                :
+                                <div>У вас ещё нет зарегестрированных машин</div>
+                        }
+                    </div>
+
+                    <hr/>
+
+                    <div>
+                        <h3>Добавить новый атомобиль</h3>
+                        {
+                            (this.props.carBrands.length !== 0) ?
+                                <div>
+                                    <FormGroup>
+                                        <Label>Выберите марку автомобиля</Label>
+                                        <Input onChange={(e) => {
+                                            this.onChangeSelectCarBrand(e.target.value)
+                                            }} type="select" value={this.state.selectCarBrand}>
+                                            {
+                                                this.props.carBrands.map((brand, index) => {
+                                                    if (index === 0) {
+                                                        return (
+                                                            <option value={brand.id} key={brand.id}>{brand.name}</option>
+                                                        )
+                                                    }
+                                                    return (
+                                                        <option value={brand.id} key={brand.id}>{brand.name}</option>
+                                                    )
+                                                })
                                             }
-                                            return (
-                                                <option value={brand.id} key={brand.id}>{brand.name}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                                <input onChange={(e) => {
-                                    this.onChangeNumberCar(e.target.value)
-                                }} value={this.state.numberCar}/>
-                                <button onClick={this.addCar}>Добавить</button>
-                            </div>
-                        </div>
-                        :
-                        <div>Нельзя добавить машину. Нет марок</div>
-                }
-                {
-                    (this.props.clientCars.length !== 0) ?
-                        <div>
-                            <h3>Удалить машину</h3>
-                            <div>
-                                <select onChange={(e) => {
-                                    this.onChangeSelectClientCar(e.target.value)
-                                }}>
+                                        </Input>
+                                    </FormGroup>
+
+                                    <FormGroup>
+                                        <Label>Введите номер</Label>
+                                        <Input onChange={(e) => {
+                                            this.onChangeNumberCar(e.target.value)
+                                        }} value={this.state.numberCar}/>
+                                    </FormGroup>
+
+                                    <Button color="primary" onClick={this.addCar}>Добавить</Button>
+                                </div>
+                                :
+                                <div>Нельзя добавить автомобиль. В системе нет марок</div>
+                        }
+                    </div>
+
+                    <hr/>
+
+                    <div>
+                        <h3>Удалить машину</h3>
+                        {
+                            (this.props.clientCars.length !== 0) ?
+                                <div>
+                                    <FormGroup>
+                                        <Label>Выберите автомобиль</Label>
+                                        <Input type="select" onChange={(e) => {
+                                            this.onChangeSelectClientCar(e.target.value)
+                                        }}>
+                                            {
+                                                this.props.clientCars.map((car) => {
+                                                    return (<option value={car.id} key={car.id}>{car.number}</option>)
+                                                })
+                                            }
+                                        </Input>
+                                    </FormGroup>
+
+                                    <Button color="danger" onClick={this.deleteCar}>Удалить</Button>
+                                </div>
+                                :
+                                <div>У вас нет ни одной машины</div>
+                        }
+                    </div>
+
+                    <hr/>
+
+                    <div>
+                        <h3>Активные квитанции</h3>
+                        {
+                            (this.props.activeTickets.length !== 0) ?
+                                <Table>
+                                    <thead>
+                                    <th>#</th>
+                                    <th>Номер квитации</th>
+                                    <th>Автомобиль</th>
+                                    <th>Бокс</th>
+                                    <th>Действие</th>
+                                    </thead>
+                                    <tbody>
                                     {
-                                        this.props.clientCars.map((car) => {
+                                        this.props.activeTickets.map((ticket, index)=>{
                                             return (
-                                                <option value={car.id} key={car.id}>{car.number}</option>
+                                                <tr>
+                                                    <th scope="row">{index + 1}</th>
+                                                    <td>{ticket.id}</td>
+                                                    <td>{ticket.carId}</td>
+                                                    <td>{ticket.boxId}</td>
+                                                    <td>
+                                                        <Button color="danger"
+                                                                onClick={(ticket)=>{this.cancelTicket(ticket.id)}}>Отменить</Button>
+                                                    </td>
+                                                </tr>
                                             )
                                         })
                                     }
-                                </select>
-                                <button onClick={this.deleteCar}>Удалить</button>
-                            </div>
-                        </div>
-                        :
-                        <div></div>
-                }
-
-                <div>
-                    <h3>Список активных квитанций</h3>
-                    <div>
-                        <div>
-                            {
-                                this.props.activeTickets.map((ticket)=>{
-                                    return (
-                                        <div>
-                                            Номер квитанции: {ticket.id}
-                                            Номер бокса: {ticket.boxId}
-                                            <button onClick={(ticket)=>{this.cancelTicket(ticket.id)}}>Отменить</button>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
+                                    </tbody>
+                                </Table>
+                                :
+                                <div>У вас нет активных квитанций</div>
+                        }
                     </div>
-                </div>
 
-                <div>
-                    <h3>Архив квитанций</h3>
+                    <hr/>
+
                     <div>
-                        <div>
-                            {
-                                this.props.notActiveTickets.map((ticket)=>{
-                                    return (
-                                        <div>
-                                            Номер квитанции: {ticket.id}
-                                            <button onClick={(ticket)=>{this.cancelTicket(ticket.id)}}>Отменить</button>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
+                        <h3>Архив квитанций</h3>
+                        {
+                            (this.props.notActiveTickets.length !== 0) ?
+
+                                <Table>
+                                    <thead>
+                                    <th>#</th>
+                                    <th>Номер квитации</th>
+                                    <th>Автомобиль</th>
+                                    <th>Бокс</th>
+                                    </thead>
+                                    <tbody>
+                                    {
+                                        this.props.notActiveTickets.map((ticket, index) => {
+                                            return (
+                                                <tr>
+                                                    <th scope="row">{index + 1}</th>
+                                                    <td>{ticket.id}</td>
+                                                    <td>{ticket.carId}</td>
+                                                    <td>{ticket.boxId}</td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                    </tbody>
+                                </Table>
+                                :
+                                <div>У вас нет завершенных квитанций</div>
+                        }
                     </div>
-                </div>
+
+                </Container>
             </div>
         )
     }

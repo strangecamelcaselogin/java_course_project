@@ -2,9 +2,12 @@
  * Created by Jane on 17.01.2018.
  */
 import React, { Component } from 'react';
-import {Link} from 'react-router';
-import _ from 'lodash';
-import CSSModules from 'react-css-modules';
+// import {Link} from 'react-router';
+// import _ from 'lodash';
+// import CSSModules from 'react-css-modules';
+
+import { Container, Form, FormGroup, Button, Input, Label } from 'reactstrap';
+
 import api from '../api';
 
 export default class Registration extends Component{
@@ -79,20 +82,40 @@ export default class Registration extends Component{
         }
     }
 
-    //{}
     render(){
         console.log('render', this.state);
         return(
             <div>
-                <input onChange={(e) => { this.onChangeEmail(e.target.value)}} value={this.state.e_mail} placeholder="E-mail"/>
-                <input onChange={(e) => { this.onChangeName(e.target.value)}} value={this.state.name} placeholder="ФИО"/>
-                <input onChange={(e) => { this.onChangeAddress(e.target.value)}} value={this.state.address} placeholder="Адрес"/>
-                <input onChange={(e) => { this.onChangePassword(e.target.value)}} value={this.state.password} type="password" name="password" placeholder="Пароль"/>
-                <input onChange={(e) => { this.onChangeCheckPassword(e.target.value)}} value={this.state.check_password} type="password" name="password" placeholder="Повторите пароль"/>
-                <button onClick={this.registrate} id="b-login">Зарегистироваться</button>
+                <Container className='login-register-container'>
+                    <Form>
+                        <FormGroup>
+                            <Label>Почтовый адрес</Label>
+                            <Input onChange={(e) => { this.onChangeEmail(e.target.value)}} value={this.state.e_mail} placeholder="E-mail"/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Фамилия Имя Отчество</Label>
+                            <Input onChange={(e) => { this.onChangeName(e.target.value)}} value={this.state.name} placeholder="ФИО"/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Адрес проживания</Label>
+                            <Input onChange={(e) => { this.onChangeAddress(e.target.value)}} value={this.state.address} placeholder="Адрес"/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Пароль</Label>
+                            <Input onChange={(e) => { this.onChangePassword(e.target.value)}} value={this.state.password} type="password" name="password" placeholder="Пароль"/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Повторите пароль</Label>
+                            <Input onChange={(e) => { this.onChangeCheckPassword(e.target.value)}} value={this.state.check_password} type="password" name="password" placeholder="Повторите пароль"/>
+                        </FormGroup>
 
-                <div id="error-message">{this.state.error}</div>
-                <div  align="center"><Link to="/login">Войти</Link></div>
+                        <Button color="primary" onClick={this.registrate} id="b-login">Зарегистироваться</Button>
+
+                        {/*<div align="center"><Link to="/login">Войти</Link></div>*/}
+
+                        <div id="error-message">{this.state.error}</div>
+                    </Form>
+                </Container>
             </div>
         )
     }

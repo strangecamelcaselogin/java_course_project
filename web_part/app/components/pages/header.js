@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules'
 import headerStyles from '../../styles/header.css'
 
+import { Nav, NavItem, Row, Col } from 'reactstrap';
+
 
 @connect(mapStateToProps)
 @CSSModules(headerStyles)
@@ -33,20 +35,39 @@ export default class Header extends Component {
         }
         return (
             <div id='header'>
-                <div styleName="header">
-                    <Link to='/index'>Главная</Link>
-                    {isAdmin && userIn && <Link to='/admin_info'>Справки</Link>}
-                    {isAdmin && userIn && <Link to='/admin_manage'>Управление</Link>}
-                    {!isAdmin && userIn && <Link to='/rent'>Арендовать</Link>}
-                    {!isAdmin && userIn && <Link to='/lk'>Личный кабинет</Link>}
+                <Nav>
+                    <NavItem>
+                        <Link to='/index'>Главная</Link>
+                    </NavItem>
+
+                    {isAdmin && userIn && <NavItem>
+                        <Link to='/admin_info'>Справки</Link>
+                    </NavItem>}
+
+                    {isAdmin && userIn && <NavItem>
+                        <Link to='/admin_manage'>Управление</Link>
+                    </NavItem>}
+
+                    {!isAdmin && userIn && <NavItem>
+                        <Link to='/rent'>Арендовать</Link>
+                    </NavItem>}
+
+                    {!isAdmin && userIn && <NavItem>
+                        <Link to='/lk'>Личный кабинет</Link>
+                    </NavItem>}
                     {
                         userIn ?
-                            <Link onClick={this.exitAcc}>Выйти</Link>
+                            <NavItem>
+                                <Link onClick={this.exitAcc} to="#">Выйти</Link>
+                            </NavItem>
                             :
-                            <Link to='/login'>Войти</Link>
+                            <NavItem>
+                                <Link to='/login'>Войти</Link>
+                            </NavItem>
                     }
 
-                </div>
+                </Nav>
+                <hr/>
             </div>
         )
     }
