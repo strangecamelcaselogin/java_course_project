@@ -19,6 +19,7 @@ export default class Header extends Component {
     exitAcc(){
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+        window.location.href = '/login';
     }
 
     render () {
@@ -40,7 +41,7 @@ export default class Header extends Component {
                     {!isAdmin && userIn && <Link to='/lk'>Личный кабинет</Link>}
                     {
                         userIn ?
-                            <Link onClick={this.exitAcc} to='/login'>Выйти</Link>
+                            <Link onClick={this.exitAcc}>Выйти</Link>
                             :
                             <Link to='/login'>Войти</Link>
                     }
