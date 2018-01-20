@@ -68,7 +68,7 @@ public class DataLoader implements ApplicationRunner {
 
         // Добавим машин
         Car car1 = new Car(firstClient, mersedesBrand, "777");  // в этой по четным ездит
-        Car car2 = new Car(firstClient, mersedesBrand, "666");  // в этой по нечетным
+        Car car2 = new Car(firstClient, VAZBrand, "666");  // в этой по нечетным
         Car car3 = new Car(secondClient, VAZBrand, "134");
         Car car4 = new Car(secondClient, KRAZBrand, "895");
         carRepository.save(Arrays.asList(car1, car2, car3, car4));

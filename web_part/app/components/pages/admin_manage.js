@@ -6,7 +6,7 @@ import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
 import {getClientsInfo, getBrandsInfo, addBrand, deleteBrand, getBoxesInfo,
-            addBox, deleteBox, incPriceBox} from '../../actions' ;
+            addBox, deleteBox, incPriceBox, getFreeBoxesInfo} from '../../actions' ;
 
 
 @connect(mapStateToProps)
@@ -41,6 +41,7 @@ export default class AdminManage extends Component{
 
     componentDidMount(){
         let p = this.props.dispatch(getBoxesInfo());
+        let p1 = this.props.dispatch(getFreeBoxesInfo());
         p.then(() => {
             let p2 = this.props.dispatch(getBrandsInfo());
             /*p2.then(() => {
@@ -170,7 +171,7 @@ export default class AdminManage extends Component{
                             onChange={(e) => {this.onSelectCloseNumberBox(e.target.value)}}
                             value={this.state.closeNumberBox}>
                             {
-                                this.props.boxesById.map((box, index)=>{
+                                this.props.freeBoxesById.map((box, index)=>{
                                     return (
                                         <option value={box.id} key={index}>
                                             {box.id}
@@ -238,7 +239,8 @@ function mapStateToProps(state, ownProps) {
     console.log(state);
     return {
         carBrandsById: state.brands.brandsById,
-        notFreeBoxesById: state.boxes.notFreeBoxesById,
+        freeBoxesById: state.boxes.freeBoxesById,
         boxesById: state.boxes.boxesById
+
     }
 }

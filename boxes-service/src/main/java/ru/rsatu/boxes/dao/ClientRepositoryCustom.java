@@ -1,6 +1,9 @@
 package ru.rsatu.boxes.dao;
 
+import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.persistence.Client;
+
+import java.util.List;
 
 
 /**
@@ -12,4 +15,6 @@ import ru.rsatu.boxes.persistence.Client;
  */
 public interface ClientRepositoryCustom {
     Client findById(Long id);
+
+    List<Client> getClientsWithBrand(CarBrand brand);
 }

@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 export default function boxes(state = {
     boxesById: [],
-    notFreeBoxesById: [],
+    freeBoxesById: [],
 }, action) {
     switch (action.type) {
         case actions.GET_BOXES_RECEIVE:
@@ -15,10 +15,10 @@ export default function boxes(state = {
                 boxesById: action.payload.boxes
             };
 
-        case actions.GET_NOT_FREE_BOXES_RECEIVE:
+        case actions.GET_FREE_BOXES_RECEIVE:
             return {
                 ...state,
-                notFreeBoxesById: action.payload.boxes
+                freeBoxesById: action.payload
             };
 
         case actions.ADD_BOX_RECEIVE: {

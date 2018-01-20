@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import {getClientsInfo, getNotFreeBoxesInfo, getBrandsInfo, getBoxesInfo, addBrand} from '../../actions' ;
+import {getClientsInfo, getClientsWithBrand, getBrandsInfo, getBoxesInfo, addBrand} from '../../actions' ;
 
 
 @connect(mapStateToProps)
@@ -77,7 +77,7 @@ export default class AdminInfo extends Component{
 
     getClients(){
         let p = this.props.dispatch(getClientsInfo());
-        p.then(() =>{
+        p.then(() => {
             this.setState({
                 isVisible: true,
                 infoForModalScreen: this.props.clients,
@@ -88,7 +88,7 @@ export default class AdminInfo extends Component{
     }
 
     getBrandsClients(){
-        this.props.dispatch(addBrand("888"));
+        let p = this.props.dispatch(getClientsWithBrand(this.state.selectBrands));
         this.setState({
             isVisible: true,
             infoForModalScreen: this.props.brandsClients,
@@ -203,11 +203,6 @@ export default class AdminInfo extends Component{
 function mapStateToProps(state, ownProps) {
     console.log(state);
     let notFreeBoxesById = [];
-    for (let box of state.boxes.boxesById) {
-        if (box) {
-            notFreeBoxesById.push(box)
-        }
-    }
 
     return {
         clients: state.clients.clients,
@@ -253,6 +248,7 @@ class ModalScreenInfo extends Component {
         }
 
         if (this.props.type = 'clients_with_brand') {
+            console.log('clients_with_brand', this.props);
             return (
                 <div>
                     <button onClick={() => {this.props.offModal()}}>Close</button>

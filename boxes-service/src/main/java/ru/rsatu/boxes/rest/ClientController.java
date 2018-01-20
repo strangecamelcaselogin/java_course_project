@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import ru.rsatu.boxes.dao.CarBrandRepository;
 import ru.rsatu.boxes.dao.ClientRepository;
 import ru.rsatu.boxes.helpers.UserRole;
+import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.persistence.Client;
 import ru.rsatu.boxes.dto.ClientDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
@@ -36,6 +38,9 @@ public class ClientController {
     private ClientRepository clientRepository;
 
     @Autowired
+    private CarBrandRepository carBrandRepository;
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private DomainToDTOMapper<ClientDTO> clientDTOMapper = new DomainToDTOMapper<>(ClientDTO.class);
@@ -47,6 +52,21 @@ public class ClientController {
     public Iterable<ClientDTO> getClients(Principal auth) {
         if (new UserRole(auth.getName()).isAdmin()) {
             return clientDTOMapper.mapMany(clientRepository.findAll());
+        }
+        else {
+            throw new AccessViolation();
+        }
+    }
+
+    @RequestMapping(value="/with_brand/{brandId}", method = RequestMethod.GET)
+    public Iterable<ClientDTO> getClientsWithBrand(Principal auth, @PathVariable Long brandId) {
+        if (new UserRole(auth.getName()).isAdmin()) {
+            CarBrand carBrand = carBrandRepository.findOne(brandId);
+            if (carBrand == null) {
+                throw new ResourceNotFound(brandId, "CarBrand Not Found");
+            }
+
+            return clientDTOMapper.mapMany(clientRepository.getClientsWithBrand(carBrand));
         }
         else {
             throw new AccessViolation();

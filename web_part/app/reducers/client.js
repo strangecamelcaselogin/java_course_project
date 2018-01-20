@@ -7,7 +7,7 @@ import _ from 'lodash';
 export default function client(state = {
     client: null,
     clientCarList: [],
-    clientListTicket: []
+    clientListTicket: [],
 }, action) {
     switch (action.type) {
         case actions.GET_CLIENT:

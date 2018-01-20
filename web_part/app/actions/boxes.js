@@ -41,40 +41,38 @@ export const getBoxesInfo = () => (dispatch, getState) => {
 
 //not free boxes
 
-export const GET_NOT_FREE_BOXES_REQUEST = 'GET_NOT_FREE_BOXES_REQUEST';
-export const getNotFreeBoxesRequest = () => {
+export const GET_FREE_BOXES_REQUEST = 'GET_FREE_BOXES_REQUEST';
+export const getFreeBoxesRequest = () => {
     return {
-        type: GET_NOT_FREE_BOXES_REQUEST,
+        type: GET_FREE_BOXES_REQUEST,
     }
 };
 
-export const GET_NOT_FREE_BOXES_RECEIVE = 'GET_NOT_FREE_BOXES_RECEIVE';
-export function getNotFreeBoxesReceiveSuccess(boxes) {
+export const GET_FREE_BOXES_RECEIVE = 'GET_FREE_BOXES_RECEIVE';
+export function getFreeBoxesReceiveSuccess(boxes) {
     return {
-        type: GET_NOT_FREE_BOXES_RECEIVE,
-        payload: {
-            boxes
-        }
+        type: GET_FREE_BOXES_RECEIVE,
+        payload: boxes
     }
 }
-export const GET_NOT_FREE_BOXES_RECEIVE_FAIL = 'GET_NOT_FREE_BOXES_RECEIVE_FAIL';
-export function getNotFreeBoxesReceiveFailure(error) {
+export const GET_FREE_BOXES_RECEIVE_FAIL = 'GET_FREE_BOXES_RECEIVE_FAIL';
+export function getFreeBoxesReceiveFailure(error) {
     return {
-        type: GET_NOT_FREE_BOXES_RECEIVE_FAIL,
+        type: GET_FREE_BOXES_RECEIVE_FAIL,
         error: true,
         payload: error
     }
 }
 
-export const GET_NOT_FREE_BOXES = 'GET_NOT_FREE_BOXES';
-export const getNotFreeBoxesInfo = () => (dispatch, getState) => {
-    dispatch(getNotFreeBoxesRequest());
+export const GET_FREE_BOXES = 'GET_FREE_BOXES';
+export const getFreeBoxesInfo = () => (dispatch, getState) => {
+    dispatch(getFreeBoxesRequest());
 
-    return api.get('/clients').then(data => {
+    return api.get('/boxes/free').then(data => {
         //data.src = require('images/service.png');
-        dispatch(getNotFreeBoxesReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+        dispatch(getFreeBoxesReceiveSuccess(data));
     }).catch(function(error) {
-        dispatch(getNotFreeBoxesReceiveFailure())
+        dispatch(getFreeBoxesReceiveFailure())
     });
 };
 

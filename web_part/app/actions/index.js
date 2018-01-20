@@ -61,6 +61,7 @@ export const getClientsInfo = () => (dispatch, getState) => {
 };
 
 
+
 //get clients with brand
 export const GET_CLIENTS_WITH_BRAND_RECEIVE = 'GET_CLIENTS_WITH_BRAND_RECEIVE';
 export function getClientsWithBrandReceiveSuccess(clients) {
@@ -73,13 +74,12 @@ export function getClientsWithBrandReceiveSuccess(clients) {
 }
 
 export const GET_CLIENTS_WITH_BRAND = 'GET_CLIENTS_WITH_BRAND';
-export const getClientsWithBrand = () => (dispatch, getState) => {
+export const getClientsWithBrand = (brandId) => (dispatch, getState) => {
     dispatch(clientsRequest());
-    dispatch(getClientsWithBrandReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
 
-    return api.get('/clients').then(data => {
+    return api.get(`clients/with_brand/${brandId}`).then(data => {
         //data.src = require('images/service.png');
-        dispatch(getClientsWithBrandReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+        dispatch(getClientsWithBrandReceiveSuccess(data));
     }).catch(function(error) {
         dispatch(clientsReceiveFailure())
     });

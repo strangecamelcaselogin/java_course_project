@@ -43,6 +43,16 @@ public class BoxController {
         return boxDTOMapper.mapMany(boxRepository.findAll());
     }
 
+    @RequestMapping(value="/free", method = RequestMethod.GET)
+    public Iterable<BoxDTO> getFreeBoxes(Principal auth) {
+        if (!(new UserRole(auth.getName())).isAdmin()) {
+            throw new AccessViolation();
+        }
+        return boxDTOMapper.mapMany(boxRepository.findFreeBoxes());
+    }
+
+
+
     /**
      * Получить информацию о боксе
      * Только админ имеет доступ

@@ -12,6 +12,7 @@ import ru.rsatu.boxes.persistence.*;
 import ru.rsatu.boxes.dto.RentDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
 import ru.rsatu.boxes.rest.exception.AccessViolation;
+import ru.rsatu.boxes.rest.exception.Conflict;
 import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
 import java.security.Principal;
@@ -51,17 +52,22 @@ public class RentController {
 
         Car car = carRepository.findOne(carId);
         CarBrand carBrand = car.getCarBrand();
+        Long boxId = new Long(0);
+        try {
+            Box box = boxRepository.findFreeBox(carBrand);
+            boxId = box.getId();
+            if (box == null) {
+                //TODO (?) другое исключение
+                throw new ResourceNotFound(boxId, "Box Not Found");
+            }
+        } catch (IndexOutOfBoundsException e) {
+            throw new Conflict("Box Not Found");
+        }
 
-        Box box = boxRepository.findFreeBox(carBrand);
-        Long boxId = box.getId();
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Long start = timestamp.getTime();
 
-        if (box == null) {
-            //TODO (?) другое исключение
-            throw new ResourceNotFound(boxId, "Box Not Found");
-        }
         if (car == null) {
             throw new ResourceNotFound(carId, "Car Not Found");
         }

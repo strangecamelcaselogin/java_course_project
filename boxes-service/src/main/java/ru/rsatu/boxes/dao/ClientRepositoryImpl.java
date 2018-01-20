@@ -2,11 +2,13 @@ package ru.rsatu.boxes.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.persistence.Client;
 import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 
 /**
@@ -29,5 +31,12 @@ public class ClientRepositoryImpl implements ClientRepositoryCustom {
             throw new ResourceNotFound(id, "Client Not Found");
         }
         return client;
+    }
+
+    public List<Client> getClientsWithBrand(CarBrand brand) {
+        return em.createQuery(
+                "SELECT c FROM Car car INNER JOIN car.client c WHERE car.carBrand = ?1")
+                .setParameter(1, brand)
+                .getResultList();
     }
 }
