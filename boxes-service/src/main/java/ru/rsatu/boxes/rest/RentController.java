@@ -8,15 +8,18 @@ import ru.rsatu.boxes.dao.BoxRepository;
 import ru.rsatu.boxes.dao.CarRepository;
 import ru.rsatu.boxes.dao.ClientRepository;
 import ru.rsatu.boxes.dao.RentRepository;
+import ru.rsatu.boxes.helpers.UserRole;
 import ru.rsatu.boxes.persistence.*;
 import ru.rsatu.boxes.dto.RentDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
 import ru.rsatu.boxes.rest.exception.AccessViolation;
+import ru.rsatu.boxes.rest.exception.BadRequest;
 import ru.rsatu.boxes.rest.exception.Conflict;
 import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
 import java.security.Principal;
 import java.sql.Timestamp;
+import java.util.List;
 
 @RestController
 @RequestMapping("/rents")
@@ -28,7 +31,9 @@ public class RentController {
 
     private DomainToDTOMapper<RentDTO> rentDTOMapper = new DomainToDTOMapper<>(RentDTO.class);
 
-    public RentController (RentRepository rentRepository, CarRepository carRepository, BoxRepository boxRepository,
+    public RentController (RentRepository rentRepository,
+                           CarRepository carRepository,
+                           BoxRepository boxRepository,
                            ClientRepository clientRepository){
         this.boxRepository = boxRepository;
         this.carRepository = carRepository;
@@ -36,46 +41,81 @@ public class RentController {
         this.clientRepository = clientRepository;
     }
 
-    //TODO для каждого клиента свои
+    /**
+     * Информация о договорах аренды
+     *  Для обычного пользователя вернет список его договоров
+     *  Для админа вернет все
+     */
     @RequestMapping(method = RequestMethod.GET)
-    public Iterable<RentDTO> getRents() {
-        return rentDTOMapper.mapMany(rentRepository.findAll());
-    }
+    public Iterable<RentDTO> getRents(Principal auth) {
+        Client user = clientRepository.findByEmail(auth.getName());
 
-    @RequestMapping(value = "/{rentId}", method = RequestMethod.GET)
-    public RentDTO getRent(@PathVariable Long rentId) {
-        return rentDTOMapper.mapOne(rentRepository.findOne(rentId));  // TODO исключения
-    }
+        Iterable<Rent> result;
 
-    @RequestMapping(method = RequestMethod.POST)
-    public RentDTO postRent(@RequestParam Long carId, @RequestParam Long end) {
-
-        Car car = carRepository.findOne(carId);
-        CarBrand carBrand = car.getCarBrand();
-        Long boxId = new Long(0);
-        try {
-            Box box = boxRepository.findFreeBox(carBrand);
-            boxId = box.getId();
-            if (box == null) {
-                //TODO (?) другое исключение
-                throw new ResourceNotFound(boxId, "Box Not Found");
-            }
-        } catch (IndexOutOfBoundsException e) {
-            throw new Conflict("Box Not Found");
+        if (new UserRole(user.getEmail()).isAdmin()) {
+            result = rentRepository.findAll();
+        }
+        else {
+            result = rentRepository.findByClient(user);
         }
 
+        return rentDTOMapper.mapMany(result);
+    }
 
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        Long start = timestamp.getTime();
+//    /**
+//     * Получить информацию о конкретном договоре
+//     */
+//    @RequestMapping(value = "/{rentId}", method = RequestMethod.GET)
+//    public RentDTO getRent(@PathVariable Long rentId) {
+//        Rent rent = rentRepository.findOne(rentId);
+//
+//        if (rent == null) {
+//            throw new ResourceNotFound(rentId, "Rent not found");
+//        }
+//
+//        return rentDTOMapper.mapOne(rent);
+//    }
+
+    /**
+     * Арендовать бокс новый бокс
+     * TODO проверить не стоит ли машина в другом боксе (? constrain на таблицу rent)
+     * @param carId - id автомобиля клиента
+     * @param end - время окончания аренды
+     */
+    @RequestMapping(method = RequestMethod.POST)
+    public RentDTO postRent(Principal auth, @RequestParam Long carId, @RequestParam Long end) {
+        // проверить, что машина принадлежит владельцу
+        Client owner = clientRepository.findByEmail(auth.getName());
+        Car car = carRepository.findOne(carId);
 
         if (car == null) {
             throw new ResourceNotFound(carId, "Car Not Found");
         }
 
+        if (!car.getClient().getId().equals(owner.getId())) {
+            throw new AccessViolation("You can not rent this Car");
+        }
+
+        CarBrand carBrand = car.getCarBrand();
+        Box box;
+        try {
+            box = boxRepository.findFreeBox(carBrand);
+            if (box == null) {
+                throw new ResourceNotFound(null, "Box Not Found");  //TODO (?) другое исключение
+            }
+
+        } catch (IndexOutOfBoundsException e) {
+            throw new Conflict("Box Not Found");
+        }
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Long start = timestamp.getTime();
+
         // TODO валидировать даты
+        // TODO даты как даты в БД
         Rent rent = new Rent(
-                boxRepository.findOne(boxId),
-                carRepository.findOne(carId),
+                box,
+                car,
                 start,
                 end,
                 true
@@ -86,6 +126,10 @@ public class RentController {
         return rentDTOMapper.mapOne(rent);
     }
 
+    /**
+     * Отмена аренды
+     * @param rentId id аренды
+     */
     @RequestMapping(value="/{rentId}", method = RequestMethod.PATCH)
     public ResponseEntity<Boolean> cancelRent(Principal auth, @PathVariable Long rentId) {
         try {
@@ -101,7 +145,7 @@ public class RentController {
             rentRepository.save(rent);
 
         } catch(EmptyResultDataAccessException e){
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            throw new BadRequest("Can not change Rent");
         }
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
