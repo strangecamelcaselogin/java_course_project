@@ -8,7 +8,7 @@ import ru.rsatu.boxes.dao.BoxRepository;
 import ru.rsatu.boxes.dao.CarRepository;
 import ru.rsatu.boxes.dao.ClientRepository;
 import ru.rsatu.boxes.dao.RentRepository;
-import ru.rsatu.boxes.helpers.UserRole;
+import ru.rsatu.boxes.rest.security.UserRole;
 import ru.rsatu.boxes.persistence.*;
 import ru.rsatu.boxes.dto.RentDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
@@ -19,7 +19,6 @@ import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
 import java.security.Principal;
 import java.sql.Timestamp;
-import java.util.List;
 
 @RestController
 @RequestMapping("/rents")

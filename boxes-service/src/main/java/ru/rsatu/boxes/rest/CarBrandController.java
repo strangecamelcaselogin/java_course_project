@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.CarBrandRepository;
-import ru.rsatu.boxes.helpers.UserRole;
+import ru.rsatu.boxes.rest.security.AccessChecker;
+import ru.rsatu.boxes.rest.security.UserRole;
 import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.dto.CarBrandDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
@@ -19,7 +20,7 @@ import java.security.Principal;
 @RequestMapping("/car_brands")
 public class CarBrandController {
     private final CarBrandRepository carBrandRepository;
-    private DomainToDTOMapper<CarBrandDTO> carBrandDTOmapper = new DomainToDTOMapper<>(CarBrandDTO.class);
+    private DomainToDTOMapper<CarBrandDTO> carBrandDTOMapper = new DomainToDTOMapper<>(CarBrandDTO.class);
 
     public CarBrandController(CarBrandRepository carBrandRepository) {
         this.carBrandRepository = carBrandRepository;
@@ -30,17 +31,17 @@ public class CarBrandController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<CarBrandDTO> getCarBrands() {
-        return carBrandDTOmapper.mapMany(carBrandRepository.findAll());
+        return carBrandDTOMapper.mapMany(carBrandRepository.findAll());
     }
 
     /**
+     * Добавить марку
      * Только админ имеет доступ
      */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CarBrandDTO> postCarBrand(Principal auth, @RequestParam String name) {
-        if (!(new UserRole(auth.getName())).isAdmin()) {
-            throw new AccessViolation();
-        }
+
+        new AccessChecker(auth).onlyAdmin();
 
         CarBrand carBrand = new CarBrand(name);
 
@@ -50,18 +51,18 @@ public class CarBrandController {
             throw new BadRequest("Can not create new Brand");
         }
 
-        return new ResponseEntity<>(carBrandDTOmapper.mapOne(carBrand), HttpStatus.OK);
+        return new ResponseEntity<>(carBrandDTOMapper.mapOne(carBrand), HttpStatus.OK);
     }
 
     /**
+     * Удалить марку
      * Только админ имеет доступ
      * TODO нельзя удалить марку, пока есть машины и боксы этой марки
      */
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> deleteCarBrand(Principal auth, @RequestParam Long id) {
-        if (!(new UserRole(auth.getName())).isAdmin()) {
-            throw new AccessViolation();
-        }
+    public Boolean deleteCarBrand(Principal auth, @RequestParam Long id) {
+
+        new AccessChecker(auth).onlyAdmin();
 
         try {
             carBrandRepository.delete(id);
@@ -69,6 +70,6 @@ public class CarBrandController {
             throw new BadRequest("Can not delete Brand");
         }
 
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return true;
     }
 }

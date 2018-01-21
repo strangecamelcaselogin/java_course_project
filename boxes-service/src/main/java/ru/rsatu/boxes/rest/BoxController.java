@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.BoxRepository;
 import ru.rsatu.boxes.dao.CarBrandRepository;
-import ru.rsatu.boxes.helpers.UserRole;
+import ru.rsatu.boxes.rest.security.AccessChecker;
+import ru.rsatu.boxes.rest.security.UserRole;
 import ru.rsatu.boxes.persistence.Box;
 import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.dto.BoxDTO;
@@ -37,21 +38,19 @@ public class BoxController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<BoxDTO> getBoxes(Principal auth) {
-        if (!(new UserRole(auth.getName())).isAdmin()) {
-            throw new AccessViolation();
-        }
+
+        new AccessChecker(auth).onlyAdmin();
+
         return boxDTOMapper.mapMany(boxRepository.findAll());
     }
 
     @RequestMapping(value="/free", method = RequestMethod.GET)
     public Iterable<BoxDTO> getFreeBoxes(Principal auth) {
-        if (!(new UserRole(auth.getName())).isAdmin()) {
-            throw new AccessViolation();
-        }
+
+        new AccessChecker(auth).onlyAdmin();
+
         return boxDTOMapper.mapMany(boxRepository.findFreeBoxes());
     }
-
-
 
     /**
      * Получить информацию о боксе
@@ -59,9 +58,8 @@ public class BoxController {
      */
     @RequestMapping(value="/{boxId}", method = RequestMethod.GET)
     public BoxDTO getBox(Principal auth, @PathVariable Long boxId) throws ResourceNotFound {
-        if (!(new UserRole(auth.getName())).isAdmin()) {
-            throw new AccessViolation();
-        }
+
+        new AccessChecker(auth).onlyAdmin();
 
         Box box = boxRepository.findOne(boxId);
 
@@ -78,9 +76,8 @@ public class BoxController {
      */
     @RequestMapping(method = RequestMethod.POST)
     public BoxDTO postBox(Principal auth, @RequestParam Long carBrandId, @RequestParam Long price) {
-        if (!(new UserRole(auth.getName())).isAdmin()) {
-            throw new AccessViolation();
-        }
+
+        new AccessChecker(auth).onlyAdmin();
 
         CarBrand b = carBrandRepository.findOne(carBrandId);
         if (b == null) {
@@ -101,9 +98,8 @@ public class BoxController {
      */
     @RequestMapping(value="/{boxId}", method = RequestMethod.DELETE)
     public ResponseEntity<Boolean> deleteBox(Principal auth, @PathVariable Long boxId) {
-        if (!(new UserRole(auth.getName())).isAdmin()) {
-            throw new AccessViolation();
-        }
+
+        new AccessChecker(auth).onlyAdmin();
 
         try {
             boxRepository.delete(boxId);

@@ -1,13 +1,20 @@
-package ru.rsatu.boxes.helpers;
+package ru.rsatu.boxes.rest.security;
+
+import java.security.Principal;
 
 public class UserRole {
+    private String adminEmail = "admin@service";
+
     private String adminRole = "admin";
     private String userRole = "user";
     private String role;
 
     public UserRole(String email) {
-        // TODO имя админа в конфиг
-        this.role = email.equals("admin@service") ? adminRole : userRole;
+        this.role = email.equals(adminEmail) ? adminRole : userRole;
+    }
+
+    public UserRole(Principal auth) {
+        this.role = auth.getName().equals(adminEmail) ? adminRole : userRole;
     }
 
     public String getRole() {
