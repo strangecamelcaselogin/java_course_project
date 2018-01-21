@@ -21,6 +21,7 @@ export default function clients(state = {
             };
 
         case actions.GET_CLIENTS_WITH_BRAND_RECEIVE:
+            console.log('GET_CLIENTS_WITH_BRAND_RECEIVE', action.payload.clients);
             return {
                 ...state,
                 brandsClients: action.payload.clients

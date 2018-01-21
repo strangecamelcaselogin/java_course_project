@@ -24,9 +24,12 @@ export default function boxes(state = {
         case actions.ADD_BOX_RECEIVE: {
             let oldBox = _.cloneDeep(state.boxesById);
             oldBox.push(action.payload.boxes);
+            let oldFreeBox = _.cloneDeep(state.freeBoxesById);
+            oldFreeBox.push(action.payload.boxes);
             return {
                 ...state,
-                boxesById: oldBox
+                boxesById: oldBox,
+                freeBoxesById: oldFreeBox
             };
         }
 

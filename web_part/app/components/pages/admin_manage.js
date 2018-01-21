@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import {getClientsInfo, getBrandsInfo, addBrand, deleteBrand, getBoxesInfo,
             addBox, deleteBox, incPriceBox, getFreeBoxesInfo} from '../../actions' ;
 
+import {Button, Container, Input, Table, FormGroup, Label } from "reactstrap";
+
 
 @connect(mapStateToProps)
 export default class AdminManage extends Component{
@@ -141,64 +143,75 @@ export default class AdminManage extends Component{
     render(){
         console.log('render', this.props, this.state);
         return(
-            <div>
+            <Container>
                 <h2>
                     Боксы
                 </h2>
                 <div>
                     <div>
                         <h3>Прием в эксплуатацию нового бокса</h3>
-                        <label>Название марки</label>
-                        <select onChange={(e) => {this.onChangeSelectCarBrands(e.target.value)}} value={this.state.selectCarBrand}>
-                            {
-                                this.props.carBrandsById.map((brand, index)=>{
-                                    return (
-                                        <option value={brand.id} key={index}>
-                                            {brand.name}
-                                        </option>
-                                    )
-                                })
-                            }
-                        </select>
-                        <label>Цена</label>
-                        <input value={this.state.priceBox} onChange={(e) => {this.onChangePriceBox(e.target.value)}}/>
-                        <button onClick={this.addNewBox}>Принять новый бокс</button>
+                        <FormGroup>
+                            <Label>Название марки</Label>
+                            <Input type="select" onChange={(e) => {this.onChangeSelectCarBrands(e.target.value)}} value={this.state.selectCarBrand}>
+                                {
+                                    this.props.carBrandsById.map((brand, index)=>{
+                                        return (
+                                            <option value={brand.id} key={index}>
+                                                {brand.name}
+                                            </option>
+                                        )
+                                    })
+                                }
+                            </Input>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Цена</Label>
+                            <Input value={this.state.priceBox} onChange={(e) => {this.onChangePriceBox(e.target.value)}}/>
+                        </FormGroup>
+                        <Button color="primary" onClick={this.addNewBox}>Принять новый бокс</Button>
                     </div>
                     <div>
                         <h3>Закрытие бокса</h3>
-                        <label>Номер бокса</label>
-                        <select
-                            onChange={(e) => {this.onSelectCloseNumberBox(e.target.value)}}
-                            value={this.state.closeNumberBox}>
-                            {
-                                this.props.freeBoxesById.map((box, index)=>{
-                                    return (
-                                        <option value={box.id} key={index}>
-                                            {box.id}
-                                        </option>
-                                    )
-                                })
-                            }
-                        </select>
-                        <button onClick={this.closeBox}>Закрыть бокс</button>
+                        <FormGroup>
+                            <Label>Номер бокса</Label>
+                            <Input type="select"
+                                onChange={(e) => {this.onSelectCloseNumberBox(e.target.value)}}
+                                value={this.state.closeNumberBox}>
+                                {
+                                    this.props.freeBoxesById.map((box, index)=>{
+                                        return (
+                                            <option value={box.id} key={index}>
+                                                {box.id}
+                                            </option>
+                                        )
+                                    })
+                                }
+                            </Input>
+                        </FormGroup>
+                        <Button color="primary" onClick={this.closeBox}>Закрыть бокс</Button>
                     </div>
                     <div>
                         <h3>Увеличить стоимость аренды</h3>
-                        <select onChange={(e) => {this.onSelectIncPriceNumberBox(e.target.value)}}
-                                value={this.state.incPriceNumberBox}>
-                            {
-                                this.props.boxesById.map((box, index)=>{
-                                    return (
-                                        <option value={box.id} key={index}>
-                                            {box.id}
-                                        </option>
-                                    )
-                                })
-                            }
-                        </select>
-                        <label>Во сколько раз</label>
-                        <input value={this.state.incPrice} onChange={(e) => {this.onChangeIncPrice(e.target.value)}}/>
-                        <button onClick={this.incPriceBox}>Увеличить стоимость боксов</button>
+                        <FormGroup>
+                            <Label>Номер бокса</Label>
+                            <Input type="select" onChange={(e) => {this.onSelectIncPriceNumberBox(e.target.value)}}
+                                    value={this.state.incPriceNumberBox}>
+                                {
+                                    this.props.boxesById.map((box, index)=>{
+                                        return (
+                                            <option value={box.id} key={index}>
+                                                {box.id}
+                                            </option>
+                                        )
+                                    })
+                                }
+                            </Input>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Во сколько раз</Label>
+                            <Input value={this.state.incPrice} onChange={(e) => {this.onChangeIncPrice(e.target.value)}}/>
+                        </FormGroup>
+                        <Button color="primary" onClick={this.incPriceBox}>Увеличить стоимость боксов</Button>
                     </div>
                 </div>
 
@@ -208,29 +221,33 @@ export default class AdminManage extends Component{
                 <div>
                     <div>
                         <h3>Добавить марку в перечень</h3>
-                        <label>Название марки</label>
-                        <input value={this.state.addCarBrand} onChange={(e) => {this.onChangeAddCarBrand(e.target.value)}}/>
-                        <button onClick={this.addCarBrand}>Добавить марку</button>
+                        <FormGroup>
+                            <Label>Название марки</Label>
+                            <Input value={this.state.addCarBrand} onChange={(e) => {this.onChangeAddCarBrand(e.target.value)}}/>
+                        </FormGroup>
+                        <Button color="primary" onClick={this.addCarBrand}>Добавить марку</Button>
                     </div>
                     <div>
                         <h3>Удалить марку</h3>
-                        <label>Название марки</label>
-                        <select onChange={(e) => {this.onChangeDeleteCarBrand(e.target.value)}}
-                            value={this.state.deleteCarBrand}>
-                            {
-                                this.props.carBrandsById.map((brand, index)=>{
-                                    return (
-                                        <option value={brand.id} key={index}>
-                                            {brand.name}
-                                        </option>
-                                    )
-                                })
-                            }
-                        </select>
-                        <button onClick={this.deleteCarBrand}>Удалить марку</button>
+                        <FormGroup>
+                            <Label>Название марки</Label>
+                            <Input type="select" onChange={(e) => {this.onChangeDeleteCarBrand(e.target.value)}}
+                                value={this.state.deleteCarBrand}>
+                                {
+                                    this.props.carBrandsById.map((brand, index)=>{
+                                        return (
+                                            <option value={brand.id} key={index}>
+                                                {brand.name}
+                                            </option>
+                                        )
+                                    })
+                                }
+                            </Input>
+                        </FormGroup>
+                        <Button color="primary" onClick={this.deleteCarBrand}>Удалить марку</Button>
                     </div>
                 </div>
-            </div>
+            </Container>
         )
     }
 }
@@ -241,6 +258,5 @@ function mapStateToProps(state, ownProps) {
         carBrandsById: state.brands.brandsById,
         freeBoxesById: state.boxes.freeBoxesById,
         boxesById: state.boxes.boxesById
-
     }
 }
