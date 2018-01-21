@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import {getClientsInfo, getClientsWithBrand, getBrandsInfo, getBoxesInfo, addBrand} from '../../actions' ;
+import {getClientsInfo, getClientsWithBrand, getBrandsInfo, getBoxesInfo, addBrand, getClient} from '../../actions' ;
 import {Button, Container, Input, Table, FormGroup, Label, Modal, ModalHeader, ModalBody } from "reactstrap";
 
 
@@ -29,6 +29,7 @@ export default class AdminInfo extends Component{
         };
 
         this.getClients = this.getClients.bind(this);
+        this.getClient = this.getClient.bind(this);
         this.getBrandsClients = this.getBrandsClients.bind(this);
         this.getEndRentsClients = this.getEndRentsClients.bind(this);
         this.getBoxClient = this.getBoxClient.bind(this);
@@ -44,6 +45,7 @@ export default class AdminInfo extends Component{
             let p2 = this.props.dispatch(getBrandsInfo());
             p2.then(() => {
                 console.log('componentDidMount', this.props);
+                this.props.dispatch(getClientsInfo());
                 let obj = {};
                 if (this.props.carBrandsById.length !== 0) {
                     obj['selectBrands'] = this.props.carBrandsById[0].id;
@@ -74,6 +76,16 @@ export default class AdminInfo extends Component{
         this.setState({
             isVisible: false,
             info: []
+        })
+    }
+
+    getClient(id) {
+        this.props.dispatch(getClient(id)).then(() => {
+            this.setState({
+                isVisible: true,
+                infoForModalScreen: this.props.client,
+                typeInfo: 'clients',
+            })
         })
     }
 
@@ -139,8 +151,47 @@ export default class AdminInfo extends Component{
     }
 
     render(){
-        console.log('render', this.state);
-        return(
+        console.log('render', this.props);
+
+        //Новый блок
+        return (
+            <Container>
+                {
+                    (this.props.clients.length !== 0) ?
+                    <Table>
+                        <thead>
+                        <th>№</th>
+                        <th>Имя</th>
+                        <th>E-mail</th>
+                        <th>Адрес</th>
+                        </thead>
+                        <tbody>
+                        {
+                            this.props.clients.map((client, index) => {
+                                return (
+                                <tr title={client.id} key={client.id}>
+                                    <td>{index + 1}</td>
+                                    <td onClick={() => {this.getClient(client.id)}}>{client.name}</td>
+                                    <td>{client.email}</td>
+                                    <td>{client.address}</td>
+                                </tr>);
+                            })
+                        }
+                        </tbody>
+                    </Table> :
+                    <div>Нет клиентов</div>
+                }
+                <ModalScreenClient
+                    info={this.state.infoForModalScreen}
+                    isOpen = {this.state.isVisible}
+                    extraInfo={this.state.extraInfo}
+                    offModal={this.offModal}
+                />
+            </Container>
+        )
+
+        //Старый блок
+        /*return(
             <Container>
                 <h2>Справки</h2>
                 <div>
@@ -210,12 +261,12 @@ export default class AdminInfo extends Component{
                     />
 
             </Container>
-        )
+        )*/
     }
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log(state);
+    console.log("state", state);
     let notFreeBoxesById = [];
 
     return {
@@ -225,10 +276,35 @@ function mapStateToProps(state, ownProps) {
         boxClient: state.clients.boxClient,
         carBrandsById: state.brands.brandsById,
         notFreeBoxesById: notFreeBoxesById,
+        client: state.client.client,
     }
 }
 
 
+class ModalScreenClient extends Component {
+    constructor(props){
+        super(props)
+    }
+
+    render(){
+        console.log('client', this.props);
+        if(!this.props.isOpen){
+            return(<div></div>)
+        }
+        return(
+            <Modal isOpen={this.props.isOpen} toggle={() => {this.props.offModal()}}>
+                <ModalHeader toggle={() => {this.props.offModal()}} >Клиент </ModalHeader>
+                <ModalBody>
+                    {
+                        'ttt'
+                    }
+                </ModalBody>
+            </Modal>
+        )
+    }
+}
+
+/*
 class ModalScreenInfo extends Component {
     constructor(props){
         super(props)
@@ -298,4 +374,4 @@ class ModalScreenInfo extends Component {
             )
         }
     }
-}
+}*/

@@ -126,10 +126,10 @@ export function getClientReceiveSuccess(client) {
 }
 
 export const GET_CLIENT = 'GET_CLIENT';
-export const getClient = () => (dispatch, getState) => {
+export const getClient = (id) => (dispatch, getState) => {
     dispatch(clientsRequest());
 
-    return api.get('/clients/me').then(data => {
+    return api.get(`/clients/${id}`).then(data => {
         //data.src = require('images/service.png');
         dispatch(getClientReceiveSuccess(data));
     }).catch(function(error) {

@@ -10,7 +10,8 @@ export default function client(state = {
     clientListTicket: [],
 }, action) {
     switch (action.type) {
-        case actions.GET_CLIENT:
+        case actions.GET_CLIENT_RECEIVE:
+            console.log('GET_CLIENT', action);
             return {
                 ...state,
                 client: action.payload.client
