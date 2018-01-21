@@ -28,7 +28,7 @@ export default class MainPage extends Component{
                     {
                         this.props.carBrandsById.map((brand) => {
                             return(
-                                <h3>
+                                <h3 key={brand.id}>
                                     {brand.name}
                                 </h3>
                             )

@@ -348,17 +348,20 @@ class ModalScreenClient extends Component {
                         (cars.length !== 0) ?
                             <Table>
                                 <thead>
-                                <th>№</th>
-                                <th>Номер</th>
-                                <th>Марка</th>
-                                <th>Статус</th>
-                                <th>Бокс</th>
-                                <th>Окончание аренды</th>
+                                <tr>
+                                    <th>№</th>
+                                    <th>Номер</th>
+                                    <th>Марка</th>
+                                    <th>Статус</th>
+                                    <th>Бокс</th>
+                                    <th>Окончание аренды</th>
+                                </tr>
                                 </thead>
+                                <tbody>
                                 {
                                     cars.map((car, index) => {
                                         return (
-                                            <tr>
+                                            <tr key={car.id}>
                                                 <td>{index}</td>
                                                 <td>{car.number}</td>
                                                 <td>{car.brand}</td>
@@ -369,7 +372,7 @@ class ModalScreenClient extends Component {
                                         )
                                     })
                                 }
-
+                                </tbody>
                             </Table>
                             :
                             <div></div>

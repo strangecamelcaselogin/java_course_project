@@ -113,7 +113,7 @@ export default class ClientLK extends Component{
                                         {
                                             this.props.clientCars.map((car, index) => {
                                                 return (
-                                                    <tr>
+                                                    <tr key={car.id}>
                                                         <th scope="row">{index + 1}</th>
                                                         <td>{car.carBrandId}</td>
                                                         <td>{car.number}</td>
@@ -215,7 +215,7 @@ export default class ClientLK extends Component{
                                     {
                                         this.props.activeTickets.map((ticket, index)=>{
                                             return (
-                                                <tr>
+                                                <tr key={ticket.id}>
                                                     <th scope="row">{index + 1}</th>
                                                     <td>{ticket.id}</td>
                                                     <td>{ticket.carId}</td>
@@ -253,7 +253,7 @@ export default class ClientLK extends Component{
                                     {
                                         this.props.notActiveTickets.map((ticket, index) => {
                                             return (
-                                                <tr>
+                                                <tr key={ticket.id}>
                                                     <th scope="row">{index + 1}</th>
                                                     <td>{ticket.id}</td>
                                                     <td>{ticket.carId}</td>
