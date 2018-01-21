@@ -170,6 +170,9 @@ export default class AdminManage extends Component{
                         </FormGroup>
                         <Button color="primary" onClick={this.addNewBox}>Принять новый бокс</Button>
                     </div>
+
+                    <hr/>
+
                     <div>
                         <h3>Закрытие бокса</h3>
                         <FormGroup>
@@ -190,6 +193,9 @@ export default class AdminManage extends Component{
                         </FormGroup>
                         <Button color="primary" onClick={this.closeBox}>Закрыть бокс</Button>
                     </div>
+
+                    <hr/>
+
                     <div>
                         <h3>Увеличить стоимость аренды</h3>
                         <FormGroup>
@@ -215,9 +221,12 @@ export default class AdminManage extends Component{
                     </div>
                 </div>
 
+                <hr/>
+
                 <h2>
                     Марки
                 </h2>
+
                 <div>
                     <div>
                         <h3>Добавить марку в перечень</h3>
@@ -227,6 +236,9 @@ export default class AdminManage extends Component{
                         </FormGroup>
                         <Button color="primary" onClick={this.addCarBrand}>Добавить марку</Button>
                     </div>
+
+                    <hr/>
+
                     <div>
                         <h3>Удалить марку</h3>
                         <FormGroup>
