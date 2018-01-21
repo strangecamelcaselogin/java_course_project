@@ -6,6 +6,6 @@ public class AccessViolation extends BaseApiException {
     }
 
     public AccessViolation() {
-        super("You are not allowed to view this resource");
+        super("You are not allowed to use this resource");
     }
 }

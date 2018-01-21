@@ -8,5 +8,7 @@ import java.util.List;
 public interface BoxRepositoryCustom  {
     Box findFreeBox(CarBrand brand);
 
-    public List<Box> findFreeBoxes();
+    List<Box> findFreeBoxes();
+
+    Box findById(Long id);
 }

@@ -5,4 +5,5 @@ import ru.rsatu.boxes.persistence.Rent;
 
 public interface RentRepositoryCustom {
     Iterable<Rent> findByClient(Client client);
+    Rent findById(Long id);
 }

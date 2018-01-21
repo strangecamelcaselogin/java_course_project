@@ -3,6 +3,7 @@ package ru.rsatu.boxes.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.rsatu.boxes.persistence.Box;
 import ru.rsatu.boxes.persistence.CarBrand;
+import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,13 +18,18 @@ public class BoxRepositoryImpl implements BoxRepositoryCustom {
 
     @Override
     public Box findFreeBox(CarBrand brand) throws IndexOutOfBoundsException {
-        return (Box) em.createQuery(
-                "SELECT b FROM Box b " +
-                        "WHERE b.carBrand = ?1 AND b NOT IN" +
-                        "(SELECT r.box FROM Rent r WHERE r.active = true)")
-                .setParameter(1, brand)
-                .getResultList()
-                .get(0); //TODO ловить пустой массив - IndexOutOfBoundsException
+        try {
+            Box freeBox = (Box) em.createQuery(
+                    "SELECT b FROM Box b " +
+                            "WHERE b.carBrand = ?1 AND b NOT IN" +
+                            "(SELECT r.box FROM Rent r WHERE r.active = true)")
+                    .setParameter(1, brand)
+                    .getResultList().get(0);
+
+            return freeBox;
+        } catch (IndexOutOfBoundsException e) {
+            throw new ResourceNotFound(null, "Free Box");
+        }
     }
 
     public List<Box> findFreeBoxes() {
@@ -31,6 +37,17 @@ public class BoxRepositoryImpl implements BoxRepositoryCustom {
                 "SELECT b FROM Box b " +
                         "WHERE b NOT IN" +
                         "(SELECT r.box FROM Rent r WHERE r.active = false)")
-                .getResultList(); //TODO ловить пустой массив - IndexOutOfBoundsException
+                .getResultList();
+    }
+
+    @Override
+    public Box findById(Long id) {
+        Box b = boxRepository.findOne(id);
+
+        if (b == null) {
+            throw new ResourceNotFound(id,"Box Not Found");
+        }
+
+        return b;
     }
 }

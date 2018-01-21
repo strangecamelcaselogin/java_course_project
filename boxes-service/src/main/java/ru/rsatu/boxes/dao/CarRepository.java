@@ -6,7 +6,7 @@ import ru.rsatu.boxes.persistence.Car;
 import ru.rsatu.boxes.persistence.Client;
 
 @Repository
-public interface CarRepository extends CrudRepository<Car, Long> {
+public interface CarRepository extends CrudRepository<Car, Long>, CarRepositoryCustom {
     Car findByClient(Client client);
     Iterable<Car> findAllByClient(Client client);
 }

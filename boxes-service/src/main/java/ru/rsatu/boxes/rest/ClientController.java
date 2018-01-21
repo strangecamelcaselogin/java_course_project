@@ -8,7 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.CarBrandRepository;
 import ru.rsatu.boxes.dao.ClientRepository;
-import ru.rsatu.boxes.helpers.UserRole;
+import ru.rsatu.boxes.rest.security.AccessChecker;
+import ru.rsatu.boxes.rest.security.UserRole;
 import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.persistence.Client;
 import ru.rsatu.boxes.dto.ClientDTO;
@@ -50,21 +51,19 @@ public class ClientController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<ClientDTO> getClients(Principal auth) {
-        if (new UserRole(auth.getName()).isAdmin()) {
-            return clientDTOMapper.mapMany(clientRepository.findAll());
-        }
-        else {
-            throw new AccessViolation();
-        }
+
+        new AccessChecker(auth).onlyAdmin();
+
+        return clientDTOMapper.mapMany(clientRepository.findAll());
     }
 
+    /**
+     * Получит всех клиентов с конкретной маркой автомобиля
+     */
     @RequestMapping(value="/with_brand/{brandId}", method = RequestMethod.GET)
     public Iterable<ClientDTO> getClientsWithBrand(Principal auth, @PathVariable Long brandId) {
-        if (new UserRole(auth.getName()).isAdmin()) {
-            CarBrand carBrand = carBrandRepository.findOne(brandId);
-            if (carBrand == null) {
-                throw new ResourceNotFound(brandId, "CarBrand Not Found");
-            }
+        if (new UserRole(auth).isAdmin()) {
+            CarBrand carBrand = carBrandRepository.findById(brandId);
 
             return clientDTOMapper.mapMany(clientRepository.getClientsWithBrand(carBrand));
         }
@@ -79,7 +78,7 @@ public class ClientController {
      */
     @RequestMapping(value = "/{clientId}", method = RequestMethod.GET)
     public ClientDTO getClient(Principal auth, @PathVariable Long clientId) throws ResourceNotFound {
-        if (new UserRole(auth.getName()).isAdmin()) {
+        if (new UserRole(auth).isAdmin()) {
             return clientDTOMapper.mapOne(clientRepository.findById(clientId));
         }
         else {
@@ -97,7 +96,7 @@ public class ClientController {
     }
 
     /**
-     * Создание новго пользователя
+     * Создание новго пользователя (регистрация)
      */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ClientDTO> postClient(@RequestParam String email, @RequestParam String name,

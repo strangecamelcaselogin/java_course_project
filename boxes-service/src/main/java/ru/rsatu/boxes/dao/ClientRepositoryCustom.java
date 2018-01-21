@@ -16,5 +16,7 @@ import java.util.List;
 public interface ClientRepositoryCustom {
     Client findById(Long id);
 
+    Client findByEmail(String email);
+
     List<Client> getClientsWithBrand(CarBrand brand);
 }
