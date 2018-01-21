@@ -160,10 +160,12 @@ export default class AdminInfo extends Component{
                     (this.props.clients.length !== 0) ?
                     <Table>
                         <thead>
-                        <th>№</th>
-                        <th>Имя</th>
-                        <th>E-mail</th>
-                        <th>Адрес</th>
+                            <tr>
+                                <th>№</th>
+                                <th>Имя</th>
+                                <th>E-mail</th>
+                                <th>Адрес</th>
+                            </tr>
                         </thead>
                         <tbody>
                         {
