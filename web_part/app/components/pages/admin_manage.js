@@ -53,9 +53,9 @@ export default class AdminManage extends Component{
                     obj['selectCarBrand'] = this.props.carBrandsById[0].id;
                     obj['deleteCarBrand'] = this.props.carBrandsById[0].id;
                 }
-                if (this.props.boxesById.length !== 0) {
-                    obj['closeNumberBox'] = this.props.boxesById[0].id;
-                    obj['incPriceNumberBox'] = this.props.boxesById[0].id;
+                if (this.props.boxesList.length !== 0) {
+                    obj['closeNumberBox'] = this.props.boxesList[0].id;
+                    obj['incPriceNumberBox'] = this.props.boxesList[0].id;
                 }
                 this.setState(obj);
             })*/
@@ -70,9 +70,9 @@ export default class AdminManage extends Component{
                 obj['selectCarBrand'] = props.carBrandsById[0].id;
                 obj['deleteCarBrand'] = props.carBrandsById[0].id;
             }
-            if (props.boxesById.length !== 0) {
-                obj['closeNumberBox'] = props.boxesById[0].id;
-                obj['incPriceNumberBox'] = props.boxesById[0].id;
+            if (props.boxesList.length !== 0) {
+                obj['closeNumberBox'] = props.boxesList[0].id;
+                obj['incPriceNumberBox'] = props.boxesList[0].id;
             }
             return obj;
         });
@@ -203,7 +203,7 @@ export default class AdminManage extends Component{
                             <Input type="select" onChange={(e) => {this.onSelectIncPriceNumberBox(e.target.value)}}
                                     value={this.state.incPriceNumberBox}>
                                 {
-                                    this.props.boxesById.map((box, index)=>{
+                                    this.props.boxesList.map((box, index)=>{
                                         return (
                                             <option value={box.id} key={index}>
                                                 {box.id}
@@ -267,8 +267,8 @@ export default class AdminManage extends Component{
 function mapStateToProps(state, ownProps) {
     console.log(state);
     return {
-        carBrandsById: state.brands.brandsById,
+        carBrandsById: state.brands.brandsList,
         freeBoxesById: state.boxes.freeBoxesById,
-        boxesById: state.boxes.boxesById
+        boxesById: state.boxes.boxesList
     }
 }

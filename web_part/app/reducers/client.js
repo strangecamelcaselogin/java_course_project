@@ -22,6 +22,13 @@ export default function client(state = {
                 clientCarList: action.payload
             };
 
+        case actions.GET_CLIENT_RENTS_RECEIVE:
+            console.log('GET_CLIENT_RENTS', action);
+            return {
+                ...state,
+                clientListTicket: action.payload
+            };
+
         case actions.ADD_CLIENT_CAR_RECEIVE: {
             let oldCarList = _.cloneDeep(state.clientCarList);
             oldCarList.push(action.payload);

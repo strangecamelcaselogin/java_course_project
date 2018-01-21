@@ -290,7 +290,7 @@ function mapStateToProps(state, ownProps){
 
     return {
         clientCars: state.clients.clientCarList,
-        carBrands: state.brands.brandsById,
+        carBrands: state.brands.brandsList,
         activeTickets,
         notActiveTickets
     }

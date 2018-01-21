@@ -5,14 +5,14 @@ import * as actions from '../actions';
 import _ from 'lodash';
 
 export default function boxes(state = {
-    boxesById: [],
+    boxesList: [],
     freeBoxesById: [],
 }, action) {
     switch (action.type) {
         case actions.GET_BOXES_RECEIVE:
             return {
                 ...state,
-                boxesById: action.payload.boxes
+                boxesList: action.payload.boxes
             };
 
         case actions.GET_FREE_BOXES_RECEIVE:
@@ -22,19 +22,19 @@ export default function boxes(state = {
             };
 
         case actions.ADD_BOX_RECEIVE: {
-            let oldBox = _.cloneDeep(state.boxesById);
+            let oldBox = _.cloneDeep(state.boxesList);
             oldBox.push(action.payload.boxes);
             let oldFreeBox = _.cloneDeep(state.freeBoxesById);
             oldFreeBox.push(action.payload.boxes);
             return {
                 ...state,
-                boxesById: oldBox,
+                boxesList: oldBox,
                 freeBoxesById: oldFreeBox
             };
         }
 
         case actions.DELETE_BOX_RECEIVE: {
-            let oldBoxes = _.cloneDeep(state.boxesById);
+            let oldBoxes = _.cloneDeep(state.boxesList);
             let index = null;
             for (let i = 0; i < oldBoxes.length; i++){
                 let box = oldBoxes[i];
@@ -46,7 +46,7 @@ export default function boxes(state = {
             oldBoxes.splice(index, 1);
             return {
                 ...state,
-                boxesById: oldBoxes
+                boxesList: oldBoxes
             };
         }
 

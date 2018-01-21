@@ -43,6 +43,6 @@ export default class MainPage extends Component{
 function mapStateToProps(state, ownProps) {
     console.log(state);
     return {
-        carBrandsById: state.brands.brandsById,
+        carBrandsById: state.brands.brandsList,
     }
 }

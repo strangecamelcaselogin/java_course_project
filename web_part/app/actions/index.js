@@ -160,27 +160,5 @@ export const getClientWithBox = () => (dispatch, getState) => {
     });
 };
 
-//get client tickets
-export const GET_CLIENT_TICKETS_RECEIVE = 'GET_CLIENT_TICKETS_RECEIVE';
-export function getClientTicketsReceiveSuccess(tickets) {
-    return {
-        type: GET_CLIENT_TICKETS_RECEIVE,
-        payload: {
-            tickets
-        }
-    }
-}
-
-export const GET_CLIENT_TICKETS = 'GET_CLIENT_TICKETS';
-export const getClientTickets = () => (dispatch, getState) => {
-    dispatch(clientsRequest());
-
-    return api.get('/clients').then(data => {
-        //data.src = require('images/service.png');
-        dispatch(getClientTicketsReceiveSuccess(data));
-    }).catch(function(error) {
-        dispatch(clientsReceiveFailure())
-    });
-};
 
 

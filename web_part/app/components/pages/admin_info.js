@@ -8,6 +8,8 @@ import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
 import {getClientsInfo, getClientsWithBrand, getBrandsInfo, getBoxesInfo, addBrand, getClient} from '../../actions' ;
 import {Button, Container, Input, Table, FormGroup, Label, Modal, ModalHeader, ModalBody } from "reactstrap";
+import {getClientRentsInfo} from "../../actions/rent";
+import {getClientCarsInfo} from "../../actions/cars";
 
 
 @connect(mapStateToProps)
@@ -23,7 +25,7 @@ export default class AdminInfo extends Component{
             dateEndRent: '11.12.13',
             //для модального окна
             isVisible: false,
-            infoForModalScreen: [],
+            infoForModalScreen: {},
             typeInfo: '',
             extraInfo: ''
         };
@@ -41,6 +43,8 @@ export default class AdminInfo extends Component{
 
     componentDidMount(){
         let p = this.props.dispatch(getBoxesInfo());
+        this.props.dispatch(getClientRentsInfo());
+        this.props.dispatch(getClientCarsInfo());
         p.then(() => {
             let p2 = this.props.dispatch(getBrandsInfo());
             p2.then(() => {
@@ -83,7 +87,7 @@ export default class AdminInfo extends Component{
         this.props.dispatch(getClient(id)).then(() => {
             this.setState({
                 isVisible: true,
-                infoForModalScreen: this.props.client,
+                infoForModalScreen: this.props.clientsById[id],
                 typeInfo: 'clients',
             })
         })
@@ -272,17 +276,48 @@ export default class AdminInfo extends Component{
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log("state", state);
     let notFreeBoxesById = [];
+    let brandsById = ArrayToObj(state.brands.brandsList, 'id');
+    let boxesById = ArrayToObj(state.boxes.brandsList, 'id');
+    let clientsById = ArrayToObj(state.clients.clients, 'id');
+    let carsById = ArrayToObj(state.client.clientCarList, 'clientId');
+    let rentById = ArrayToObj(state.client.clientListTicket, 'carId');
+
+    for (let id in clientsById) {
+        let client = clientsById[id];
+        let clientCars =  carsById[id];
+        client['car'] = [];
+        if (clientCars) {
+            for (let car of clientCars) {
+                let carId = car.id;
+                let rents = rentById[carId] || [];
+                if (!('rents' in car)) {
+                    car['rents'] = []
+                }
+                if (Array.isArray(rents)) {
+                    car['rents'] = rents
+                }
+                car['rents'].push(rents);
+                car['brand'] = brandsById[car.carBrandId].name;
+            }
+            client['cars'] = clientCars
+        }
+
+        client['rents'] = [];
+    }
+
+    let full_clients = [];
+
 
     return {
         clients: state.clients.clients,
         brandsClients: state.clients.brandsClients,
         endRentsClients: state.clients.endRentsClients,
         boxClient: state.clients.boxClient,
-        carBrandsById: state.brands.brandsById,
+        carBrandsById: state.brands.brandsList,
         notFreeBoxesById: notFreeBoxesById,
         client: state.client.client,
+        clientsById
     }
 }
 
@@ -293,7 +328,11 @@ class ModalScreenClient extends Component {
     }
 
     render(){
-        console.log('client', this.props);
+        let client = this.props.info;
+        let cars = [];
+        if ('cars' in client) {
+            cars = client.cars;
+        }
         if(!this.props.isOpen){
             return(<div></div>)
         }
@@ -301,8 +340,37 @@ class ModalScreenClient extends Component {
             <Modal isOpen={this.props.isOpen} toggle={() => {this.props.offModal()}}>
                 <ModalHeader toggle={() => {this.props.offModal()}} >Клиент </ModalHeader>
                 <ModalBody>
+                    <div>Имя: {client.name}</div>
+                    <div>Машины: </div>
                     {
-                        'ttt'
+                        (cars.length !== 0) ?
+                            <Table>
+                                <thead>
+                                <th>№</th>
+                                <th>Номер</th>
+                                <th>Марка</th>
+                                <th>Статус</th>
+                                <th>Бокс</th>
+                                <th>Окончание аренды</th>
+                                </thead>
+                                {
+                                    cars.map((car, index) => {
+                                        return (
+                                            <tr>
+                                                <td>{index}</td>
+                                                <td>{car.number}</td>
+                                                <td>{car.brand}</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+
+                            </Table>
+                            :
+                            <div></div>
                     }
                 </ModalBody>
             </Modal>
@@ -381,3 +449,26 @@ class ModalScreenInfo extends Component {
         }
     }
 }*/
+
+function ArrayToObj(array, id){
+    if (array){
+        let object = array.reduce((obj, cur) => {
+            if (cur[id] in obj) {
+                if (!Array.isArray(obj[cur[id]])) {
+                    let em = _.cloneDeep(obj[cur[id]]);
+                    obj[cur[id]] = [];
+                    obj[cur[id]].push(em);
+                }
+                obj[cur[id]].push(cur);
+
+            } else {
+                obj[cur[id]] = cur;
+            }
+            return obj;
+        }, {});
+
+        return object;
+    }
+    return {};
+
+}

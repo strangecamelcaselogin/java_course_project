@@ -5,7 +5,7 @@ import * as actions from '../actions';
 import _ from 'lodash';
 
 export default function brands(state = {
-    brandsById: [],
+    brandsList: [],
     error: '',
 }, action) {
     switch (action.type) {
@@ -13,15 +13,15 @@ export default function brands(state = {
 
             return {
                 ...state,
-                brandsById: action.payload.brands
+                brandsList: action.payload.brands
             };
 
         case actions.ADD_BRAND_RECEIVE: {
-            let oldBrands = _.cloneDeep(state.brandsById);
+            let oldBrands = _.cloneDeep(state.brandsList);
             oldBrands.push(action.payload);
             return {
                 ...state,
-                brandsById: oldBrands
+                brandsList: oldBrands
             };
         }
 
@@ -33,7 +33,7 @@ export default function brands(state = {
         }
 
         case actions.DELETE_BRAND_RECEIVE: {
-            let oldBrands =  _.cloneDeep(state.brandsById);
+            let oldBrands =  _.cloneDeep(state.brandsList);
             let index = null;
             for (let i = 0; i < oldBrands.length; i++){
                 let brand = oldBrands[i];
@@ -47,7 +47,7 @@ export default function brands(state = {
             oldBrands.splice(index, 1);
             return {
                 ...state,
-                brandsById: oldBrands
+                brandsList: oldBrands
             };
         }
 
