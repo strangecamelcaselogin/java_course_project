@@ -62,14 +62,10 @@ public class CarController {
         UserRole userRole = new UserRole(email);
         Client client = clientRepository.findByEmail(email);
 
-        Car car = carRepository.findOne(carId);
-
-        if (car == null) {
-            throw new ResourceNotFound(carId, "Car Not Found");
-        }
+        Car car = carRepository.findById(carId);
 
         if (userRole.isAdmin() || car.getClient().getId().equals(client.getId())) {
-            return carDTOMapper.mapOne(carRepository.findOne(carId));  // TODO исключения
+            return carDTOMapper.mapOne(carRepository.findById(carId));
         }
         else {
             throw new AccessViolation();
@@ -88,14 +84,7 @@ public class CarController {
         String username = auth.getName();
 
         Client client = clientRepository.findByEmail(username);
-        CarBrand carBrand = carBrandRepository.findOne(carBrandId);
-
-        if (client == null) {
-            throw new ResourceNotFound(null, "Client Not Found");
-        }
-        if (carBrand == null) {
-            throw new ResourceNotFound(carBrandId, "Car Brand Not Found");
-        }
+        CarBrand carBrand = carBrandRepository.findById(carBrandId);
 
         Car car = new Car(client, carBrand, number);
 
@@ -115,11 +104,7 @@ public class CarController {
     @RequestMapping(value = "/{carId}", method = RequestMethod.DELETE)
     public ResponseEntity<Boolean> deleteCar(Principal auth, @PathVariable Long carId) {
         Client owner = clientRepository.findByEmail(auth.getName());
-        Car car = carRepository.findOne(carId);
-
-        if (car == null) {
-            throw new ResourceNotFound(carId, "Car Not Found");
-        }
+        Car car = carRepository.findById(carId);
 
         if (!car.getClient().getId().equals(owner.getId())) {
             throw new AccessViolation("Client can not delete this Car");

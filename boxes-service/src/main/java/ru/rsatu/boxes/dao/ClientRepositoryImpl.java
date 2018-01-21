@@ -33,6 +33,19 @@ public class ClientRepositoryImpl implements ClientRepositoryCustom {
         return client;
     }
 
+    @Override
+    public Client findByEmail(String email) {
+        Client c = (Client) em.createQuery(
+                "SELECT c FROM Client c WHERE c.email = ?1")
+                .setParameter(1, email).getSingleResult();
+
+        if (c == null) {
+            throw new ResourceNotFound(null, "Client Not Found");
+        }
+
+        return c;
+    }
+
     public List<Client> getClientsWithBrand(CarBrand brand) {
         return em.createQuery(
                 "SELECT c FROM Car car INNER JOIN car.client c WHERE car.carBrand = ?1")

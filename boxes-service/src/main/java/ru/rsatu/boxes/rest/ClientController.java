@@ -63,10 +63,7 @@ public class ClientController {
     @RequestMapping(value="/with_brand/{brandId}", method = RequestMethod.GET)
     public Iterable<ClientDTO> getClientsWithBrand(Principal auth, @PathVariable Long brandId) {
         if (new UserRole(auth).isAdmin()) {
-            CarBrand carBrand = carBrandRepository.findOne(brandId);
-            if (carBrand == null) {
-                throw new ResourceNotFound(brandId, "CarBrand Not Found");
-            }
+            CarBrand carBrand = carBrandRepository.findById(brandId);
 
             return clientDTOMapper.mapMany(clientRepository.getClientsWithBrand(carBrand));
         }

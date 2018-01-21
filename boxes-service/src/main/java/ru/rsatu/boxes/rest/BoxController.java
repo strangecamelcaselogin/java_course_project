@@ -61,11 +61,7 @@ public class BoxController {
 
         new AccessChecker(auth).onlyAdmin();
 
-        Box box = boxRepository.findOne(boxId);
-
-        if (box == null) {
-            throw new ResourceNotFound(boxId, "Box Not Found");
-        }
+        Box box = boxRepository.findById(boxId);
 
         return boxDTOMapper.mapOne(box);
     }
@@ -79,10 +75,7 @@ public class BoxController {
 
         new AccessChecker(auth).onlyAdmin();
 
-        CarBrand b = carBrandRepository.findOne(carBrandId);
-        if (b == null) {
-            throw new ResourceNotFound(carBrandId, "Car Brand Not Found");
-        }
+        CarBrand b = carBrandRepository.findById(carBrandId);
 
         Box box = new Box(b, price);
 
