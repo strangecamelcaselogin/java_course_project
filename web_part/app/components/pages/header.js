@@ -21,7 +21,7 @@ export default class Header extends Component {
     exitAcc(){
         localStorage.removeItem('token');
         localStorage.removeItem('role');
-        window.location.href = '/login';
+        window.location.href = '/login';  // todo (?) из-за этого происходит перезагрузка страницы?
     }
 
     render () {

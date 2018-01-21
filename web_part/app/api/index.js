@@ -147,8 +147,6 @@ function isMethodWithBody(method) {
 }
 
 function getContentType(optionsContentType = 'form-data') {
-
-//services/88b82991-8af4-40d2-8342-50cd30b3d4f8/logo
     switch (optionsContentType) {
         case 'json':
             return 'application/json; charset=UTF-8';
@@ -174,6 +172,8 @@ function stringifyData(data, contentType) {
 
 
 function redirectToLogin() {
-    //window.location = `${LOGIN_PATH}?back=${window.location.href}`;
-    window.location = `/login`;
+    // TODO тоже вероятно роутер нужно использовать
+    if (window.location.pathname !== '/login') {
+        window.location = `/login`;
+    }
 }

@@ -6,7 +6,9 @@ import {Link} from 'react-router'
 // import _ from 'lodash';
 // import CSSModules from 'react-css-modules';
 
-import { Container, Form, FormGroup, Button, Input, Label, Row, Col } from 'reactstrap';
+// import { browserHistory } from 'react-router'
+
+import {Container, Form, FormGroup, Button, Input, Label, Row, Col, Alert} from 'reactstrap';
 
 import api from '../api';
 
@@ -17,7 +19,8 @@ export default class Login extends Component{
         this.state = {
             e_mail: '',
             password: '',
-            error: ''
+            error: '',
+            errorVisible: false,
         };
 
         this.onChangeEmail = this.onChangeEmail.bind(this);
@@ -37,7 +40,9 @@ export default class Login extends Component{
         })
     }
 
-    login(){
+    login(event){
+        event.preventDefault();
+
         api.post('/login', {
             contentType: 'json',
             data: {
@@ -47,9 +52,17 @@ export default class Login extends Component{
         }).then(resp => {
             localStorage.token = resp.token;
             localStorage.role = resp.role;
-            window.location = '/';
+            window.location = '/';  // TODO нужно через роутер, location перезагружает страницу
+
+            // что-то работает не правильно, но переход есть и страница не перезагружается
+            // browserHistory.push('/');
+
         }).catch(error => {
-            this.setState({error})
+            // {error: error.message}
+            this.setState({
+                error: "Ошибка авторизации",
+                errorVisible: true,
+            })
         });
     }
 
@@ -58,7 +71,7 @@ export default class Login extends Component{
         return(
             <div>
                 <Container className='login-register-container'>
-                    <Form>
+                    <Form onSubmit={this.login}>
                         <FormGroup>
                             <Label>Имя пользователя</Label>
                             <Input onChange={(e) => { this.onChangeEmail(e.target.value)}} value={this.state.e_mail} placeholder="E-mail"/>
@@ -71,7 +84,7 @@ export default class Login extends Component{
 
                         <Row>
                             <Col sm={2}>
-                                <Button color="primary" onClick={this.login} id="b-login" >Войти</Button>
+                                <Button color="primary" id="b-login" >Войти</Button>
                             </Col>
                             <Col sm={10}>
                                 <Link to="/registration">Создать аккаунт</Link>
@@ -79,7 +92,9 @@ export default class Login extends Component{
                         </Row>
 
                         <Row>
-                            <div id="error-message">{this.state.error}</div>
+                            <Col sm={12}>
+                                <Alert isOpen={this.state.errorVisible} color="danger">{this.state.error}</Alert>
+                            </Col>
                         </Row>
                     </Form>
                 </Container>
