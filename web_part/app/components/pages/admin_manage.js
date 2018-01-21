@@ -269,6 +269,6 @@ function mapStateToProps(state, ownProps) {
     return {
         carBrandsById: state.brands.brandsList,
         freeBoxesById: state.boxes.freeBoxesById,
-        boxesById: state.boxes.boxesList
+        boxesList: state.boxes.boxesList
     }
 }
