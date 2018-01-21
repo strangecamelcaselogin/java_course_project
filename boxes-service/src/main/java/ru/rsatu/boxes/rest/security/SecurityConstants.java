@@ -14,4 +14,6 @@ public class SecurityConstants {
 
     // URL на котором происходит регистрация
     public static final String SIGN_UP_URL = "/clients";
+
+    public static final String CAR_BRANDS_URL = "/car_brands";
 }
