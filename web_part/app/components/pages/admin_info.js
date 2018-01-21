@@ -7,6 +7,7 @@ import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
 import {getClientsInfo, getClientsWithBrand, getBrandsInfo, getBoxesInfo, addBrand} from '../../actions' ;
+import {Button, Container, Input, Table, FormGroup, Label, Modal, ModalHeader, ModalBody } from "reactstrap";
 
 
 @connect(mapStateToProps)
@@ -77,8 +78,7 @@ export default class AdminInfo extends Component{
     }
 
     getClients(){
-        let p = this.props.dispatch(getClientsInfo());
-        p.then(() => {
+        this.props.dispatch(getClientsInfo()).then(() => {
             this.setState({
                 isVisible: true,
                 infoForModalScreen: this.props.clients,
@@ -89,13 +89,14 @@ export default class AdminInfo extends Component{
     }
 
     getBrandsClients(){
-        let p = this.props.dispatch(getClientsWithBrand(this.state.selectBrands));
-        this.setState({
-            isVisible: true,
-            infoForModalScreen: this.props.brandsClients,
-            typeInfo: 'clients_with_brand',
-            extraInfo: this.state.selectBrands
-        })
+        this.props.dispatch(getClientsWithBrand(this.state.selectBrands)).then(() => {
+            this.setState({
+                isVisible: true,
+                infoForModalScreen: this.props.brandsClients,
+                typeInfo: 'clients_with_brand',
+                extraInfo: this.state.selectBrands
+            })
+        });
     }
 
     getEndRentsClients(){
@@ -140,63 +141,75 @@ export default class AdminInfo extends Component{
     render(){
         console.log('render', this.state);
         return(
-            <div>
+            <Container>
                 <h2>Справки</h2>
                 <div>
                     <h3>Справка о клиентах</h3>
-                    <button onClick={this.getClients}>Получить список клиентов</button>
+                    <Button  color="primary" onClick={this.getClients}>Получить список клиентов</Button>
                 </div>
                 <br/>
                 <div>
                     <h3>Справка о клиентах с определенной маркой автомобиля</h3>
-                    <select onChange={(e) => {this.onChangeSelectBrands(e)}}
-                            value={this.state.selectBrands}>
-                        {
-                            this.props.carBrandsById.map((brand, index) => {
-                                return (
-                                    <option key={brand.id} value={brand.id}>
-                                        {brand.name}
-                                    </option>
-                                )
-                            })
-                        }
-                    </select>
-                    <button onClick={this.getBrandsClients}>Получить список клиентов с определенной маркой автомобиля</button>
+                    <FormGroup>
+                        <Label>Выберите марку автомобиля</Label>
+                        <Input onChange={(e) => {this.onChangeSelectBrands(e)}}
+                                value={this.state.selectBrands}
+                                type="select"
+                        >
+                            {
+                                this.props.carBrandsById.map((brand, index) => {
+                                    return (
+                                        <option key={brand.id} value={brand.id}>
+                                            {brand.name}
+                                        </option>
+                                    )
+                                })
+                            }
+                        </Input>
+                    </FormGroup>
+                    <Button  color="primary" onClick={this.getBrandsClients}>Получить список клиентов с определенной маркой автомобиля</Button>
                 </div>
                 <br/>
                 <div>
                     <h3>Справка о клиентах, у который срок аренды истекает к указанной дате</h3>
-                    <input onChange={(e)=>{this.onChangeDateEndRent(e)}} value={this.state.dateEndRent} />
-                    <button onClick={this.getEndRentsClients}>Получить список клиентов, у который срок аренды истекает к указанной дате</button>
+                    <FormGroup>
+                        <Label>Введите дату</Label>
+                        <Input onChange={(e)=>{this.onChangeDateEndRent(e)}} value={this.state.dateEndRent} />
+                    </FormGroup>
+                    <Button  color="primary" onClick={this.getEndRentsClients}>Получить список клиентов, у который срок аренды истекает к указанной дате</Button>
                 </div>
                 <br/>
                 <div>
                     <h3>Справка о клиенте, занимающем бокс</h3>
-                    <select onChange={(e) => {this.onChangeSelectBox(e)}}
-                            value={this.state.selectBox}>
-                        {
-                            this.props.notFreeBoxesById.map((box, index) => {
-                                return (
-                                    <option key={index} value={box.id}>
-                                        {box.id}
-                                    </option>
-                                )
-                            })
-                        }
-                    </select>
-                    <button onClick={this.getBoxClient}>Узнать о клиенте, занимающем бокс</button>
+                    <FormGroup>
+                        <Label>Выберите занятый бокс</Label>
+                        <Input onChange={(e) => {this.onChangeSelectBox(e)}}
+                                value={this.state.selectBox}
+                                type="select"
+                        >
+                            {
+                                this.props.notFreeBoxesById.map((box, index) => {
+                                    return (
+                                        <option key={index} value={box.id}>
+                                            {box.id}
+                                        </option>
+                                    )
+                                })
+                            }
+                        </Input>
+                    </FormGroup>
+                    <Button  color="primary" onClick={this.getBoxClient}>Узнать о клиенте, занимающем бокс</Button>
                 </div>
 
-                {
-                    this.state.isVisible &&
                     <ModalScreenInfo
                         info={this.state.infoForModalScreen}
                         type={this.state.typeInfo}
+                        isOpen = {this.state.isVisible}
                         extraInfo={this.state.extraInfo}
                         offModal={this.offModal}
                     />
-                }
-            </div>
+
+            </Container>
         )
     }
 }
@@ -223,43 +236,65 @@ class ModalScreenInfo extends Component {
 
     render() {
         console.log(this.props.info);
+        if (!this.props.isOpen){
+            return (<div>
+            </div>)
+        }
         if (this.props.type === 'clients') {
             return (
-                <div>
-                    <button onClick={() => {this.props.offModal()}}>Close</button>
-                    <div>Список клиентов</div>
-                    { this.props.info.map((client, index) => {
-                        return (<div title={client.id}>#{index + 1} - {client.name} ({client.email}) - {client.address}</div>);
-                    })
-
-                    }
-                </div>
+                    <Modal isOpen={this.props.isOpen} toggle={() => {this.props.offModal()}}>
+                        <ModalHeader toggle={() => {this.props.offModal()}} >Список клиентов</ModalHeader>
+                        <ModalBody>
+                        {
+                            this.props.info.map((client, index) => {
+                                return (<div title={client.id}>#{index + 1} - {client.name} ({client.email}) - {client.address}</div>);
+                            })
+                        }
+                        </ModalBody>
+                    </Modal>
             )
         }
         if (this.props.type === 'client_for_end_date') {
             return (
-                <div>
-                    <button onClick={() => {this.props.offModal()}}>Close</button>
-                    <div>Клиенты, аренда которых заканчивается к {this.props.extraInfo}</div>
-                </div>
+                <Modal  isOpen={this.props.isOpen}>
+                    <ModalHeader toggle={() => {this.props.offModal()}} >
+                        Клиенты, аренда которых заканчивается к {this.props.extraInfo}
+                    </ModalHeader>
+                    <ModalBody>
+                        {
+                            this.props.info.map((client, index) => {
+                                return (<div title={client.id}>#{index + 1} - {client.name} ({client.email}) - {client.address}</div>);
+                            })
+                        }
+                    </ModalBody>
+                </Modal>
             )
         }
         if (this.props.type === 'client_in_box') {
             return (
-                <div>
-                    <button onClick={() => {this.props.offModal()}}>Close</button>
-                    <div>Клиент занимающий бокс {this.props.extraInfo}</div>
-                </div>
+                <Modal  isOpen={this.props.isOpen}>
+                    <ModalHeader toggle={() => {this.props.offModal()}} >
+                        Клиент занимающий бокс {this.props.extraInfo}
+                    </ModalHeader>
+                </Modal>
             )
         }
 
         if (this.props.type === 'clients_with_brand') {
             console.log('clients_with_brand', this.props);
             return (
-                <div>
-                    <button onClick={() => {this.props.offModal()}}>Close</button>
-                    <div>Клиенты с машинами марки {this.props.extraInfo}</div>
-                </div>
+                <Modal isOpen={this.props.isOpen}>
+                    <ModalHeader toggle={() => {this.props.offModal()}} >
+                        Клиенты с машинами марки {this.props.extraInfo}
+                    </ModalHeader>
+                    <ModalBody>
+                        {
+                            this.props.info.map((client, index) => {
+                                return (<div title={client.id}>#{index + 1} - {client.name} ({client.email}) - {client.address}</div>);
+                            })
+                        }
+                    </ModalBody>
+                </Modal>
             )
         }
     }

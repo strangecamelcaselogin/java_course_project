@@ -86,7 +86,6 @@ export default class ClientLK extends Component{
     }
 
     cancelTicket(id){
-
         this.props.dispatch(cancelClientRent(id))
     }
 

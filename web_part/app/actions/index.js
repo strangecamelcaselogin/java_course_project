@@ -79,6 +79,7 @@ export const getClientsWithBrand = (brandId) => (dispatch, getState) => {
 
     return api.get(`clients/with_brand/${brandId}`).then(data => {
         //data.src = require('images/service.png');
+        console.log('getClientsWithBrand', data);
         dispatch(getClientsWithBrandReceiveSuccess(data));
     }).catch(function(error) {
         dispatch(clientsReceiveFailure())
@@ -101,11 +102,10 @@ export function getClientsWithEndRentReceiveSuccess(clients) {
 export const GET_CLIENTS_WITH_END_RENT = 'GET_CLIENTS_WITH_END_RENT';
 export const getClientsWithEndRent = () => (dispatch, getState) => {
     dispatch(clientsRequest());
-    dispatch(getClientsWithBrandReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
 
     return api.get('/clients').then(data => {
         //data.src = require('images/service.png');
-        dispatch(getClientsWithBrandReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+        dispatch(getClientsWithBrandReceiveSuccess(data));
     }).catch(function(error) {
         dispatch(clientsReceiveFailure())
     });
@@ -128,11 +128,10 @@ export function getClientReceiveSuccess(client) {
 export const GET_CLIENT = 'GET_CLIENT';
 export const getClient = () => (dispatch, getState) => {
     dispatch(clientsRequest());
-    dispatch(getClientReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
 
-    return api.get('/clients').then(data => {
+    return api.get('/clients/me').then(data => {
         //data.src = require('images/service.png');
-        dispatch(getClientReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+        dispatch(getClientReceiveSuccess(data));
     }).catch(function(error) {
         dispatch(clientsReceiveFailure())
     });
@@ -152,11 +151,10 @@ export function getClientWithBoxReceiveSuccess(client) {
 export const GET_CLIENT_WITH_BOX = 'GET_CLIENT_WITH_BOX';
 export const getClientWithBox = () => (dispatch, getState) => {
     dispatch(clientsRequest());
-    dispatch(getClientWithBoxReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
 
     return api.get('/clients').then(data => {
         //data.src = require('images/service.png');
-        dispatch(getClientWithBoxReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+        dispatch(getClientWithBoxReceiveSuccess(data));
     }).catch(function(error) {
         dispatch(clientsReceiveFailure())
     });
@@ -176,11 +174,10 @@ export function getClientTicketsReceiveSuccess(tickets) {
 export const GET_CLIENT_TICKETS = 'GET_CLIENT_TICKETS';
 export const getClientTickets = () => (dispatch, getState) => {
     dispatch(clientsRequest());
-    dispatch(getClientTicketsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
 
     return api.get('/clients').then(data => {
         //data.src = require('images/service.png');
-        dispatch(getClientTicketsReceiveSuccess([{"id":1,"email":"test","password":"pass"},{"id":2,"email":"test2","password":"pass"},{"id":3,"email":"test3","password":"pass"}]));
+        dispatch(getClientTicketsReceiveSuccess(data));
     }).catch(function(error) {
         dispatch(clientsReceiveFailure())
     });
