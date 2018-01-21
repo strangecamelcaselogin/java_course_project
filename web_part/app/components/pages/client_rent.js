@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { getBrandsInfo, addClientRent, cancelClientRent, getClientCarsInfo } from '../../actions' ;
 import moment from  'moment';
 
-import {FormGroup, Input, Label, Button, Container} from "reactstrap";
+import {FormGroup, Input, Label, Button, Container, Form} from "reactstrap";
 
 
 @connect(mapStateToProps)
@@ -79,26 +79,27 @@ export default class ClientRent extends Component{
             <div>
                 <Container>
                     <h3>Предоставить бокс</h3>
+                    <Form>
+                        <FormGroup>
+                            <Label>Окончание аренды</Label>
+                            <Input onChange={(e) => {this.onChangeDateEndRent(e.target.value)}} value={this.state.dateEndRent}/>
+                        </FormGroup>
 
-                    <FormGroup>
-                        <Label>Окончание аренды</Label>
-                        <Input onChange={(e) => {this.onChangeDateEndRent(e.target.value)}} value={this.state.dateEndRent}/>
-                    </FormGroup>
+                        <FormGroup>
+                            <Label>Автомобиль</Label>
+                            <Input type="select" onChange={(e) => {this.onChangeSelectCar(e.target.value)}}>
+                            {
+                                this.props.carsList.map((car) => {
+                                    return(
+                                        <option value={car.id} key={car.id}>{car.number}</option>
+                                    )
+                                })
+                            }
+                            </Input>
+                        </FormGroup>
 
-                    <FormGroup>
-                        <Label>Автомобиль</Label>
-                        <Input type="select" onChange={(e) => {this.onChangeSelectCar(e.target.value)}}>
-                        {
-                            this.props.carsList.map((car) => {
-                                return(
-                                    <option value={car.id} key={car.id}>{car.number}</option>
-                                )
-                            })
-                        }
-                        </Input>
-                    </FormGroup>
-
-                    <Button color="primary" onClick={this.provideBox}>Запросить</Button>
+                        <Button color="primary" onClick={this.provideBox}>Запросить</Button>
+                    </Form>
                 </Container>
             </div>
         )

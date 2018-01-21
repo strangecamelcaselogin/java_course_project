@@ -6,7 +6,7 @@ import _ from 'lodash';
 import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
 import { getBrandsInfo, getClientRentsInfo, addClientCar, deleteClientCar, getClientCarsInfo, cancelClientRent } from '../../actions' ;
-import {Button, Container, Input, Table, FormGroup, Label} from "reactstrap";
+import {Button, Container, Input, Table, FormGroup, Label, Form} from "reactstrap";
 
 @connect(mapStateToProps)
 export default class ClientLK extends Component{
@@ -136,7 +136,7 @@ export default class ClientLK extends Component{
                         <h3>Добавить новый атомобиль</h3>
                         {
                             (this.props.carBrands.length !== 0) ?
-                                <div>
+                                <Form>
                                     <FormGroup>
                                         <Label>Выберите марку автомобиля</Label>
                                         <Input onChange={(e) => {
@@ -165,7 +165,7 @@ export default class ClientLK extends Component{
                                     </FormGroup>
 
                                     <Button color="primary" onClick={this.addCar}>Добавить</Button>
-                                </div>
+                                </Form>
                                 :
                                 <div>Нельзя добавить автомобиль. В системе нет марок</div>
                         }
@@ -177,7 +177,7 @@ export default class ClientLK extends Component{
                         <h3>Удалить машину</h3>
                         {
                             (this.props.clientCars.length !== 0) ?
-                                <div>
+                                <Form>
                                     <FormGroup>
                                         <Label>Выберите автомобиль</Label>
                                         <Input type="select" onChange={(e) => {
@@ -192,7 +192,7 @@ export default class ClientLK extends Component{
                                     </FormGroup>
 
                                     <Button color="danger" onClick={this.deleteCar}>Удалить</Button>
-                                </div>
+                                </Form>
                                 :
                                 <div>У вас нет ни одной машины</div>
                         }
