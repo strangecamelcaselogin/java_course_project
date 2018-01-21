@@ -198,7 +198,9 @@ export default class AdminInfo extends Component{
                     <h3>Справка о клиентах</h3>
                     <Button  color="primary" onClick={this.getClients}>Получить список клиентов</Button>
                 </div>
-                <br/>
+
+                <hr/>
+
                 <div>
                     <h3>Справка о клиентах с определенной маркой автомобиля</h3>
                     <FormGroup>
@@ -220,7 +222,9 @@ export default class AdminInfo extends Component{
                     </FormGroup>
                     <Button  color="primary" onClick={this.getBrandsClients}>Получить список клиентов с определенной маркой автомобиля</Button>
                 </div>
-                <br/>
+
+                <hr/>
+
                 <div>
                     <h3>Справка о клиентах, у который срок аренды истекает к указанной дате</h3>
                     <FormGroup>
@@ -229,7 +233,9 @@ export default class AdminInfo extends Component{
                     </FormGroup>
                     <Button  color="primary" onClick={this.getEndRentsClients}>Получить список клиентов, у который срок аренды истекает к указанной дате</Button>
                 </div>
-                <br/>
+
+                <hr/>
+
                 <div>
                     <h3>Справка о клиенте, занимающем бокс</h3>
                     <FormGroup>
