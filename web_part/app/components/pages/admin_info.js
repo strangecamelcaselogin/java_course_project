@@ -10,6 +10,7 @@ import {getClientsInfo, getClientsWithBrand, getBrandsInfo, getBoxesInfo, addBra
 import {Button, Container, Input, Table, FormGroup, Label, Modal, ModalHeader, ModalBody } from "reactstrap";
 import {getClientRentsInfo} from "../../actions/rent";
 import {getClientCarsInfo} from "../../actions/cars";
+import moment from "moment";
 
 
 @connect(mapStateToProps)
@@ -155,8 +156,6 @@ export default class AdminInfo extends Component{
     }
 
     render(){
-        console.log('render', this.props);
-
         //Новый блок
         return (
             <Container>
@@ -282,30 +281,41 @@ function mapStateToProps(state, ownProps) {
     let brandsById = ArrayToObj(state.brands.brandsList, 'id');
     let boxesById = ArrayToObj(state.boxes.brandsList, 'id');
     let clientsById = ArrayToObj(state.clients.clients, 'id');
-    let carsById = ArrayToObj(state.client.clientCarList, 'clientId');
-    let rentById = ArrayToObj(state.client.clientListTicket, 'carId');
+    let carsByClientId = ArrayToObj(state.client.clientCarList, 'clientId');
+    let carsById = ArrayToObj(state.client.clientCarList, 'id');
+    let rentByCarId = ArrayToObj(state.client.clientListTicket, 'carId');
+    let rentById = ArrayToObj(state.client.clientListTicket, 'id');
 
     for (let id in clientsById) {
         let client = clientsById[id];
-        let clientCars =  carsById[id];
+        let clientCars =  carsByClientId[id];
         client['car'] = [];
+        client['rents'] = [];
         if (clientCars) {
             for (let car of clientCars) {
                 let carId = car.id;
-                let rents = rentById[carId] || [];
+                let rents = rentByCarId[carId] || [];
                 if (!('rents' in car)) {
                     car['rents'] = []
                 }
+                car['brand'] = brandsById[car.carBrandId].name;
                 if (Array.isArray(rents)) {
-                    car['rents'] = rents
+                    car['rents'] = rents;
+                    for (let rent of rents) {
+                        rent['car'] = car;
+                        client['rents'].push(rent)
+                    }
+                } else {
+                    client['rents'].push(rents);
                 }
                 car['rents'].push(rents);
-                car['brand'] = brandsById[car.carBrandId].name;
+
             }
             client['cars'] = clientCars
         }
 
-        client['rents'] = [];
+
+
     }
 
     let full_clients = [];
@@ -332,17 +342,18 @@ class ModalScreenClient extends Component {
     render(){
         let client = this.props.info;
         let cars = [];
+        let rents = [];
         if ('cars' in client) {
             cars = client.cars;
+            rents = client.rents;
         }
         if(!this.props.isOpen){
             return(<div></div>)
         }
         return(
             <Modal isOpen={this.props.isOpen} toggle={() => {this.props.offModal()}}>
-                <ModalHeader toggle={() => {this.props.offModal()}} >Клиент </ModalHeader>
+                <ModalHeader toggle={() => {this.props.offModal()}} >Клиент {client.name}</ModalHeader>
                 <ModalBody>
-                    <div>Имя: {client.name}</div>
                     <div>Машины: </div>
                     {
                         (cars.length !== 0) ?
@@ -352,9 +363,6 @@ class ModalScreenClient extends Component {
                                     <th>№</th>
                                     <th>Номер</th>
                                     <th>Марка</th>
-                                    <th>Статус</th>
-                                    <th>Бокс</th>
-                                    <th>Окончание аренды</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -365,9 +373,6 @@ class ModalScreenClient extends Component {
                                                 <td>{index}</td>
                                                 <td>{car.number}</td>
                                                 <td>{car.brand}</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
                                             </tr>
                                         )
                                     })
@@ -375,7 +380,44 @@ class ModalScreenClient extends Component {
                                 </tbody>
                             </Table>
                             :
-                            <div></div>
+                            <div>Нет машин</div>
+                    }
+                    <br/>
+                    <div>Активные ренты:</div>
+                    {
+                        (rents.length !== 0) ?
+                            <Table>
+                                <thead>
+                                <tr>
+                                    <th>№</th>
+                                    <th>Номер</th>
+                                    <th>Марка</th>
+                                    <th>Бокс</th>
+                                    <th>Окончание аренды</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {
+                                    rents.map((rent, index) => {
+                                        let car = rent.car;
+                                        let date = new Date(rent.endDate);
+                                        if (rent.active) {
+                                            return (
+                                                <tr key={car.id}>
+                                                    <td>{index}</td>
+                                                    <td>{car.number}</td>
+                                                    <td>{car.brand}</td>
+                                                    <td>{rent.boxId}</td>
+                                                    <td>{moment(date).format('L')}</td>
+                                                </tr>
+                                            )
+                                        }
+                                    })
+                                }
+                                </tbody>
+                            </Table>
+                            :
+                            <div>Нет активных рент</div>
                     }
                 </ModalBody>
             </Modal>
