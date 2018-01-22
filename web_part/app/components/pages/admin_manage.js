@@ -12,6 +12,9 @@ import {
     Button, Container, Input, Table, FormGroup, Label, Row, Col, Card, CardTitle, CardText, Nav,
     NavItem, NavLink, TabContent, TabPane
 } from "reactstrap";
+import {getClientRentsInfo} from "../../actions/rent";
+import {getClientCarsInfo} from "../../actions/cars";
+import moment from "moment";
 
 
 @connect(mapStateToProps)
@@ -48,11 +51,11 @@ export default class AdminManage extends Component{
 
     componentDidMount(){
         let p = this.props.dispatch(getBoxesInfo());
-        let p1 = this.props.dispatch(getFreeBoxesInfo());
+        this.props.dispatch(getClientRentsInfo());
+        this.props.dispatch(getClientCarsInfo());
         p.then(() => {
             let p2 = this.props.dispatch(getBrandsInfo());
             p2.then(() => {
-                console.log('componentDidMount', this.props);
                 let obj = {};
                 if (this.props.carBrandsById.length !== 0) {
                     obj['selectCarBrand'] = this.props.carBrandsById[0].id;
@@ -129,8 +132,8 @@ export default class AdminManage extends Component{
         this.props.dispatch(addBox(this.state.selectCarBrand, this.state.priceBox))
     }
 
-    closeBox() {
-        this.props.dispatch(deleteBox(this.state.closeNumberBox))
+    closeBox(id) {
+        this.props.dispatch(deleteBox(id))
     }
 
     incPriceBox() {
@@ -155,7 +158,7 @@ export default class AdminManage extends Component{
 
     //{}
     render(){
-        console.log('render', this.props, this.state);
+        let boxes = this.props.boxesList;
         return(
             <Container>
                 <Nav tabs>
@@ -172,7 +175,7 @@ export default class AdminManage extends Component{
                             className={{ active: this.state.activeTab === '2' }}
                             onClick={() => { this.toggle('2'); }}
                         >
-                            Moar Tabs
+                            Марки
                         </NavLink>
                     </NavItem>
                 </Nav>
@@ -182,6 +185,74 @@ export default class AdminManage extends Component{
                         <h2>
                             Боксы
                         </h2>
+                        {
+                            (boxes.length !== 0) ?
+                                <Table>
+                                    <thead>
+                                    <tr>
+                                        <th>№</th>
+                                        <th>ID</th>
+                                        <th>Марка</th>
+                                        <th>Цена</th>
+                                        <th>Статус</th>
+                                        <th>Окончание аренды</th>
+                                        <th>Удалить</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {
+                                        boxes.map((box, index) => {
+                                            let id = box['id'];
+                                            console.log('id', id)
+                                            if (box.isNotUsed) {
+                                                return (
+                                                    <tr key={box.id}>
+                                                        <td>{index}</td>
+                                                        <td>{box.id}</td>
+                                                        <td>{box.brandName}</td>
+                                                        <td>
+                                                            <Input value={this.state.incPrice}
+                                                                   placeholder={box.price}
+                                                                   onChange={(e) => {this.onChangeIncPrice(e.target.value, id)}}/>
+                                                            <Button color="primary"
+                                                                    onClick={() => {this.incPriceBox(id)}}
+                                                            >+</Button>
+                                                        </td>
+                                                        <td>Свободен</td>
+                                                        <td>--</td>
+                                                        <td>
+                                                            <Button color="primary"
+                                                                    onClick={() => {this.closeBox(id)}}
+                                                            >Закрыть бокс</Button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            } else {
+                                                let date = box.endDateUsed;
+                                                return (
+                                                    <tr key={box.id}>
+                                                        <td>{index}</td>
+                                                        <td>{box.id}</td>
+                                                        <td>{box.brandName}</td>
+                                                        <td>{box.price}</td>
+                                                        <td>Занят до</td>
+                                                        <td>{moment(date).format('L')}</td>
+                                                        <td>
+                                                            <Button color="primary"
+                                                                    disabled
+                                                            >Закрыть бокс</Button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            }
+                                        })
+                                    }
+                                    </tbody>
+                                </Table>
+                                :
+                                <div>Нет боксов</div>
+                        }
+
                         <div>
                             <div>
                                 <h3>Прием в эксплуатацию нового бокса</h3>
@@ -206,54 +277,6 @@ export default class AdminManage extends Component{
                                 <Button color="primary" onClick={this.addNewBox}>Принять новый бокс</Button>
                             </div>
 
-                            <hr/>
-
-                            <div>
-                                <h3>Закрытие бокса</h3>
-                                <FormGroup>
-                                    <Label>Номер бокса</Label>
-                                    <Input type="select"
-                                           onChange={(e) => {this.onSelectCloseNumberBox(e.target.value)}}
-                                           value={this.state.closeNumberBox}>
-                                        {
-                                            this.props.freeBoxesById.map((box, index)=>{
-                                                return (
-                                                    <option value={box.id} key={index}>
-                                                        {box.id}
-                                                    </option>
-                                                )
-                                            })
-                                        }
-                                    </Input>
-                                </FormGroup>
-                                <Button color="primary" onClick={this.closeBox}>Закрыть бокс</Button>
-                            </div>
-
-                            <hr/>
-
-                            <div>
-                                <h3>Увеличить стоимость аренды</h3>
-                                <FormGroup>
-                                    <Label>Номер бокса</Label>
-                                    <Input type="select" onChange={(e) => {this.onSelectIncPriceNumberBox(e.target.value)}}
-                                           value={this.state.incPriceNumberBox}>
-                                        {
-                                            this.props.boxesList.map((box, index)=>{
-                                                return (
-                                                    <option value={box.id} key={index}>
-                                                        {box.id}
-                                                    </option>
-                                                )
-                                            })
-                                        }
-                                    </Input>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label>Во сколько раз</Label>
-                                    <Input value={this.state.incPrice} onChange={(e) => {this.onChangeIncPrice(e.target.value)}}/>
-                                </FormGroup>
-                                <Button color="primary" onClick={this.incPriceBox}>Увеличить стоимость боксов</Button>
-                            </div>
                         </div>
                     </TabPane>
                     <TabPane tabId="2">
@@ -301,12 +324,62 @@ export default class AdminManage extends Component{
 }
 
 function mapStateToProps(state, ownProps) {
-    let rents = state.client.clientListTicket;
+    let rents = [];
+    let boxes = [];
+    let rentsByBoxId = ArrayToObj(state.client.clientListTicket, 'boxId');
+    let boxById =  ArrayToObj(state.boxes.boxesList, 'id');
 
-    console.log(state);
+    let brandsById = ArrayToObj(state.brands.brandsList, 'id');
+    let carsByClientId = ArrayToObj(state.client.clientCarList, 'clientId');
+    let carsById = ArrayToObj(state.client.clientCarList, 'id');
+    let rentByCarId = ArrayToObj(state.client.clientListTicket, 'carId');
+
+    for (let boxId in boxById) {
+        let box = boxById[boxId][0];
+        box['isNotUsed'] = true;
+        box['brandName'] = '';
+        if (box.carBrandId in brandsById) {
+            box['brandName'] = brandsById[box.carBrandId][0].name;
+        }
+        if (boxId in rentsByBoxId){
+            for (let rent in rentsByBoxId[boxId]) {
+                if (rentsByBoxId[boxId][rent].active) {
+                    box['isNotUsed'] = false;
+                    box['endDateUsed'] = rent.endDate;
+
+                    break;
+                }
+            }
+        }
+        boxes.push(box)
+    }
+
     return {
         carBrandsById: state.brands.brandsList,
         freeBoxesById: state.boxes.freeBoxesById,
-        boxesList: state.boxes.boxesList
+        boxesList: boxes
     }
+}
+
+function ArrayToObj(array, id){
+    if (array){
+        let object = array.reduce((obj, cur) => {
+            if (cur[id] in obj) {
+                if (!Array.isArray(obj[cur[id]])) {
+                    let em = _.cloneDeep(obj[cur[id]]);
+                    obj[cur[id]] = [];
+                    obj[cur[id]].push(em);
+                }
+                obj[cur[id]].push(cur);
+
+            } else {
+                obj[cur[id]] = [cur];
+            }
+            return obj;
+        }, {});
+
+        return object;
+    }
+    return {};
+
 }
