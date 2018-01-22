@@ -1,6 +1,7 @@
 package ru.rsatu.boxes.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.rsatu.boxes.persistence.Car;
 import ru.rsatu.boxes.persistence.Client;
 import ru.rsatu.boxes.persistence.Rent;
 import ru.rsatu.boxes.rest.exception.ResourceNotFound;
@@ -23,6 +24,13 @@ public class RentRepositoryImpl implements RentRepositoryCustom {
                         "WHERE r.car = car.id AND car.client = ?1")
                 .setParameter(1, client)
                 .getResultList();
+    }
+
+    public Rent findByCar(Car car) {
+        return (Rent) em.createQuery(
+                "SELECT r FROM Rent r WHERE r.car = ?1")
+                .setParameter(1, car)
+                .getSingleResult();
     }
 
     @Override
