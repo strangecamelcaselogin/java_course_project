@@ -100,9 +100,8 @@ public class RentController {
 
         try {
             // если нашлась рента по машине, значит нельзя
-            if (rentRepository.findByCar(car) != null) {
-                throw new BadRequest("Car already have active rent");
-            }
+            rentRepository.findActiveByCar(car);
+            throw new BadRequest("Car already have active rent");
         } catch (IncorrectResultSizeDataAccessException ignored) {}
 
         CarBrand carBrand = car.getCarBrand();

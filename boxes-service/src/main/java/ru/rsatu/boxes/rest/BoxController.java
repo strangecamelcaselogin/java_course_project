@@ -1,18 +1,19 @@
 package ru.rsatu.boxes.rest;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.BoxRepository;
 import ru.rsatu.boxes.dao.CarBrandRepository;
+import ru.rsatu.boxes.dao.RentRepository;
 import ru.rsatu.boxes.rest.security.AccessChecker;
-import ru.rsatu.boxes.rest.security.UserRole;
 import ru.rsatu.boxes.persistence.Box;
 import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.dto.BoxDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
-import ru.rsatu.boxes.rest.exception.AccessViolation;
 import ru.rsatu.boxes.rest.exception.BadRequest;
 import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
@@ -23,13 +24,17 @@ import java.security.Principal;
 public class BoxController {
     private final BoxRepository boxRepository;
     private final CarBrandRepository carBrandRepository;
+    private final RentRepository rentRepository;
 
     private DomainToDTOMapper<BoxDTO> boxDTOMapper = new DomainToDTOMapper<>(BoxDTO.class);
 
 
-    public BoxController(BoxRepository boxRepository, CarBrandRepository carBrandRepository) {
+    public BoxController(BoxRepository boxRepository,
+                         CarBrandRepository carBrandRepository,
+                         RentRepository rentRepository) {
         this.boxRepository = boxRepository;
         this.carBrandRepository = carBrandRepository;
+        this.rentRepository = rentRepository;
     }
 
     /**
@@ -44,6 +49,10 @@ public class BoxController {
         return boxDTOMapper.mapMany(boxRepository.findAll());
     }
 
+    /**
+     * Получить список свободных боксов
+     * Только админ имеет доступ
+     */
     @RequestMapping(value="/free", method = RequestMethod.GET)
     public Iterable<BoxDTO> getFreeBoxes(Principal auth) {
 
@@ -84,10 +93,28 @@ public class BoxController {
         return boxDTOMapper.mapOne(box);
     }
 
+    @RequestMapping(value = "/{boxId}", method = RequestMethod.PATCH)
+    public BoxDTO patchBox(Principal auth, @PathVariable Long boxId, @RequestParam Long price) {
+
+        new AccessChecker(auth).onlyAdmin();
+
+        Box box = boxRepository.findById(boxId);
+
+        try {
+            rentRepository.findActiveByBox(box);
+            throw new BadRequest("Can not change price to Box with active Rent");
+        }
+        catch (IncorrectResultSizeDataAccessException e) {
+            box.setPrice(price);
+            boxRepository.save(box);
+        }
+
+        return boxDTOMapper.mapOne(box);
+    }
+
     /**
      * Удалить бокс
      * Только админ имеет доступ
-     * TODO нельзя удалять бокс, пока в нем машина
      */
     @RequestMapping(value="/{boxId}", method = RequestMethod.DELETE)
     public ResponseEntity<Boolean> deleteBox(Principal auth, @PathVariable Long boxId) {
@@ -96,9 +123,15 @@ public class BoxController {
 
         try {
             boxRepository.delete(boxId);
-        } catch(EmptyResultDataAccessException e){
+        }
+        catch(EmptyResultDataAccessException e){
             throw new BadRequest("Can not delete Box");
         }
+        // Нельзя удалить бокс, который когда то был или сейчас занят машиной
+        catch (DataIntegrityViolationException e) {
+            throw new BadRequest("Can not delete Box while registered at least on Rent with this Box");
+        }
+
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }

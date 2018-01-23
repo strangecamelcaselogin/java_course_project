@@ -28,10 +28,11 @@ public class BoxRepositoryImpl implements BoxRepositoryCustom {
 
             return freeBox;
         } catch (IndexOutOfBoundsException e) {
-            throw new ResourceNotFound(null, "Free Box");
+            throw new ResourceNotFound(null, "Can not Find Free Box");
         }
     }
 
+    @Override
     public List<Box> findFreeBoxes() {
         return em.createQuery(
                 "SELECT b FROM Box b " +
