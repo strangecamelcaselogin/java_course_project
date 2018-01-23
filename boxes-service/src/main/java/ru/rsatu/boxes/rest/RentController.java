@@ -1,6 +1,7 @@
 package ru.rsatu.boxes.rest;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,8 @@ import ru.rsatu.boxes.rest.exception.BadRequest;
 import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
 import java.security.Principal;
-import java.sql.Timestamp;
+import java.sql.Date;
+import java.time.Instant;
 
 @RestController
 @RequestMapping("/rents")
@@ -81,33 +83,43 @@ public class RentController {
 
     /**
      * Арендовать бокс новый бокс
-     * TODO проверить не стоит ли машина в другом боксе (? constrain на таблицу rent)
      * @param carId - id автомобиля клиента
      * @param end - время окончания аренды
      */
     @RequestMapping(method = RequestMethod.POST)
     public RentDTO postRent(Principal auth, @RequestParam Long carId, @RequestParam Long end) {
+        Long MINIMAL_RENT_DURATION_SEC = 3600L;
+
         Client owner = clientRepository.findByEmail(auth.getName());
         Car car = carRepository.findById(carId);
 
-        // проверить, что машина принадлежит владельцу
+        // проверим, что машина принадлежит владельцу
         if (!car.getClient().getId().equals(owner.getId())) {
             throw new AccessViolation("You can not rent this Car");
         }
 
+        try {
+            // если нашлась рента по машине, значит нельзя
+            if (rentRepository.findByCar(car) != null) {
+                throw new BadRequest("Car already have active rent");
+            }
+        } catch (IncorrectResultSizeDataAccessException ignored) {}
+
         CarBrand carBrand = car.getCarBrand();
-        Box box = boxRepository.findFreeBox(carBrand);
+        Box box = boxRepository.findFreeBox(carBrand);  // возьмем первый свободный бокс
 
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        Long start = timestamp.getTime();
+        Instant startTs = Instant.now();
+        Instant endTs = Instant.ofEpochSecond(end);
 
-        // TODO валидировать даты
-        // TODO даты как даты в БД
+        if ((endTs.getEpochSecond() - startTs.getEpochSecond()) < MINIMAL_RENT_DURATION_SEC){
+            throw new BadRequest(String.format("Rent duration can not be less than %s hours", MINIMAL_RENT_DURATION_SEC / 3600));
+        }
+
         Rent rent = new Rent(
                 box,
                 car,
-                start,
-                end,
+                Date.from(startTs),
+                Date.from(endTs),
                 true
         );
 

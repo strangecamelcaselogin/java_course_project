@@ -1,6 +1,7 @@
 package ru.rsatu.boxes.persistence;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Rent extends AbstractEntity{
@@ -16,17 +17,17 @@ public class Rent extends AbstractEntity{
     @JoinColumn(name = "car_id")
     private Car car;
 
-    private Long startDate;
-    private Long endDate;
+    private Date startDate;
+    private Date endDate;
 
     @Column(nullable = false)
     private Boolean active;
 
-    public Rent(Box box, Car car, Long start_date, Long end_date, Boolean active) {
+    public Rent(Box box, Car car, Date startDate, Date endDate, Boolean active) {
         this.box = box;
         this.car = car;
-        this.startDate = start_date;
-        this.endDate = end_date;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.active = active;
     }
 
@@ -64,19 +65,19 @@ public class Rent extends AbstractEntity{
         this.active = active;
     }
 
-    public Long getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Long startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public Long getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Long endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 }

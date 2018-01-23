@@ -1,18 +1,20 @@
 package ru.rsatu.boxes.dto;
 
+import java.util.Date;
+
 public class RentDTO extends AbstractDTO{
     private Long id;
     private Long boxId;
     private Long carId;
-    private Long startDate;
-    private Long endDate;
+    private Date startDate;
+    private Date endDate;
     private Boolean active;
 
-    public RentDTO(Long box_id, Long car_id, Long start_date, Long end_date, Boolean active){
+    public RentDTO(Long box_id, Long car_id, Date startDate, Date endDate, Boolean active){
         this.boxId = box_id;
         this.carId = car_id;
-        this.startDate = start_date;
-        this.endDate = end_date;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.active = active;
     }
 
@@ -50,19 +52,19 @@ public class RentDTO extends AbstractDTO{
         this.active = active;
     }
 
-    public Long getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Long startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public Long getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Long endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 }
