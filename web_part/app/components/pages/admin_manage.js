@@ -24,15 +24,18 @@ export default class AdminManage extends Component{
 
         this.state = {
             carBrandsById: [], //список марок
-            selectCarBrand: null, //выбранная марка нового бокса
-            priceBox: null, //цена бокса
-            closeNumberBox: null, //бокс, который нужно закрыть
-            incPriceNumberBox: null, //бокс которому надо поднять цену
-            incPrice: null, //во сколько поднять цену
-            addCarBrand: null, //добавляемая марку машины
-            deleteCarBrand: null, //удаляемая марку
-            activeTab: '1'
+            selectCarBrand: '', //выбранная марка нового бокса
+            priceBox: '', //цена бокса
+            closeNumberBox: '', //бокс, который нужно закрыть
+            incPriceNumberBox: '', //бокс которому надо поднять цену
+            incPrice: '', //во сколько поднять цену
+            addCarBrand: '', //добавляемая марку машины
+            deleteCarBrand: '', //удаляемая марку
+            activeTab: '1',
+            boxById: {}
         };
+
+        this.boxById = {};
 
         this.toggle = this.toggle.bind(this);
         this.onChangeSelectCarBrands = this.onChangeSelectCarBrands.bind(this);
@@ -47,6 +50,12 @@ export default class AdminManage extends Component{
         this.incPriceBox = this.incPriceBox.bind(this);
         this.addCarBrand = this.addCarBrand.bind(this);
         this.deleteCarBrand = this.deleteCarBrand.bind(this);
+    }
+
+    componentWillMount(){
+        if(this.props.boxById) {
+            this.boxById = this.props.boxById;
+        }
     }
 
     componentDidMount(){
@@ -65,26 +74,20 @@ export default class AdminManage extends Component{
                     obj['closeNumberBox'] = this.props.boxesList[0].id;
                     obj['incPriceNumberBox'] = this.props.boxesList[0].id;
                 }
+                obj['boxById'] = this.props.boxById;
+                this.boxById = this.props.boxById;
                 this.setState(obj);
             })
         })
     }
 
-    /*componentWillReceiveProps(){
+    componentWillReceiveProps(){
         this.setState(function(prevState, props) {
-            console.log('componentDidMount', this.props);
-            let obj = {};
-            if (props.carBrandsById.length !== 0) {
-                obj['selectCarBrand'] = props.carBrandsById[0].id;
-                obj['deleteCarBrand'] = props.carBrandsById[0].id;
+            return {
+                boxById: props.boxById
             }
-            if (props.boxesList.length !== 0) {
-                obj['closeNumberBox'] = props.boxesList[0].id;
-                obj['incPriceNumberBox'] = props.boxesList[0].id;
-            }
-            return obj;
         });
-    }*/
+    }
 
     onSelectIncPriceNumberBox(value) {
         this.setState({
@@ -110,10 +113,8 @@ export default class AdminManage extends Component{
         })
     }
 
-    onChangeIncPrice(value){
-        this.setState({
-            incPrice: value
-        })
+    onChangeIncPrice(value, id){
+        this.boxById[id].price = value;
     }
 
     onChangeAddCarBrand(value){
@@ -136,8 +137,14 @@ export default class AdminManage extends Component{
         this.props.dispatch(deleteBox(id))
     }
 
-    incPriceBox() {
-        this.props.dispatch(incPriceBox(this.state.incPriceNumberBox, this.state.incPrice))
+    incPriceBox(event, focusout, id) {
+        if (event.keyCode === 27) {
+            this.setState({incPrice: this.props.boxById[id]});
+        }
+        if ( (event.keyCode === 13 || focusout === true) && (this.props.boxById[id] !== this.boxById[id].price) ) {
+            this.props.dispatch(incPriceBox(id, this.boxById[id].price))
+        }
+
     }
 
     addCarBrand() {
@@ -203,7 +210,7 @@ export default class AdminManage extends Component{
                                     {
                                         boxes.map((box, index) => {
                                             let id = box['id'];
-                                            console.log('id', id)
+                                            console.log('id', id);
                                             if (box.isNotUsed) {
                                                 return (
                                                     <tr key={box.id}>
@@ -211,12 +218,15 @@ export default class AdminManage extends Component{
                                                         <td>{box.id}</td>
                                                         <td>{box.brandName}</td>
                                                         <td>
-                                                            <Input value={this.state.incPrice}
-                                                                   placeholder={box.price}
-                                                                   onChange={(e) => {this.onChangeIncPrice(e.target.value, id)}}/>
-                                                            <Button color="primary"
-                                                                    onClick={() => {this.incPriceBox(id)}}
-                                                            >+</Button>
+                                                            <div onClick={(event) => {event.stopPropagation()}}>
+                                                                <FormGroup>
+                                                                    <Input type="text" placeholder={box.price} title="Кликните для редактирования"
+                                                                        onKeyDown={(event) => {this.incPriceBox(event, false, id)}}
+                                                                        onBlur={(event) => {this.incPriceBox(event, true, id)}}
+                                                                        value={this.boxById[id].price}
+                                                                        onChange={(e) => {this.onChangeIncPrice(e.target.value, id)}}/>
+                                                                </FormGroup>
+                                                            </div>
                                                         </td>
                                                         <td>Свободен</td>
                                                         <td>--</td>
@@ -357,7 +367,17 @@ function mapStateToProps(state, ownProps) {
     return {
         carBrandsById: state.brands.brandsList,
         freeBoxesById: state.boxes.freeBoxesById,
-        boxesList: boxes
+        boxesList: boxes,
+        boxById
+    }
+}
+
+class InputValuePrice extends  Component{
+    constructor(props){
+        super(props)
+    }
+    render() {
+
     }
 }
 
