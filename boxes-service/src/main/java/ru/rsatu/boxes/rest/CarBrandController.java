@@ -6,12 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.CarBrandRepository;
+import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 import ru.rsatu.boxes.rest.security.AccessChecker;
-import ru.rsatu.boxes.rest.security.UserRole;
 import ru.rsatu.boxes.persistence.CarBrand;
 import ru.rsatu.boxes.dto.CarBrandDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
-import ru.rsatu.boxes.rest.exception.AccessViolation;
 import ru.rsatu.boxes.rest.exception.BadRequest;
 
 import java.security.Principal;
@@ -57,7 +56,6 @@ public class CarBrandController {
     /**
      * Удалить марку
      * Только админ имеет доступ
-     * TODO нельзя удалить марку, пока есть машины и боксы этой марки
      */
     @RequestMapping(method = RequestMethod.DELETE)
     public Boolean deleteCarBrand(Principal auth, @RequestParam Long id) {
@@ -66,8 +64,13 @@ public class CarBrandController {
 
         try {
             carBrandRepository.delete(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new BadRequest("Can not delete Brand");
+        }
+        catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFound(id, "Can not delete Brand");
+        }
+        // нельзя удалить марку, пока есть машины и боксы этой марки
+        catch (DataIntegrityViolationException e) {
+            throw new BadRequest("Can not delete Car Brand while registered at least on car or box with this Brand");
         }
 
         return true;
