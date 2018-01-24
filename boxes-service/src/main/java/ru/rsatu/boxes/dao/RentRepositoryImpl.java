@@ -1,6 +1,7 @@
 package ru.rsatu.boxes.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.rsatu.boxes.persistence.Box;
 import ru.rsatu.boxes.persistence.Car;
 import ru.rsatu.boxes.persistence.Client;
 import ru.rsatu.boxes.persistence.Rent;
@@ -17,6 +18,7 @@ public class RentRepositoryImpl implements RentRepositoryCustom {
     @PersistenceContext
     private EntityManager em;
 
+    @Override
     public Iterable<Rent> findByClient(Client client) {
         return em.createQuery(
                 "SELECT r " +
@@ -26,10 +28,23 @@ public class RentRepositoryImpl implements RentRepositoryCustom {
                 .getResultList();
     }
 
-    public Rent findByCar(Car car) {
+    @Override
+    public Rent findActiveByCar(Car car) {
         return (Rent) em.createQuery(
-                "SELECT r FROM Rent r WHERE r.car = ?1")
+                "SELECT r " +
+                        "FROM Rent r " +
+                        "WHERE r.car = ?1 and r.active = true")
                 .setParameter(1, car)
+                .getSingleResult();
+    }
+
+    @Override
+    public Rent findActiveByBox(Box box) {
+        return (Rent) em.createQuery(
+                "SELECT r " +
+                        "FROM Rent r " +
+                        "WHERE r.box = ?1 and r.active = true")
+                .setParameter(1, box)
                 .getSingleResult();
     }
 
