@@ -64,6 +64,19 @@ public class RentController {
     }
 
     /**
+     * Найти все договоры для конкретного пользователя
+     * * Только админ
+     */
+    @RequestMapping(value = "/client/{clientId}")
+    public Iterable<RentDTO> getRentsByClient(Principal auth, @PathVariable Long clientId) {
+        new AccessChecker(auth).onlyAdmin();
+
+        Client user = clientRepository.findById(clientId);
+
+        return rentDTOMapper.mapMany(rentRepository.findByClient(user));
+    }
+
+    /**
      * Получить информацию о конкретном договоре
      * Только админ
      */
@@ -129,6 +142,7 @@ public class RentController {
 
     /**
      * Отмена аренды
+     * Отменить может только владелец
      * @param rentId id аренды
      */
     @RequestMapping(value="/{rentId}", method = RequestMethod.PATCH)
