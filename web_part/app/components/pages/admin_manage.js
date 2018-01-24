@@ -53,14 +53,19 @@ export default class AdminManage extends Component{
     }
 
     componentWillMount(){
-        if(this.props.boxById) {
-            this.boxById = this.props.boxById;
-        }
+        let p = this.props.dispatch(getBoxesInfo());
+        p.then(() => {
+            if(this.props.boxById) {
+                this.setState({
+                    boxById: this.props.boxById
+                })
+            }
+        })
     }
 
     componentDidMount(){
-        let p = this.props.dispatch(getBoxesInfo());
-        this.props.dispatch(getClientRentsInfo());
+
+        let p = this.props.dispatch(getClientRentsInfo());
         this.props.dispatch(getClientCarsInfo());
         p.then(() => {
             let p2 = this.props.dispatch(getBrandsInfo());
@@ -74,8 +79,7 @@ export default class AdminManage extends Component{
                     obj['closeNumberBox'] = this.props.boxesList[0].id;
                     obj['incPriceNumberBox'] = this.props.boxesList[0].id;
                 }
-                obj['boxById'] = this.props.boxById;
-                this.boxById = this.props.boxById;
+                //obj['boxById'] = this.props.boxById;
                 this.setState(obj);
             })
         })
@@ -114,7 +118,11 @@ export default class AdminManage extends Component{
     }
 
     onChangeIncPrice(value, id){
-        this.boxById[id].price = value;
+        let boxById = _.cloneDeep(this.state.boxById);
+        boxById[id].price = value;
+        this.setState({
+            boxById: boxById
+        })
     }
 
     onChangeAddCarBrand(value){
@@ -138,11 +146,15 @@ export default class AdminManage extends Component{
     }
 
     incPriceBox(event, focusout, id) {
-        if (event.keyCode === 27) {
-            this.setState({incPrice: this.props.boxById[id]});
+        if ((event.keyCode === 27) ||  ((focusout === true) && (this.props.boxById[id] !== this.state.boxById[id].price))) {
+            let boxById = _.cloneDeep(this.state.boxById);
+            boxById[id].price = this.props.boxById[id].price;
+            this.setState({
+                boxById: boxById
+            })
         }
-        if ( (event.keyCode === 13 || focusout === true) && (this.props.boxById[id] !== this.boxById[id].price) ) {
-            this.props.dispatch(incPriceBox(id, this.boxById[id].price))
+        if ( (event.keyCode === 13 ) && (this.props.boxById[id] !== this.state.boxById[id].price) ) {
+            this.props.dispatch(incPriceBox(id, this.state.boxById[id].price))
         }
 
     }
@@ -193,7 +205,7 @@ export default class AdminManage extends Component{
                             Боксы
                         </h2>
                         {
-                            (boxes.length !== 0) ?
+                            ((boxes.length !== 0) && (Object.keys(this.state.boxById).length !== 0)) ?
                                 <Table>
                                     <thead>
                                     <tr>
@@ -210,7 +222,7 @@ export default class AdminManage extends Component{
                                     {
                                         boxes.map((box, index) => {
                                             let id = box['id'];
-                                            console.log('id', id);
+
                                             if (box.isNotUsed) {
                                                 return (
                                                     <tr key={box.id}>
@@ -223,7 +235,7 @@ export default class AdminManage extends Component{
                                                                     <Input type="text" placeholder={box.price} title="Кликните для редактирования"
                                                                         onKeyDown={(event) => {this.incPriceBox(event, false, id)}}
                                                                         onBlur={(event) => {this.incPriceBox(event, true, id)}}
-                                                                        value={this.boxById[id].price}
+                                                                        value={this.state.boxById[id].price}
                                                                         onChange={(e) => {this.onChangeIncPrice(e.target.value, id)}}/>
                                                                 </FormGroup>
                                                             </div>
@@ -345,18 +357,17 @@ function mapStateToProps(state, ownProps) {
     let rentByCarId = ArrayToObj(state.client.clientListTicket, 'carId');
 
     for (let boxId in boxById) {
-        let box = boxById[boxId][0];
+        let box = boxById[boxId];
         box['isNotUsed'] = true;
         box['brandName'] = '';
         if (box.carBrandId in brandsById) {
-            box['brandName'] = brandsById[box.carBrandId][0].name;
+            box['brandName'] = brandsById[box.carBrandId].name;
         }
         if (boxId in rentsByBoxId){
             for (let rent in rentsByBoxId[boxId]) {
                 if (rentsByBoxId[boxId][rent].active) {
                     box['isNotUsed'] = false;
                     box['endDateUsed'] = rent.endDate;
-
                     break;
                 }
             }
@@ -393,7 +404,7 @@ function ArrayToObj(array, id){
                 obj[cur[id]].push(cur);
 
             } else {
-                obj[cur[id]] = [cur];
+                obj[cur[id]] = cur;
             }
             return obj;
         }, {});

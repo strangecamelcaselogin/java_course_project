@@ -158,10 +158,10 @@ export const incPriceBoxRequest = () => {
 };
 
 export const INC_PRICE_BOX_RECEIVE = 'INC_PRICE_BOX_RECEIVE';
-export function incPriceBoxReceiveSuccess(box_id) {
+export function incPriceBoxReceiveSuccess(box_id,inc_price) {
     return {
         type: INC_PRICE_BOX_RECEIVE,
-        payload: box_id
+        payload: { box_id, inc_price}
     }
 }
 export const INC_PRICE_BOX_RECEIVE_FAIL = 'INC_PRICE_BOX_RECEIVE_FAIL';

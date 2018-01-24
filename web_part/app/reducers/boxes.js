@@ -50,6 +50,24 @@ export default function boxes(state = {
             };
         }
 
+        case actions.INC_PRICE_BOX_RECEIVE: {
+            let oldBoxes = _.cloneDeep(state.boxesList);
+            let boxId = action.payload.box_id;
+            let price = action.payload.price;
+
+            for (let i = 0; i < oldBoxes.length; i++){
+                let box = oldBoxes[i];
+                if (box.id === boxId){
+                    box.price = price;
+                    break;
+                }
+            }
+            return {
+                ...state,
+                boxesList: oldBoxes
+            };
+        }
+
         default:
             return state
     }
