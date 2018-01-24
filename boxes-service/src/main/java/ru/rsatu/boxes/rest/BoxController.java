@@ -84,15 +84,19 @@ public class BoxController {
 
         new AccessChecker(auth).onlyAdmin();
 
-        CarBrand b = carBrandRepository.findById(carBrandId);
+        CarBrand carBrand = carBrandRepository.findById(carBrandId);
 
-        Box box = new Box(b, price);
+        Box box = new Box(carBrand, price);
 
         boxRepository.save(box);
 
         return boxDTOMapper.mapOne(box);
     }
 
+    /**
+     * Обновить цену бокса
+     * Может только админ и если бокс свободен
+     */
     @RequestMapping(value = "/{boxId}", method = RequestMethod.PATCH)
     public BoxDTO patchBox(Principal auth, @PathVariable Long boxId, @RequestParam Long price) {
 
@@ -113,7 +117,7 @@ public class BoxController {
     }
 
     /**
-     * Удалить бокс
+     * Удалить бокс (только если свободен)
      * Только админ имеет доступ
      */
     @RequestMapping(value="/{boxId}", method = RequestMethod.DELETE)

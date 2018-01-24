@@ -58,7 +58,7 @@ public class ClientController {
     }
 
     /**
-     * Получит всех клиентов с конкретной маркой автомобиля
+     * Получить всех клиентов с конкретной маркой автомобиля
      */
     @RequestMapping(value="/with_brand/{brandId}", method = RequestMethod.GET)
     public Iterable<ClientDTO> getClientsWithBrand(Principal auth, @PathVariable Long brandId) {
@@ -99,7 +99,7 @@ public class ClientController {
      * Создание новго пользователя (регистрация)
      */
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<ClientDTO> postClient(@RequestParam String email, @RequestParam String name,
+    public ClientDTO postClient(@RequestParam String email, @RequestParam String name,
                                                 @RequestParam String address, @RequestParam String password) {
         try {
             Client client = new Client(
@@ -109,7 +109,7 @@ public class ClientController {
 
             clientRepository.save(client);
 
-            return new ResponseEntity<>(clientDTOMapper.mapOne(client), HttpStatus.OK);
+            return clientDTOMapper.mapOne(client);
 
         } catch (DataIntegrityViolationException e) {
             throw new BadRequest("Can not register new user");

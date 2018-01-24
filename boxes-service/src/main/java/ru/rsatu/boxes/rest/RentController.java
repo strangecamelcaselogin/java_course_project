@@ -49,6 +49,7 @@ public class RentController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<RentDTO> getRents(Principal auth) {
+
         Client user = clientRepository.findByEmail(auth.getName());
 
         Iterable<Rent> result;
@@ -69,6 +70,7 @@ public class RentController {
      */
     @RequestMapping(value = "/client/{clientId}")
     public Iterable<RentDTO> getRentsByClient(Principal auth, @PathVariable Long clientId) {
+
         new AccessChecker(auth).onlyAdmin();
 
         Client user = clientRepository.findById(clientId);
@@ -85,11 +87,7 @@ public class RentController {
 
         new AccessChecker(auth).onlyAdmin();
 
-        Rent rent = rentRepository.findOne(rentId);
-
-        if (rent == null) {
-            throw new ResourceNotFound(rentId, "Rent not found");
-        }
+        Rent rent = rentRepository.findById(rentId);
 
         return rentDTOMapper.mapOne(rent);
     }
@@ -102,6 +100,13 @@ public class RentController {
     @RequestMapping(method = RequestMethod.POST)
     public RentDTO postRent(Principal auth, @RequestParam Long carId, @RequestParam Long end) {
         Long MINIMAL_RENT_DURATION_SEC = 3600L;
+
+        Instant startTs = Instant.now();
+        Instant endTs = Instant.ofEpochSecond(end);
+
+        if ((endTs.getEpochSecond() - startTs.getEpochSecond()) < MINIMAL_RENT_DURATION_SEC){
+            throw new BadRequest(String.format("Rent duration can not be less than %s hours", MINIMAL_RENT_DURATION_SEC / 3600));
+        }
 
         Client owner = clientRepository.findByEmail(auth.getName());
         Car car = carRepository.findById(carId);
@@ -119,13 +124,6 @@ public class RentController {
 
         CarBrand carBrand = car.getCarBrand();
         Box box = boxRepository.findFreeBox(carBrand);  // возьмем первый свободный бокс
-
-        Instant startTs = Instant.now();
-        Instant endTs = Instant.ofEpochSecond(end);
-
-        if ((endTs.getEpochSecond() - startTs.getEpochSecond()) < MINIMAL_RENT_DURATION_SEC){
-            throw new BadRequest(String.format("Rent duration can not be less than %s hours", MINIMAL_RENT_DURATION_SEC / 3600));
-        }
 
         Rent rent = new Rent(
                 box,

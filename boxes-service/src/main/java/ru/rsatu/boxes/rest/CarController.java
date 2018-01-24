@@ -67,7 +67,7 @@ public class CarController {
         Car car = carRepository.findById(carId);
 
         if (userRole.isAdmin() || car.getClient().getId().equals(client.getId())) {
-            return carDTOMapper.mapOne(carRepository.findById(carId));
+            return carDTOMapper.mapOne(car);
         }
         else {
             throw new AccessViolation();
