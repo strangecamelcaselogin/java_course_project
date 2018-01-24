@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.CarBrandRepository;
 import ru.rsatu.boxes.dao.CarRepository;
 import ru.rsatu.boxes.dao.ClientRepository;
+import ru.rsatu.boxes.rest.security.AccessChecker;
 import ru.rsatu.boxes.rest.security.UserRole;
 import ru.rsatu.boxes.persistence.Car;
 import ru.rsatu.boxes.persistence.CarBrand;
@@ -54,6 +55,7 @@ public class CarController {
     }
 
     /**
+     * Информация о конкретном автомобиле
      * Доступ имеет только владелец автомобиля и админ
      */
     @RequestMapping(value = "/{carId}", method = RequestMethod.GET)
@@ -70,6 +72,19 @@ public class CarController {
         else {
             throw new AccessViolation();
         }
+    }
+
+    /**
+     * Получить информацию о автомобилях клиента
+     * Доступ имеет только админ
+     */
+    @RequestMapping(value = "/client/{clientId}", method = RequestMethod.GET)
+    public Iterable<CarDTO> getClientCars(Principal auth, @PathVariable Long clientId) {
+        new AccessChecker(auth).onlyAdmin();
+
+        Client user = clientRepository.findById(clientId);
+
+        return carDTOMapper.mapMany(carRepository.findAllByClient(user));
     }
 
     /**
