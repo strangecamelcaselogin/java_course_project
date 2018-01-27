@@ -2,12 +2,13 @@ package ru.rsatu.boxes.rest;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.CarBrandRepository;
 import ru.rsatu.boxes.dao.CarRepository;
 import ru.rsatu.boxes.dao.ClientRepository;
+import ru.rsatu.boxes.rest.exception.BadRequest;
+import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 import ru.rsatu.boxes.rest.security.AccessChecker;
 import ru.rsatu.boxes.rest.security.UserRole;
 import ru.rsatu.boxes.persistence.Car;
@@ -17,7 +18,6 @@ import ru.rsatu.boxes.dto.CarDTO;
 import ru.rsatu.boxes.helpers.DomainToDTOMapper;
 import ru.rsatu.boxes.rest.exception.AccessViolation;
 import ru.rsatu.boxes.rest.exception.Conflict;
-import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
 import java.security.Principal;
 
@@ -59,13 +59,15 @@ public class CarController {
      * Доступ имеет только владелец автомобиля и админ
      */
     @RequestMapping(value = "/{carId}", method = RequestMethod.GET)
+    @Transactional
     public CarDTO getCar(Principal auth, @PathVariable Long carId) {
+
         String email = auth.getName();
         UserRole userRole = new UserRole(email);
+
         Client client = clientRepository.findByEmail(email);
 
         Car car = carRepository.findById(carId);
-
         if (userRole.isAdmin() || car.getClient().getId().equals(client.getId())) {
             return carDTOMapper.mapOne(car);
         }
@@ -94,6 +96,7 @@ public class CarController {
      * @param carBrandId - id марки
      */
     @RequestMapping(method = RequestMethod.POST)
+    @Transactional
     public CarDTO postCars(Principal auth, @RequestParam String number, @RequestParam Long carBrandId) {
 
         String username = auth.getName();
@@ -117,7 +120,9 @@ public class CarController {
      * Может только владелец
      */
     @RequestMapping(value = "/{carId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> deleteCar(Principal auth, @PathVariable Long carId) {
+    @Transactional
+    public Boolean deleteCar(Principal auth, @PathVariable Long carId) {
+
         Client owner = clientRepository.findByEmail(auth.getName());
         Car car = carRepository.findById(carId);
 
@@ -128,9 +133,9 @@ public class CarController {
         try {
             carRepository.delete(carId);
         } catch(EmptyResultDataAccessException e){
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            throw new BadRequest("Error while deleting car");
         }
 
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return true;
     }
 }

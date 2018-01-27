@@ -4,6 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.rsatu.boxes.dao.BoxRepository;
 import ru.rsatu.boxes.dao.CarRepository;
@@ -98,6 +99,7 @@ public class RentController {
      * @param end - время окончания аренды
      */
     @RequestMapping(method = RequestMethod.POST)
+    @Transactional
     public RentDTO postRent(Principal auth, @RequestParam Long carId, @RequestParam Long end) {
         Long MINIMAL_RENT_DURATION_SEC = 3600L;
 
@@ -144,8 +146,10 @@ public class RentController {
      * @param rentId id аренды
      */
     @RequestMapping(value="/{rentId}", method = RequestMethod.PATCH)
-    public ResponseEntity<Boolean> cancelRent(Principal auth, @PathVariable Long rentId) {
+    @Transactional
+    public Boolean cancelRent(Principal auth, @PathVariable Long rentId) {
         try {
+
             Client owner = clientRepository.findByEmail(auth.getName());
             Rent rent = rentRepository.findById(rentId);
             Car car = rent.getCar();
@@ -160,6 +164,6 @@ public class RentController {
         } catch(EmptyResultDataAccessException e){
             throw new BadRequest("Can not change Rent");
         }
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return true;
     }
 }

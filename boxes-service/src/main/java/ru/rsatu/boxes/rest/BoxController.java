@@ -102,6 +102,8 @@ public class BoxController {
 
         new AccessChecker(auth).onlyAdmin();
 
+        // TODO транзакция
+
         Box box = boxRepository.findById(boxId);
 
         try {

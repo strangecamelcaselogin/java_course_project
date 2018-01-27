@@ -3,6 +3,7 @@ package ru.rsatu.boxes.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.rsatu.boxes.persistence.Box;
 import ru.rsatu.boxes.persistence.CarBrand;
+import ru.rsatu.boxes.persistence.Client;
 import ru.rsatu.boxes.rest.exception.ResourceNotFound;
 
 import javax.persistence.EntityManager;
@@ -30,6 +31,11 @@ public class BoxRepositoryImpl implements BoxRepositoryCustom {
         } catch (IndexOutOfBoundsException e) {
             throw new ResourceNotFound(null, "Can not Find Free Box");
         }
+    }
+
+    @Override
+    public Box findByClient(Client client) {
+        return null;  // TODO
     }
 
     @Override
