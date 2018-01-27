@@ -44,7 +44,7 @@ export default function client(state = {
             let index = null;
             for (let i = 0; i < carList.length; i++){
                 let car = carList[i];
-                if (car.id === +action.payload){
+                if (car.id == action.payload){
                     index = i;
                     console.log('oldCarList', index);
                     break;

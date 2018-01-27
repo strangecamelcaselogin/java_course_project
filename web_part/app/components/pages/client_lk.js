@@ -45,7 +45,7 @@ export default class ClientLK extends Component{
         })
     }
 
-    componentWillReceiveProps(){
+    /*componentWillReceiveProps(){
         this.setState(function(prevState, props) {
             let obj = {};
             if (props.carBrands.length !== 0) {
@@ -56,7 +56,7 @@ export default class ClientLK extends Component{
             }
             return obj;
         });
-    }
+    }*/
 
 
     onChangeSelectClientCar(value) {
@@ -289,7 +289,7 @@ function mapStateToProps(state, ownProps){
     }
 
     return {
-        clientCars: state.clients.clientCarList,
+        clientCars: state.client.clientCarList,
         carBrands: state.brands.brandsList,
         activeTickets,
         notActiveTickets
